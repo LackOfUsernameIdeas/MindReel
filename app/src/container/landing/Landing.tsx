@@ -17,7 +17,6 @@ import { getAverageMetrics } from "../helper_functions_common";
 import logo from "../../assets/images/brand-logos/logo_large_head.png";
 import logoPink from "../../assets/images/brand-logos/logo_large_head_pink.png";
 import BookAdaptations from "./components/BookAdaptations";
-import TestVr from "./components/TestVr";
 
 interface LandingProps {}
 
@@ -691,25 +690,6 @@ const Landing: FC<LandingProps> = () => {
               <OtherStatsWidgetCardsComponents data={data} />
             </div>
           </div>
-        </section>
-        <section className="section text-center mt-16">
-          <h2 className="text-3xl font-bold mb-4">🧪 VR Test</h2>
-          <p className="mb-4 text-gray-500 dark:text-gray-400">
-            Click the goggles icon in VR to enter WebXR mode.
-          </p>
-
-          <div className="flex justify-center mb-4">
-            {!showVR && (
-              <button
-                className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                onClick={() => setShowVR(true)}
-              >
-                🥽 Launch VR
-              </button>
-            )}
-          </div>
-
-          <div className="flex justify-center">{showVR && <TestVr />}</div>
         </section>
       </div>
     </Fragment>

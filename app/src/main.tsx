@@ -27,6 +27,7 @@ import TopCountries from "./container/platformStats/TopCountries/TopCountries.ts
 import AIAnalysator from "./container/aiAnalysator/AIAnalysator.tsx";
 import Landing from "./container/landing/Landing.tsx";
 import LandingLayout from "./pages/LandingLayout.tsx";
+import TestVr from "./container/landing/components/TestVr.tsx";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.Fragment>
@@ -35,6 +36,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
         <Routes>
           <Route path="/" element={<LandingLayout />}>
             <Route path="/" element={<Landing />} />
+            <Route path="/vr/" element={<TestVr />} />
           </Route>
           <Route
             path="/app"
