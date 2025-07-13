@@ -27,6 +27,7 @@ import TopCountries from "./container/platformStats/TopCountries/TopCountries.ts
 import AIAnalysator from "./container/aiAnalysator/AIAnalysator.tsx";
 import Landing from "./container/landing/Landing.tsx";
 import LandingLayout from "./pages/LandingLayout.tsx";
+import MusicRecommendations from "./container/recommendations/music/MusicRecommendations.tsx";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.Fragment>
@@ -53,6 +54,10 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
             <Route
               path="recommendations/books"
               element={<BooksRecommendations />}
+            />
+            <Route
+              path="recommendations/music"
+              element={<MusicRecommendations />}
             />
             <Route
               index

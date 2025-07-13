@@ -21,13 +21,20 @@ import { Step } from "./types_common";
  *
  * @type {Array<string>}
  */
-export const preferenceOptions: Record<"moviesSeries" | "books", string[]> = {
+export const preferenceOptions: Record<
+  "moviesSeries" | "books" | "music",
+  string[]
+> = {
   moviesSeries: [
     "Стандартно попълване - препоръките се дават на база предпочитанията на потребителя за жанрове, време за гледане...",
     "Мозъчен анализ - препоръките се дават на база анализ от устройство за измерване на мозъчни вълни"
   ],
   books: [
     "Стандартно попълване - препоръките се дават на база предпочитанията на потребителя за жанрове, автори, произход...",
+    "Мозъчен анализ - препоръките се дават на база анализ от устройство за измерване на мозъчни вълни"
+  ],
+  music: [
+    "Стандартно попълване - препоръките се дават на база предпочитанията на потребителя за жанрове, изпълнители, темпо...",
     "Мозъчен анализ - препоръките се дават на база анализ от устройство за измерване на мозъчни вълни"
   ]
 };
@@ -140,6 +147,45 @@ export const goodreadsGenreOptions: Array<{ en: string; bg: string }> = [
   { en: "Thriller", bg: "Трилър" },
   { en: "Travel", bg: "Пътешествия" },
   { en: "Young Adult", bg: "Младежка литература" }
+];
+
+/**
+ * Мапинг на имената за категориите на музикалните жанрове.
+ *
+ * @type {Array<{en: string, bg: string}>}
+ */
+export const musicGenreOptions: Array<{ en: string; bg: string }> = [
+  { en: "pop", bg: "Поп" },
+  { en: "rock", bg: "Рок" },
+  { en: "hip-hop", bg: "Хип-хоп" },
+  { en: "electronic", bg: "Електронна" },
+  { en: "dance", bg: "Данс" },
+  { en: "r&b", bg: "R&B" },
+  { en: "indie", bg: "Инди" },
+  { en: "metal", bg: "Метъл" },
+  { en: "country", bg: "Кънтри" },
+  { en: "latin", bg: "Латино" },
+  { en: "jazz", bg: "Джаз" },
+  { en: "classical", bg: "Класическа" },
+  { en: "reggae", bg: "Реге" },
+  { en: "folk", bg: "Фолк" },
+  { en: "blues", bg: "Блуз" },
+  { en: "punк", bg: "Пънк" },
+  { en: "world", bg: "Световна" },
+  { en: "instrumental", bg: "Инструментална" },
+  { en: "ambient", bg: "Амбиент" },
+  { en: "comedy", bg: "Комедия" },
+  { en: "soundtrack", bg: "Филмова музика" },
+  { en: "dancehall", bg: "Дансхол" },
+  { en: "electro-pop", bg: "Електро-поп" },
+  { en: "synth-pop", bg: "Синт-поп" },
+  { en: "trap", bg: "Трап" },
+  { en: "lo-fi", bg: "Лоу-фай" },
+  { en: "drum & bass", bg: "Дръм енд бейс" },
+  { en: "afrobeat", bg: "Афробийт" },
+  { en: "reggaeton", bg: "Регетон" },
+  { en: "hyperpop", bg: "Хиперпоп" },
+  { en: "balkan", bg: "Балканска музика" }
 ];
 
 // Стъпки за успешно съставяне на мозъчен анализ
