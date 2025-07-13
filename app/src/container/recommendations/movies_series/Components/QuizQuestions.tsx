@@ -106,7 +106,7 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
       setter: setTimeAvailability
     },
     {
-      question: "Изберете приблизително време на създаване на филма/сериала?",
+      question: "Изберете приблизително време на създаване на филма/сериала.",
       options: ageOptions,
       value: age,
       setter: setAge

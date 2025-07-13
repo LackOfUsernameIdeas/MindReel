@@ -44,13 +44,12 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
   setRenderBrainAnalysis
 }) => {
   const [preferencesType, setPreferencesType] = useState<string | null>(null);
-  const [recommendationType, setRecommendationType] = useState("");
   const [genres, setGenres] = useState<Genre[]>([]);
   const [moods, setMoods] = useState<string[]>([]);
   const [timeAvailability, setTimeAvailability] = useState("");
   const [age, setAge] = useState("");
-  const [actors, setActors] = useState("");
-  const [directors, setDirectors] = useState("");
+  const [artists, setArtists] = useState("");
+  const [producers, setProducers] = useState("");
   const [interests, setInterests] = useState("");
   const [countries, setCountries] = useState("");
   const [pacing, setPacing] = useState("");
@@ -63,7 +62,6 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [showQuestion, setShowQuestion] = useState(true);
   const [selectedAnswer, setSelectedAnswer] = useState<string[] | null>(null);
-  const typeOptions = ["Филм", "Сериал"];
   const [notification, setNotification] = useState<{
     message: string;
     type: "success" | "error" | "warning";
@@ -77,13 +75,7 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
       setter: setPreferencesType
     },
     {
-      question: "Какво търсите - филм или сериал?",
-      options: typeOptions,
-      value: recommendationType,
-      setter: setRecommendationType
-    },
-    {
-      question: "Кои жанрове Ви се гледат в момента?",
+      question: "Кои жанрове Ви се слушат в момента?",
       options: musicGenreOptions,
       isMultipleChoice: true,
       value: genres,
@@ -97,47 +89,46 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
       setter: setMoods
     },
     {
-      question: "С какво време за гледане разполагате?",
+      question: "С какво време за слушане на музика разполагате?",
       options: timeAvailabilityOptions,
       value: timeAvailability,
       setter: setTimeAvailability
     },
     {
-      question: "Изберете приблизително време на създаване на филма/сериала?",
+      question: "Изберете приблизително време на създаване на песента.",
       options: ageOptions,
       value: age,
       setter: setAge
     },
     {
-      question: "Кои са вашите любими актьори?",
+      question: "Кои са вашите любими изпълнители и/или групи?",
       isInput: true,
-      value: actors,
-      setter: setActors,
-      placeholder: "Пример: Брад Пит, Леонардо ди Каприо, Ема Уотсън"
+      value: artists,
+      setter: setArtists,
+      placeholder: "Пример: The Weeknd, Taylor Swift, Metallica"
     },
     {
-      question: "Кои филмови режисьори предпочитате?",
+      question: "Кои са вашите любими музикални продуценти и/или композитори ?",
       isInput: true,
-      value: directors,
-      setter: setDirectors,
-      placeholder: "Пример: Дъфър брадърс, Стивън Спилбърг, Джеки Чан"
+      value: producers,
+      setter: setProducers,
+      placeholder: "Пример: Max Martin, Quincy Jones, Даниел Ганев"
     },
     {
-      question: "От кои страни предпочитате да е филмът/сериалът?",
+      question: "От кои страни предпочитате да е музиката?",
       isInput: true,
       value: countries,
       setter: setCountries,
       placeholder: "Пример: България, САЩ"
     },
     {
-      question:
-        "Филми/Сериали с каква бързина на развитие на сюжетното действие предпочитате?",
+      question: "Песни с какво темпо предпочитате?",
       options: pacingOptions,
       value: pacing,
       setter: setPacing
     },
     {
-      question: "Филми/Сериали с какво ниво на задълбочаване харесвате?",
+      question: "Песни с какъв стил на текстове харесвате в музиката?",
       options: depthOptions,
       value: depth,
       setter: setDepth
@@ -149,13 +140,13 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
       setter: setTargetGroup
     },
     {
-      question: "Какви теми ви интересуват?",
+      question: "Какви особености около стила на музика Ви интересуват?",
       isInput: true,
       value: interests,
       setter: setInterests,
-      placeholder: "Опишете темите, които ви интересуват",
+      placeholder: "Опишете музикалните черти, които ви интересуват",
       description:
-        "Предпочитате филм/сериал, който засяга определена историческа епоха, държава или дори представя история по действителен случай? Интересуват ви филми, в които се разследва мистерия или социален проблем, или такива, в които животни играят важна роля? А какво ще кажете за филми, свързани с пътешествия и изследване на света, или пък разкази за въображаеми светове? Дайте описание. Можете също така да споделите примери за филми/сериали, които предпочитате."
+        "Предпочитате музика, която има черти, характерни за определени музикални епохи, стилове или държави? Интересуват ви песни или дори цели албуми с текстове, които разкриват дълбоки истории, социални послания или лични преживявания? Харесва ви музика, която експериментира с конкретни инструменти и звучене, или пък предпочитате класически мелодии и познати ритми? Дайте описание. Можете също така да споделите примери за песни или албуми, които най-добре описват вашия музикален свят."
     }
   ];
   const totalQuestions = questions.length;
@@ -163,13 +154,12 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
     localStorage.getItem("authToken") || sessionStorage.getItem("authToken");
 
   const musicUserPreferences = {
-    recommendationType,
     genres,
     moods: moods?.map((mood) => mood.split(" ")[0]),
     timeAvailability,
     age,
-    actors,
-    directors,
+    artists,
+    producers,
     interests,
     countries,
     pacing,

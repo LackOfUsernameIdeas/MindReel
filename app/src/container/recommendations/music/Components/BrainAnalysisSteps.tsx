@@ -156,7 +156,6 @@ export const BrainAnalysisSteps: FC<{
   const currentStep = steps[currentStepIndex];
 
   const musicUserPreferences: MusicUserPreferences = {
-    recommendationType: "", // Вид на предпочитанията
     genres: [], // Жанрове на английски и български
     moods: [], // Настроения
     timeAvailability: "", // Наличност на време

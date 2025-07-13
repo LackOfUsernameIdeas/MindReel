@@ -45,7 +45,6 @@ export const saveMusicUserPreferences = async (
 ): Promise<void> => {
   try {
     const {
-      recommendationType,
       genres,
       moods,
       timeAvailability,
@@ -71,7 +70,6 @@ export const saveMusicUserPreferences = async (
       mood: Array.isArray(moods) ? moods.join(", ") : null,
       timeAvailability,
       preferred_age: age,
-      preferred_type: recommendationType,
       preferred_actors: actors,
       preferred_directors: directors,
       preferred_countries: countries,

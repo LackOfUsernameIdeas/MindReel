@@ -16,9 +16,9 @@ const RecommendationCard: FC<RecommendationCardProps> = ({
   setAlertVisible,
   bookmarkedMusic
 }) => {
-  const [translatedDirectors, setTranslatedDirectors] = useState<string>(""); // Преведените режисьори
+  const [translatedProducers, setTranslatedProducers] = useState<string>(""); // Преведените режисьори
   const [translatedWriters, setTranslatedWriters] = useState<string>(""); // Преведените сценаристи
-  const [translatedActors, setTranslatedActors] = useState<string>(""); // Преведените актьори
+  const [translatedArtists, setTranslatedArtists] = useState<string>(""); // Преведените актьори
   const [translatedAwards, setTranslatedAwards] = useState<string>(""); // Преведените награди
   const [translatedGenres, setTranslatedGenres] = useState<string>(""); // Преведените жанрове
   const [translatedPlot, setTranslatedPlot] = useState<string>(""); // Преведеното описание на сюжета
@@ -44,13 +44,13 @@ const RecommendationCard: FC<RecommendationCardProps> = ({
 
   // useEffect за превод на името на режисьора
   useEffect(() => {
-    async function fetchDirectorTranslation() {
-      const translated = await translate(recommendation.director);
-      setTranslatedDirectors(translated);
+    async function fetchProducerTranslation() {
+      const translated = await translate(recommendation.producer);
+      setTranslatedProducers(translated);
     }
 
-    fetchDirectorTranslation();
-  }, [recommendation.director]);
+    fetchProducerTranslation();
+  }, [recommendation.producer]);
 
   // useEffect за превод на името на сценариста
   useEffect(() => {
@@ -64,13 +64,13 @@ const RecommendationCard: FC<RecommendationCardProps> = ({
 
   // useEffect за превод на името на актьорите
   useEffect(() => {
-    async function fetchActorsTranslation() {
-      const translated = await translate(recommendation.actors);
-      setTranslatedActors(translated);
+    async function fetchArtistsTranslation() {
+      const translated = await translate(recommendation.artists);
+      setTranslatedArtists(translated);
     }
 
-    fetchActorsTranslation();
-  }, [recommendation.actors]);
+    fetchArtistsTranslation();
+  }, [recommendation.artists]);
 
   // useEffect за превод на наградите на филма/сериала
   useEffect(() => {
@@ -346,8 +346,8 @@ const RecommendationCard: FC<RecommendationCardProps> = ({
             <ul className="flex flex-wrap gap-x-4 text-opacity-80">
               <li>
                 <strong className="text-primary">Режисьор:</strong>{" "}
-                {translatedDirectors && translatedDirectors !== "N/A"
-                  ? translatedDirectors
+                {translatedProducers && translatedProducers !== "N/A"
+                  ? translatedProducers
                   : "Неизвестен"}
               </li>
               <li>
@@ -358,8 +358,8 @@ const RecommendationCard: FC<RecommendationCardProps> = ({
               </li>
               <li>
                 <strong className="text-primary">Актьори:</strong>{" "}
-                {translatedActors && translatedActors !== "N/A"
-                  ? translatedActors
+                {translatedArtists && translatedArtists !== "N/A"
+                  ? translatedArtists
                   : "Неизвестни"}
               </li>
               {isMovie && (

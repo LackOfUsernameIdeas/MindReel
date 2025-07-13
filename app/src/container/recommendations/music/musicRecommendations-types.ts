@@ -35,9 +35,9 @@ export interface Recommendation {
   released: string; // Дата на излизане
   runtime: string; // Времетраене в минути
   runtimeGoogle: string; // Времетраене, директно от Гугъл
-  director: string; // Име на режисьора
+  producer: string; // Име на режисьора
   writer: string; // Име на сценариста
-  actors: string; // Списък с актьори
+  artists: string; // Списък с актьори
   plot: string; // Сюжет на филма или сериала
   language: string; // Езици на филма или сериала
   country: string; // Страни, участващи в производството
@@ -59,13 +59,12 @@ export interface Recommendation {
 
 // Интерфейс за предпочитания на потребителя.
 export interface MusicUserPreferences {
-  recommendationType: string; // Вид на предпочитанията
   genres: { en: string; bg: string }[]; // Жанрове на английски и български
   moods: string[]; // Настроения
   timeAvailability: string; // Наличност на време
   age: string; // Възраст
-  actors: string; // Любими актьори
-  directors: string; // Любими режисьори
+  artists: string; // Любими актьори
+  producers: string; // Любими режисьори
   interests: string; // Интереси
   countries: string; // Предпочитани държави
   pacing: string; // Бързина на сюжетното действие

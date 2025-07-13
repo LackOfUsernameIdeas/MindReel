@@ -24,28 +24,31 @@ export const moodOptions = [
 ];
 
 export const timeAvailabilityOptions = [
-  "1 час",
-  "2 часа",
-  "3 часа",
+  "До 10 минути",
+  "15–20 минути",
+  "Около 30 минути",
+  "Около 1 час",
   "Нямам предпочитания"
 ];
 
 export const ageOptions = [
-  "Публикуван в последните 3 години",
-  "Публикуван в последните 10 години",
-  "Публикуван в последните 20 години",
+  "Публикувана в последните 3 години",
+  "Публикувана в последните 10 години",
+  "Публикувана в последните 20 години",
   "Нямам предпочитания"
 ];
 
 export const pacingOptions = [
-  "бавни, концентриращи се върху разкази на героите",
-  "бързи с много напрежение",
+  "Бавно и отпускащо",
+  "Умерено и балансирано",
+  "Бързо и енергично",
   "Нямам предпочитания"
 ];
+
 export const depthOptions = [
-  "Лесни за проследяване - релаксиращи",
-  "Средни - с ясни сюжетни линии",
-  "Трудни - с много истории и терминологии, характерни за филма/сериала",
+  "Леки – без ангажиращи текстове, просто за настроение",
+  "Средна дълбочина – с послание, но лесни за възприемане",
+  "Дълбоки – с емоционални теми, метафори и концепции",
   "Нямам предпочитания"
 ];
 
@@ -64,13 +67,12 @@ export const musicStandardPreferencesPrompt = (
   userPreferences: MusicUserPreferences
 ) => {
   const {
-    recommendationType,
     genres,
     moods,
     timeAvailability,
     age,
-    actors,
-    directors,
+    artists,
+    producers,
     interests,
     countries,
     pacing,
@@ -78,7 +80,7 @@ export const musicStandardPreferencesPrompt = (
     targetGroup
   } = userPreferences;
 
-  const typeText = recommendationType === "Филм" ? "филма" : "сериала";
+  const typeText = "филма";
 
   return {
     model: "gpt-4o-2024-08-06",
@@ -94,8 +96,8 @@ export const musicStandardPreferencesPrompt = (
               Емоционално състояние в този момент: ${moods}.
               Разполагаемо свободно време за гледане: ${timeAvailability}.
               Възрастта на ${typeText} задължително да бъде: ${age}
-              Любими актьори: ${actors}.
-              Любими филмови режисьори: ${directors}.
+              Любими актьори: ${artists}.
+              Любими филмови режисьори: ${producers}.
               Теми, които ме интересуват: ${interests}.
               Филмите/сериалите могат да бъдат от следните страни: ${countries}.
               Темпото (бързината) на филмите/сериалите предпочитам да бъде: ${pacing}.
