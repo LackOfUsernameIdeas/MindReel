@@ -17,7 +17,6 @@ import {
 } from "./musicRecommendations-data";
 import { musicGenreOptions } from "../../data_common";
 import {
-  analyzeRecommendations,
   checkRecommendationExistsInWatchlist,
   removeFromWatchlist,
   saveBrainAnalysis,
@@ -49,8 +48,8 @@ export const saveMusicUserPreferences = async (
       moods,
       timeAvailability,
       age,
-      actors,
-      directors,
+      artists,
+      producers,
       interests,
       countries,
       pacing,
@@ -70,8 +69,8 @@ export const saveMusicUserPreferences = async (
       mood: Array.isArray(moods) ? moods.join(", ") : null,
       timeAvailability,
       preferred_age: age,
-      preferred_actors: actors,
-      preferred_directors: directors,
+      preferred_artists: artists,
+      preferred_producers: producers,
       preferred_countries: countries,
       preferred_pacing: pacing,
       preferred_depth: depth,
@@ -106,64 +105,91 @@ export const saveMusicUserPreferences = async (
 };
 
 /**
- * Извлича данни за филм от IMDb чрез няколко различни търсачки в случай на неуспех.
- * Ако не успее да извлече данни от всички търсачки, хвърля грешка.
+ * Извлича access token от Spotify API чрез Client Credentials Flow.
  *
  * @async
- * @function fetchIMDbIDWithFailover
- * @param {string} movieName - Името на филма, за който се извличат данни.
- * @returns {Promise<Object>} - Връща обект с данни от IMDb за филма.
- * @throws {Error} - Хвърля грешка, ако не успее да извлече данни от всички търсачки.
+ * @function getSpotifyAccessToken
+ * @returns {Promise<string>} - Връща валиден access token.
+ * @throws {Error} - Хвърля грешка, ако не може да получи токена.
  */
-const fetchIMDbIDWithFailover = async (movieName: string) => {
-  const engines = [
-    { key: "AIzaSyAUOQzjNbBnGSBVvCZkWqHX7uebGZRY0lg", cx: "244222e4658f44b78" },
-    { key: "AIzaSyArE48NFh1befjjDxpSrJ0eBgQh_OmQ7RA", cx: "27427e59e17b74763" },
-    { key: "AIzaSyDqUez1TEmLSgZAvIaMkWfsq9rSm0kDjIw", cx: "e59ceff412ebc4313" }
-  ];
+const getSpotifyAccessToken = async (): Promise<string> => {
+  const response = await fetch("https://accounts.spotify.com/api/token", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded"
+    },
+    body: new URLSearchParams({
+      grant_type: "client_credentials",
+      client_id: "7206d684074d4300b1b47e41a499fafe",
+      client_secret: "fe60c3f4312148bd805649c7b7aa947b"
+    })
+  });
 
-  for (let engine of engines) {
-    try {
-      const response = await fetch(
-        `https://customsearch.googleapis.com/customsearch/v1?key=${
-          engine.key
-        }&cx=${engine.cx}&q=${encodeURIComponent(movieName)}`
-      );
+  if (!response.ok) {
+    throw new Error(
+      `Неуспешно получаване на Spotify token: ${response.status}`
+    );
+  }
 
-      // Detailed error logging
-      if (!response.ok) {
-        console.warn(
-          `Engine ${engine.cx} returned non-OK status: ${response.status}`
-        );
-        continue;
+  const data = await response.json();
+  return data.access_token;
+};
+
+/**
+ * Извлича данни за песен от Spotify API.
+ * Използва предоставения access token, ако има такъв.
+ *
+ * @async
+ * @function fetchSpotifyTrackData
+ * @param {string} trackName - Името на песента.
+ * @param {string} artistName - Името на артиста.
+ * @param {string} spotifyAccessToken - токен за извличане на данни за песен от Spotify.
+ * @returns {Promise<Object>} - Връща обект с информация за песента.
+ * @throws {Error} - Хвърля грешка при неуспех.
+ */
+const fetchSpotifyTrackData = async (
+  trackName: string,
+  artistName: string,
+  spotifyAccessToken: string
+): Promise<any> => {
+  try {
+    // Search for the track
+    const query = `${trackName} - ${artistName}`;
+    const searchResponse = await fetch(
+      `https://api.spotify.com/v1/search?q=${encodeURIComponent(
+        query
+      )}&type=track&limit=1`,
+      {
+        headers: {
+          Authorization: `Bearer ${spotifyAccessToken}`
+        }
       }
+    );
 
-      const data = await response.json();
-
-      // Comprehensive data validation
-      if (data.error) {
-        console.warn(`Engine ${engine.cx} returned an error:`, data.error);
-        continue;
-      }
-      if (!data.items || data.items.length === 0) {
-        console.warn(
-          `No items found for movie/series: "${movieName}" with engine ${engine.cx}`
-        );
-        continue;
-      }
-
-      console.log(
-        `Successfully fetched movie/series data for "${movieName}" using engine: ${engine.cx}`
-      );
-      return data;
-    } catch (error) {
-      console.error(`Detailed error with engine ${engine.cx}:`, error);
-      // Log the full error for debugging
-      if (error instanceof Error) {
-        console.error(`Error message: ${error.message}`);
-        console.error(`Error stack: ${error.stack}`);
-      }
+    if (!searchResponse.ok) {
+      throw new Error(`Spotify search failed: ${searchResponse.status}`);
     }
+
+    const searchData = await searchResponse.json();
+
+    if (
+      !searchData.tracks ||
+      !searchData.tracks.items ||
+      searchData.tracks.items.length === 0
+    ) {
+      throw new Error(
+        `Няма резултати за песента "${trackName}" от "${artistName}"`
+      );
+    }
+
+    console.log(
+      `🎵 Успешно намерена песен "${trackName}" от "${artistName}" в Spotify.`
+    );
+
+    return searchData.tracks.items[0]; // Return the first matching track
+  } catch (error) {
+    console.error("Грешка при извличане на песен от Spotify:", error);
+    throw error;
   }
 };
 
@@ -183,7 +209,7 @@ const fetchYouTubeEmbedTrailer = async (
 
   try {
     const response = await fetch(
-      `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=1&q=${encodeURIComponent(
+      `https://www.googleapis.com/youtube/v3/search?&maxResults=1&q=${encodeURIComponent(
         query
       )}&key=${apiKey}`
     );
@@ -218,7 +244,6 @@ const fetchYouTubeEmbedTrailer = async (
  * @param {string} date - Датата на генерирането на препоръките.
  * @param {MusicUserPreferences} musicUserPreferences - Предпочитанията на потребителя за филми/сериали.
  * @param {React.Dispatch<React.SetStateAction<any[]>>} setRecommendationList - Функция за задаване на препоръките в компонент.
- * @param {React.Dispatch<React.SetStateAction<{relevantCount: number; totalCount: number;}>>} setRecommendationsAnalysis - Функция за задаване на анализ на препоръките.
  * @param {string | null} token - Токенът на потребителя, използван за аутентификация.
  * @param {boolean} renderBrainAnalysis - параметър за генериране на препоръки, спрямо анализ на мозъчните вълни.
  * @returns {Promise<void>} - Няма връщан резултат, но актуализира препоръките.
@@ -227,9 +252,6 @@ const fetchYouTubeEmbedTrailer = async (
 export const generateMusicRecommendations = async (
   date: string,
   setRecommendationList: React.Dispatch<React.SetStateAction<any[]>>,
-  setRecommendationsAnalysis: React.Dispatch<
-    React.SetStateAction<RecommendationsAnalysis>
-  >,
   setBookmarkedMusic: React.Dispatch<
     React.SetStateAction<{
       [key: string]: any;
@@ -271,146 +293,71 @@ export const generateMusicRecommendations = async (
     const recommendations = JSON.parse(unescapedData);
     console.log("recommendations: ", recommendations);
 
-    const recommendationsToAnalyze = [];
+    const spotifyAccessToken = await getSpotifyAccessToken();
 
-    for (const movieTitle in recommendations) {
-      let imdbData;
+    for (const songTitle in recommendations) {
+      const recommendation = recommendations[songTitle];
+      const artistName = recommendation.artist;
+
+      let musicData;
       try {
-        imdbData = await fetchIMDbIDWithFailover(movieTitle);
+        musicData = await fetchSpotifyTrackData(
+          songTitle,
+          artistName,
+          spotifyAccessToken
+        );
       } catch (error) {
         console.error(
-          `Failed to fetch movie or series data for ${movieTitle}:`,
+          `Failed to fetch music data from Spotify for ${songTitle}:`,
           error
         );
         continue;
       }
 
-      const imdbItem = imdbData.items.find((item: { link: string }) =>
-        item.link.includes("imdb.com/title/")
-      );
+      const youtubeTrailerUrl = await fetchYouTubeEmbedTrailer(songTitle);
 
-      console.log(`imdbItem: ${imdbItem}`);
-
-      if (!imdbItem) {
-        console.warn(`No valid movie or series item found for: ${imdbItem}`);
-        continue; // Skip to the next movie or series
-      }
-
-      const imdbUrl = imdbItem.link;
-      const imdbId = imdbUrl.match(/title\/(tt\d+)\//)?.[1];
-
-      if (!imdbId) {
-        console.warn(`No valid imdb ID found for: ${movieTitle}`);
-        continue; // Skip to the next movie or series
-      }
-
-      const imdbRating = imdbItem.pagemap.metatags
-        ? imdbItem.pagemap.metatags[0]["twitter:title"]?.match(
-            /⭐ ([\d.]+)/
-          )?.[1]
-        : null;
-      const runtime = imdbItem.pagemap.metatags
-        ? imdbItem.pagemap.metatags[0]["og:description"]?.match(
-            /(\d{1,2}h \d{1,2}m|\d{1,2}h|\d{1,3}m)/
-          )?.[1]
-        : null;
-
-      const translatedRuntime = runtime
-        ? runtime.replace(/h/g, "ч").replace(/m/g, "м").replace(/s/g, "с")
-        : null;
-
-      const omdbResponse = await fetch(
-        `https://www.omdbapi.com/?apikey=89cbf31c&i=${imdbId}&plot=full`
-      );
-
-      if (!omdbResponse.ok) {
-        console.error(
-          `Failed to fetch OMDb data for ${movieTitle}. Status: ${omdbResponse.status}`
-        );
-        continue; // Skip to the next movie or series
-      }
-
-      const omdbData = await omdbResponse.json();
-
-      console.log(
-        `OMDb data for ${movieTitle}: ${JSON.stringify(omdbData, null, 2)}`
-      );
-
-      const youtubeTrailerUrl = await fetchYouTubeEmbedTrailer(movieTitle);
-
-      const recommendationData = {
-        title: omdbData.Title,
-        bgName: recommendations[movieTitle].bgName,
-        description: recommendations[movieTitle].description,
-        reason: recommendations[movieTitle].reason,
-        youtubeTrailerUrl: youtubeTrailerUrl,
-        year: omdbData.Year,
-        rated: omdbData.Rated,
-        released: omdbData.Released,
-        runtime: omdbData.Runtime,
-        runtimeGoogle: translatedRuntime,
-        genre: omdbData.Genre,
-        director: omdbData.Director,
-        writer: omdbData.Writer,
-        actors: omdbData.Actors,
-        plot: omdbData.Plot,
-        language: omdbData.Language,
-        country: omdbData.Country,
-        awards: omdbData.Awards,
-        poster: omdbData.Poster,
-        ratings: omdbData.Ratings,
-        metascore: omdbData.Metascore,
-        imdbRating: omdbData.imdbRating,
-        imdbRatingGoogle: imdbRating,
-        imdbVotes: omdbData.imdbVotes,
-        imdbID: omdbData.imdbID,
-        type: omdbData.Type,
-        DVD: omdbData.DVD,
-        boxOffice: omdbData.BoxOffice,
-        production: omdbData.Production,
-        website: omdbData.Website,
-        totalSeasons: omdbData.totalSeasons
-      };
+      // const recommendationData = {
+      //   title: omdbData.Title,
+      //   bgName: recommendations[songTitle].bgName,
+      //   description: recommendations[songTitle].description,
+      //   reason: recommendations[songTitle].reason,
+      //   youtubeTrailerUrl: youtubeTrailerUrl,
+      //   year: omdbData.Year,
+      //   rated: omdbData.Rated,
+      //   released: omdbData.Released,
+      //   runtime: omdbData.Runtime,
+      //   runtimeGoogle: translatedRuntime,
+      //   genre: omdbData.Genre,
+      //   producer: omdbData.Producer,
+      //   writer: omdbData.Writer,
+      //   artists: omdbData.Artists,
+      //   plot: omdbData.Plot,
+      //   language: omdbData.Language,
+      //   country: omdbData.Country,
+      //   awards: omdbData.Awards,
+      //   poster: omdbData.Poster,
+      //   ratings: omdbData.Ratings,
+      //   metascore: omdbData.Metascore,
+      //   imdbRating: omdbData.imdbRating,
+      //   imdbRatingGoogle: imdbRating,
+      //   imdbVotes: omdbData.imdbVotes,
+      //   imdbID: omdbData.imdbID,
+      //   type: omdbData.Type,
+      //   DVD: omdbData.DVD,
+      //   boxOffice: omdbData.BoxOffice,
+      //   production: omdbData.Production,
+      //   website: omdbData.Website,
+      //   totalSeasons: omdbData.totalSeasons
+      // };
 
       // Първо, задаваме списъка с препоръки
-      setRecommendationList((prevRecommendations) => [
-        ...prevRecommendations,
-        recommendationData
-      ]);
+      // setRecommendationList((prevRecommendations) => [
+      //   ...prevRecommendations,
+      //   recommendationData
+      // ]);
 
-      // След това изпълняваме проверката и записа паралелно, използвайки self-invoking функцията
-      (async () => {
-        // Проверяваме дали филмът съществува в таблицата за watchlist
-        const existsInWatchlist = await checkRecommendationExistsInWatchlist(
-          imdbId,
-          token
-        );
-
-        // Ако филмът не съществува в watchlist, добавяме го към "bookmarkedMusic" с информация за ID и статус
-        if (existsInWatchlist) {
-          setBookmarkedMusic((prevMusic) => {
-            return {
-              ...prevMusic,
-              [recommendationData.imdbID]: recommendationData
-            };
-          });
-        }
-        // Записваме препоръката в базата данни
-        await saveMusicRecommendation(recommendationData, date, token);
-      })();
-
-      recommendationsToAnalyze.push(recommendationData);
+      // await saveMusicRecommendation(recommendationData, date, token);
     }
-
-    !renderBrainAnalysis &&
-      (await analyzeRecommendations(
-        musicUserPreferences,
-        recommendationsToAnalyze,
-        setRecommendationsAnalysis,
-        true,
-        date,
-        token
-      )); // Извикване на функцията за анализ на предпочитанията и определяне на Precision
   } catch (error) {
     console.error("Error generating recommendations:", error);
   }
@@ -468,9 +415,9 @@ export const saveMusicRecommendation = async (
       rated: recommendation.rated || null,
       released: recommendation.released || null,
       runtime: runtime || null,
-      director: recommendation.director || null,
+      producer: recommendation.producer || null,
       writer: recommendation.writer || null,
-      actors: recommendation.actors || null,
+      artists: recommendation.artists || null,
       plot: recommendation.plot || null,
       language: recommendation.language || null,
       country: recommendation.country || null,
@@ -543,9 +490,6 @@ export const handleSubmit = async (
   setSubmitted: React.Dispatch<React.SetStateAction<boolean>>,
   setSubmitCount: React.Dispatch<React.SetStateAction<number>>,
   setRecommendationList: React.Dispatch<React.SetStateAction<any[]>>,
-  setRecommendationsAnalysis: React.Dispatch<
-    React.SetStateAction<RecommendationsAnalysis>
-  >,
   setBookmarkedMusic: React.Dispatch<
     React.SetStateAction<{
       [key: string]: any;
@@ -578,8 +522,8 @@ export const handleSubmit = async (
     const {
       moods,
       timeAvailability,
-      actors,
-      directors,
+      artists,
+      producers,
       countries,
       pacing,
       depth,
@@ -590,8 +534,8 @@ export const handleSubmit = async (
       !renderBrainAnalysis &&
       (!moods ||
         !timeAvailability ||
-        !actors ||
-        !directors ||
+        !artists ||
+        !producers ||
         !countries ||
         !pacing ||
         !depth ||
@@ -611,6 +555,7 @@ export const handleSubmit = async (
 
   try {
     if (renderBrainAnalysis && analysisType && brainData) {
+      // Ако се съставя мозъчен анализ се изпълнява следния код
       const response = await fetch(
         `${import.meta.env.VITE_API_BASE_URL}/handle-submit`,
         {
@@ -620,7 +565,7 @@ export const handleSubmit = async (
             Authorization: `Bearer ${token}`
           },
           body: JSON.stringify({
-            type: "movies_series"
+            type: "music"
           })
         }
       );
@@ -635,8 +580,8 @@ export const handleSubmit = async (
           musicUserPreferences &&
           Object.keys(musicUserPreferences).length > 0
         ) {
-          await saveMusicUserPreferences(date, musicUserPreferences, token);
-          await saveBrainAnalysis(date, brainData, analysisType, token);
+          // await saveMusicUserPreferences(date, musicUserPreferences, token);
+          // await saveBrainAnalysis(date, brainData, analysisType, token);
           const filteredBrainData = brainData.map(
             ({ blink_strength, raw_data, data_type, ...rest }) => rest
           );
@@ -644,7 +589,6 @@ export const handleSubmit = async (
           await generateMusicRecommendations(
             date,
             setRecommendationList,
-            setRecommendationsAnalysis,
             setBookmarkedMusic,
             token,
             true,
@@ -661,6 +605,7 @@ export const handleSubmit = async (
         );
       }
     } else {
+      // Ако НЕ се съставя мозъчен анализ се изпълнява следния код
       const response = await fetch(
         `${import.meta.env.VITE_API_BASE_URL}/handle-submit`,
         {
@@ -670,7 +615,7 @@ export const handleSubmit = async (
             Authorization: `Bearer ${token}`
           },
           body: JSON.stringify({
-            type: "movies_series"
+            type: "music"
           })
         }
       );
@@ -685,11 +630,10 @@ export const handleSubmit = async (
           musicUserPreferences &&
           Object.keys(musicUserPreferences).length > 0
         ) {
-          await saveMusicUserPreferences(date, musicUserPreferences, token);
+          // await saveMusicUserPreferences(date, musicUserPreferences, token);
           await generateMusicRecommendations(
             date,
             setRecommendationList,
-            setRecommendationsAnalysis,
             setBookmarkedMusic,
             token,
             false,

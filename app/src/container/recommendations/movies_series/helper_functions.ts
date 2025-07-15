@@ -185,7 +185,7 @@ const fetchYouTubeEmbedTrailer = async (
 
   try {
     const response = await fetch(
-      `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=1&q=${encodeURIComponent(
+      `https://www.googleapis.com/youtube/v3/search?&maxResults=1&q=${encodeURIComponent(
         query
       )}&key=${apiKey}`
     );

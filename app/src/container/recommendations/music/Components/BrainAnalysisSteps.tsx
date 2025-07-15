@@ -33,9 +33,6 @@ export const BrainAnalysisSteps: FC<{
     React.SetStateAction<NotificationState | null>
   >;
   setRecommendationList: React.Dispatch<React.SetStateAction<any[]>>;
-  setRecommendationsAnalysis: React.Dispatch<
-    React.SetStateAction<RecommendationsAnalysis>
-  >;
   setBookmarkedMusic: React.Dispatch<
     React.SetStateAction<{ [key: string]: any }>
   >;
@@ -51,7 +48,6 @@ export const BrainAnalysisSteps: FC<{
   setSubmitted,
   setNotification,
   setRecommendationList,
-  setRecommendationsAnalysis,
   setBookmarkedMusic,
   submitted,
   token,
@@ -160,8 +156,8 @@ export const BrainAnalysisSteps: FC<{
     moods: [], // Настроения
     timeAvailability: "", // Наличност на време
     age: "", // Възраст
-    actors: "", // Любими актьори
-    directors: "", // Любими режисьори
+    artists: "", // Любими актьори
+    producers: "", // Любими режисьори
     interests: "", // Интереси
     countries: "", // Предпочитани държави
     pacing: "", // Бързина на сюжетното действие
@@ -224,7 +220,6 @@ export const BrainAnalysisSteps: FC<{
       setSubmitted,
       setSubmitCount,
       setRecommendationList,
-      setRecommendationsAnalysis,
       setBookmarkedMusic,
       token,
       submitCount,

@@ -142,9 +142,6 @@ export interface QuizQuestionProps {
   showViewRecommendations: boolean; // Флаг за показване на препоръките
   alreadyHasRecommendations: boolean; // Флаг за проверка дали вече има препоръки
   setRecommendationList: React.Dispatch<React.SetStateAction<any[]>>; // Функция за задаване на списък с препоръки
-  setRecommendationsAnalysis: React.Dispatch<
-    React.SetStateAction<RecommendationsAnalysis>
-  >; // Функция за задаване на анализ на препоръките
   setBookmarkedMusic: React.Dispatch<
     React.SetStateAction<{ [key: string]: any }>
   >; // Функция за актуализиране на маркираните филми
@@ -188,9 +185,6 @@ export interface ConfirmationModalProps {
     setSubmitted: React.Dispatch<React.SetStateAction<boolean>>,
     setSubmitCount: React.Dispatch<React.SetStateAction<number>>,
     setRecommendationList: React.Dispatch<React.SetStateAction<any[]>>,
-    setRecommendationsAnalysis: React.Dispatch<
-      React.SetStateAction<RecommendationsAnalysis>
-    >,
     setBookmarkedMusic: React.Dispatch<
       React.SetStateAction<{
         [key: string]: any;
@@ -207,10 +201,6 @@ export interface ConfirmationModalProps {
 
   // Функция за задаване на списък с препоръки
   setRecommendationList: React.Dispatch<React.SetStateAction<any[]>>;
-
-  setRecommendationsAnalysis: React.Dispatch<
-    React.SetStateAction<RecommendationsAnalysis>
-  >; // Функция за задаване на анализ на препоръките
 
   // Функция за задаване на списък с любими филми
   setBookmarkedMusic: React.Dispatch<

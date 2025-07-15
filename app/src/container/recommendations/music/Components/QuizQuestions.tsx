@@ -36,7 +36,6 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
   showViewRecommendations,
   alreadyHasRecommendations,
   setRecommendationList,
-  setRecommendationsAnalysis,
   setBookmarkedMusic,
   setIsBrainAnalysisComplete,
   isBrainAnalysisComplete,
@@ -220,7 +219,6 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
             setSubmitted,
             setSubmitCount,
             setRecommendationList,
-            setRecommendationsAnalysis,
             setBookmarkedMusic,
             token,
             submitCount,
@@ -357,7 +355,6 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
                 setSubmitted={setSubmitted}
                 setNotification={setNotification}
                 setRecommendationList={setRecommendationList}
-                setRecommendationsAnalysis={setRecommendationsAnalysis}
                 setBookmarkedMusic={setBookmarkedMusic}
                 submitCount={submitCount}
                 submitted={submitted}
@@ -607,7 +604,6 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
                         setSubmitted={setSubmitted}
                         handleSubmit={handleSubmit}
                         setRecommendationList={setRecommendationList}
-                        setRecommendationsAnalysis={setRecommendationsAnalysis}
                         setBookmarkedMusic={setBookmarkedMusic}
                         setSubmitCount={setSubmitCount}
                         musicUserPreferences={musicUserPreferences}

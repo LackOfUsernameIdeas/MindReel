@@ -137,7 +137,9 @@ app.post("/handle-submit", (req, res) => {
 
   const { type } = req.body;
 
-  if (!type || (type !== "movies_series" && type !== "books")) {
+  const validTypes = ["movies_series", "books", "music"];
+
+  if (!type || !validTypes.includes(type)) {
     return res
       .status(400)
       .json({ error: "Невалиден или липсващ 'type' параметър в заявката" });
@@ -158,7 +160,8 @@ app.post("/handle-submit", (req, res) => {
     if (!userRequests[userId]) {
       userRequests[userId] = {
         movies_series: { count: 0 },
-        books: { count: 0 }
+        books: { count: 0 },
+        music: { count: 0 }
       };
     }
 

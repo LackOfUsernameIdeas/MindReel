@@ -88,7 +88,6 @@ export const Quiz: FC<QuizProps> = ({
             }
             alreadyHasRecommendations={alreadyHasRecommendations}
             setRecommendationList={setRecommendationList}
-            setRecommendationsAnalysis={setRecommendationsAnalysis}
             setBookmarkedMusic={setBookmarkedMusic}
             setIsBrainAnalysisComplete={setIsBrainAnalysisComplete}
             isBrainAnalysisComplete={isBrainAnalysisComplete}
