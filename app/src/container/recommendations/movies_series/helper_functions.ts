@@ -173,7 +173,7 @@ const fetchIMDbIDWithFailover = async (movieName: string) => {
  * Извлича YouTube URL за трейлър на даден филм.
  *
  * @async
- * @function fetchYouTubeTrailer
+ * @function fetchYouTubeEmbedTrailer
  * @param {string} recommendation - Заглавието на филма/сериала, за който се търси трейлър.
  * @returns {Promise<string|null>} - Връща пълния YouTube URL или null, ако няма резултат.
  */

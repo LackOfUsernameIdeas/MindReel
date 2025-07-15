@@ -141,20 +141,20 @@ const getSpotifyAccessToken = async (): Promise<string> => {
  *
  * @async
  * @function fetchSpotifyTrackData
- * @param {string} trackName - Името на песента.
+ * @param {string} songTitle - Името на песента.
  * @param {string} artistName - Името на артиста.
  * @param {string} spotifyAccessToken - токен за извличане на данни за песен от Spotify.
  * @returns {Promise<Object>} - Връща обект с информация за песента.
  * @throws {Error} - Хвърля грешка при неуспех.
  */
 const fetchSpotifyTrackData = async (
-  trackName: string,
+  songTitle: string,
   artistName: string,
   spotifyAccessToken: string
 ): Promise<any> => {
   try {
     // Search for the track
-    const query = `${trackName} - ${artistName}`;
+    const query = `${songTitle} - ${artistName}`;
     const searchResponse = await fetch(
       `https://api.spotify.com/v1/search?q=${encodeURIComponent(
         query
@@ -178,12 +178,12 @@ const fetchSpotifyTrackData = async (
       searchData.tracks.items.length === 0
     ) {
       throw new Error(
-        `Няма резултати за песента "${trackName}" от "${artistName}"`
+        `Няма резултати за песента "${songTitle}" от "${artistName}"`
       );
     }
 
     console.log(
-      `🎵 Успешно намерена песен "${trackName}" от "${artistName}" в Spotify.`
+      `🎵 Успешно намерена песен "${songTitle}" от "${artistName}" в Spotify.`
     );
 
     return searchData.tracks.items[0]; // Return the first matching track
@@ -194,18 +194,15 @@ const fetchSpotifyTrackData = async (
 };
 
 /**
- * Извлича YouTube URL за трейлър на даден филм.
+ * Извлича YouTube ID за видео на дадена песен.
  *
  * @async
- * @function fetchYouTubeTrailer
- * @param {string} recommendation - Заглавието на филма/сериала, за който се търси трейлър.
- * @returns {Promise<string|null>} - Връща пълния YouTube URL или null, ако няма резултат.
+ * @function fetchYouTubeVideoID
+ * @param {string} query - query на песента, за която се търси видеоклип.
+ * @returns {Promise<string|null>} - Връща пълния YouTube ID или null, ако няма резултат.
  */
-const fetchYouTubeEmbedTrailer = async (
-  recommendation: string
-): Promise<string | null> => {
+const fetchYouTubeVideoID = async (query: string): Promise<string | null> => {
   const apiKey = import.meta.env.VITE_YOUTUBE_API_KEY;
-  const query = `${recommendation} - official trailer`;
 
   try {
     const response = await fetch(
@@ -215,34 +212,77 @@ const fetchYouTubeEmbedTrailer = async (
     );
 
     if (!response.ok) {
-      console.warn(
-        `YouTube API failed for "${recommendation}": ${response.status}`
-      );
+      console.warn(`YouTube API failed for "${query}": ${response.status}`);
       return null;
     }
 
     const data = await response.json();
     const videoId = data.items?.[0]?.id?.videoId;
 
-    return videoId ? `https://www.youtube.com/embed/${videoId}` : null;
+    return videoId || null;
   } catch (error) {
-    console.error(
-      `Error fetching YouTube trailer for "${recommendation}":`,
-      error
-    );
+    console.error(`Error fetching YouTube trailer for "${query}":`, error);
     return null;
   }
 };
 
 /**
- * Генерира препоръки за филми или сериали, базирани на предпочитанията на потребителя,
+ * Извлича статистически данни за YouTube видео.
+ *
+ * @async
+ * @function fetchYouTubeVideoStats
+ * @param {string} videoId - ID на YouTube видеото.
+ * @returns {Promise<Object|null>} - Връща обект с статистики (viewCount, likeCount, commentCount) или null при грешка.
+ */
+const fetchYouTubeVideoStats = async (
+  videoId: string
+): Promise<{
+  viewCount: string;
+  likeCount?: string;
+  commentCount?: string;
+} | null> => {
+  const apiKey = import.meta.env.VITE_YOUTUBE_API_KEY;
+
+  try {
+    const response = await fetch(
+      `https://www.googleapis.com/youtube/v3/videos?part=statistics&id=${videoId}&key=${apiKey}`
+    );
+
+    if (!response.ok) {
+      console.warn(
+        `YouTube statistics fetch failed for "${videoId}": ${response.status}`
+      );
+      return null;
+    }
+
+    const data = await response.json();
+    const stats = data.items?.[0]?.statistics;
+
+    if (!stats) {
+      console.warn(`No statistics found for video ID: ${videoId}`);
+      return null;
+    }
+
+    return {
+      viewCount: stats.viewCount,
+      likeCount: stats.likeCount,
+      commentCount: stats.commentCount
+    };
+  } catch (error) {
+    console.error(`Error fetching YouTube statistics for "${videoId}":`, error);
+    return null;
+  }
+};
+
+/**
+ * Генерира препоръки за музика, базирани на предпочитанията на потребителя,
  * като използва OpenAI API за създаване на списък с препоръки.
  * Връща списък с препоръки в JSON формат.
  *
  * @async
  * @function generateMusicRecommendations
  * @param {string} date - Датата на генерирането на препоръките.
- * @param {MusicUserPreferences} musicUserPreferences - Предпочитанията на потребителя за филми/сериали.
+ * @param {MusicUserPreferences} musicUserPreferences - Предпочитанията на потребителя за песни.
  * @param {React.Dispatch<React.SetStateAction<any[]>>} setRecommendationList - Функция за задаване на препоръките в компонент.
  * @param {string | null} token - Токенът на потребителя, използван за аутентификация.
  * @param {boolean} renderBrainAnalysis - параметър за генериране на препоръки, спрямо анализ на мозъчните вълни.
@@ -314,47 +354,51 @@ export const generateMusicRecommendations = async (
         continue;
       }
 
-      const youtubeTrailerUrl = await fetchYouTubeEmbedTrailer(songTitle);
+      const youtubeMusicVideoID = await fetchYouTubeVideoID(
+        `${songTitle} - ${artistName}`
+      );
 
-      // const recommendationData = {
-      //   title: omdbData.Title,
-      //   bgName: recommendations[songTitle].bgName,
-      //   description: recommendations[songTitle].description,
-      //   reason: recommendations[songTitle].reason,
-      //   youtubeTrailerUrl: youtubeTrailerUrl,
-      //   year: omdbData.Year,
-      //   rated: omdbData.Rated,
-      //   released: omdbData.Released,
-      //   runtime: omdbData.Runtime,
-      //   runtimeGoogle: translatedRuntime,
-      //   genre: omdbData.Genre,
-      //   producer: omdbData.Producer,
-      //   writer: omdbData.Writer,
-      //   artists: omdbData.Artists,
-      //   plot: omdbData.Plot,
-      //   language: omdbData.Language,
-      //   country: omdbData.Country,
-      //   awards: omdbData.Awards,
-      //   poster: omdbData.Poster,
-      //   ratings: omdbData.Ratings,
-      //   metascore: omdbData.Metascore,
-      //   imdbRating: omdbData.imdbRating,
-      //   imdbRatingGoogle: imdbRating,
-      //   imdbVotes: omdbData.imdbVotes,
-      //   imdbID: omdbData.imdbID,
-      //   type: omdbData.Type,
-      //   DVD: omdbData.DVD,
-      //   boxOffice: omdbData.BoxOffice,
-      //   production: omdbData.Production,
-      //   website: omdbData.Website,
-      //   totalSeasons: omdbData.totalSeasons
-      // };
+      const youtubeMusicVideoUrl = youtubeMusicVideoID
+        ? `https://www.youtube.com/embed/${youtubeMusicVideoID}`
+        : null;
+
+      const youtubeMusicVideoStats =
+        youtubeMusicVideoID &&
+        (await fetchYouTubeVideoStats(youtubeMusicVideoID));
+
+      const recommendationData = {
+        title: musicData.name, // Official title from Spotify
+        bgName: recommendation.bgName, // Translated title from AI
+        artists: musicData?.artists?.map((artist: any) => artist.name) || [], // Artists from Spotify
+        description: recommendation.description,
+        reason: recommendation.reason,
+        youtubeMusicVideoID: youtubeMusicVideoID,
+        youtubeMusicVideoUrl: youtubeMusicVideoUrl,
+        youtubeMusicVideoViews: youtubeMusicVideoStats
+          ? youtubeMusicVideoStats.viewCount
+          : null,
+        youtubeMusicVideoLikes: youtubeMusicVideoStats
+          ? youtubeMusicVideoStats.likeCount
+          : null,
+        youtubeMusicVideoComments: youtubeMusicVideoStats
+          ? youtubeMusicVideoStats.commentCount
+          : null,
+        spotifyID: musicData.id,
+        spotifyUrl: musicData?.external_urls?.spotify || null,
+        spotifyPopularity: musicData?.popularity || null,
+        durationMs: musicData?.duration_ms || null,
+        albumTitle: musicData?.album?.name || null,
+        albumType: musicData?.album?.album_type || null,
+        albumCover: musicData?.album?.images?.[0]?.url || null,
+        albumTotalTracks: musicData?.album?.total_tracks || null,
+        albumReleaseDateInSpotify: musicData?.album?.release_date || null
+      };
 
       // Първо, задаваме списъка с препоръки
-      // setRecommendationList((prevRecommendations) => [
-      //   ...prevRecommendations,
-      //   recommendationData
-      // ]);
+      setRecommendationList((prevRecommendations) => [
+        ...prevRecommendations,
+        recommendationData
+      ]);
 
       // await saveMusicRecommendation(recommendationData, date, token);
     }
