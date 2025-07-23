@@ -154,7 +154,6 @@ export const BrainAnalysisSteps: FC<{
   const musicUserPreferences: MusicUserPreferences = {
     genres: [], // Жанрове на английски и български
     moods: [], // Настроения
-    timeAvailability: "", // Наличност на време
     age: "", // Възраст
     artists: "", // Любими актьори
     producers: "", // Любими режисьори

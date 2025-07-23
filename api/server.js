@@ -411,6 +411,21 @@ app.post("/save-preferences", (req, res) => {
   }
 
   const { token, ...data } = preferences;
+
+  // Тип към съответната функция за запис
+  const savingFunctions = {
+    movies_series: db.saveMoviesSeriesUserPreferences,
+    books: db.saveBooksUserPreferences,
+    music: db.saveMusicUserPreferences
+  };
+
+  // Избира се функцията за запазване на предпочитанията, според preferencesType параметъра
+  const currentSavingFunction = savingFunctions[preferencesType];
+
+  if (!currentSavingFunction) {
+    return res.status(400).json({ error: "Unsupported preferences type" });
+  }
+
   // Верификация на токена и вземане на потребителското ID
   jwt.verify(token, SECRET_KEY, (err, decoded) => {
     if (err) {
@@ -419,25 +434,16 @@ app.post("/save-preferences", (req, res) => {
     }
 
     const userId = decoded.id;
-    if (preferencesType === "movies_series") {
-      db.saveMoviesSeriesUserPreferences(userId, data, (err, result) => {
-        if (err) {
-          return res.status(500).json({ error: err.message });
-        }
-        res.status(201).json({
-          message: "User preferences for movies/series saved successfully!"
-        });
+
+    currentSavingFunction(userId, data, (err, result) => {
+      if (err) {
+        return res.status(500).json({ error: err.message });
+      }
+
+      res.status(201).json({
+        message: `User preferences for ${preferencesType} saved successfully!`
       });
-    } else {
-      db.saveBooksUserPreferences(userId, data, (err, result) => {
-        if (err) {
-          return res.status(500).json({ error: err.message });
-        }
-        res
-          .status(201)
-          .json({ message: "User preferences for books saved successfully!" });
-      });
-    }
+    });
   });
 });
 

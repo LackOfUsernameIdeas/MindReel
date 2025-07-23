@@ -434,6 +434,50 @@ const saveBooksUserPreferences = (userId, preferences, callback) => {
 };
 
 /**
+ * Записва предпочитанията на потребителя за филми и сериали.
+ *
+ * @param {number} userId - Идентификатор на потребителя.
+ * @param {Object} preferences - Обект с предпочитанията на потребителя.
+ * @param {string[]} preferences.preferred_genres_en - Избрани жанрове на английски.
+ * @param {string[]} preferences.preferred_genres_bg - Избрани жанрове на български.
+ * @param {string} preferences.mood - Настроение на потребителя.
+ * @param {string} preferences.preferred_age - Предпочитана възрастова група.
+ * @param {string[]} preferences.preferred_artists - Предпочитани актьори.
+ * @param {string[]} preferences.preferred_producers - Предпочитани режисьори.
+ * @param {string[]} preferences.preferred_countries - Предпочитани държави.
+ * @param {string} preferences.preferred_pacing - Предпочитан ритъм.
+ * @param {string} preferences.preferred_depth - Предпочитана дълбочина на съдържанието.
+ * @param {string} preferences.preferred_target_group - Предпочитана целева група.
+ * @param {string} preferences.interests - Интереси на потребителя.
+ * @param {string} preferences.date - Дата на създаване на предпочитанията.
+ * @param {function} callback - Функция, която ще бъде извикана след изпълнението на заявката.
+ */
+const saveMusicUserPreferences = (userId, preferences, callback) => {
+  const sql = `INSERT INTO music_user_preferences (user_id, preferred_genres_en, preferred_genres_bg, mood, preferred_age, preferred_artists, preferred_producers, preferred_countries, preferred_pacing, preferred_depth, preferred_target_group, interests, date)
+               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+
+  const values = [
+    userId,
+    preferences.preferred_genres_en,
+    preferences.preferred_genres_bg,
+    preferences.mood,
+    preferences.preferred_age,
+    preferences.preferred_artists,
+    preferences.preferred_producers,
+    preferences.preferred_countries,
+    preferences.preferred_pacing,
+    preferences.preferred_depth,
+    preferences.preferred_target_group,
+    preferences.interests,
+    preferences.date
+  ];
+
+  db.query(sql, values, (err, result) => {
+    callback(err, result);
+  });
+};
+
+/**
  * Връща броя на потребителите в базата данни.
  *
  * @param {function} callback - Функция, която ще бъде извикана след изпълнението на заявката.
@@ -4500,6 +4544,7 @@ module.exports = {
   getUserById,
   saveMovieSeriesRecommendation,
   saveBookRecommendation,
+  saveMusicUserPreferences,
   saveToWatchlist,
   saveToReadlist,
   removeFromWatchlist,

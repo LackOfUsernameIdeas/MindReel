@@ -61,7 +61,6 @@ export interface Recommendation {
 export interface MusicUserPreferences {
   genres: { en: string; bg: string }[]; // Жанрове на английски и български
   moods: string[]; // Настроения
-  timeAvailability: string; // Наличност на време
   age: string; // Възраст
   artists: string; // Любими актьори
   producers: string; // Любими режисьори
@@ -224,7 +223,6 @@ export interface CriteriaScores {
   genres: number; // жанровете
   type: number; // типа (филм/сериал)
   mood: number; // настроението
-  timeAvailability: number; // наличното време за гледане
   preferredAge: number; // предпочитаната възраст (спрямо година на издаване)
   targetGroup: number; // целевата аудитория
 }

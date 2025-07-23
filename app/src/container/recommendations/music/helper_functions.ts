@@ -46,7 +46,6 @@ export const saveMusicUserPreferences = async (
     const {
       genres,
       moods,
-      timeAvailability,
       age,
       artists,
       producers,
@@ -67,7 +66,6 @@ export const saveMusicUserPreferences = async (
       preferred_genres_en: preferredGenresEn,
       preferred_genres_bg: preferredGenresBg,
       mood: Array.isArray(moods) ? moods.join(", ") : null,
-      timeAvailability,
       preferred_age: age,
       preferred_artists: artists,
       preferred_producers: producers,
@@ -87,7 +85,7 @@ export const saveMusicUserPreferences = async (
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          preferencesType: "movies_series",
+          preferencesType: "music",
           preferences: formattedPreferences
         })
       }
@@ -368,7 +366,6 @@ export const generateMusicRecommendations = async (
 
       const recommendationData = {
         title: musicData.name, // Official title from Spotify
-        bgName: recommendation.bgName, // Translated title from AI
         artists: musicData?.artists?.map((artist: any) => artist.name) || [], // Artists from Spotify
         description: recommendation.description,
         reason: recommendation.reason,
@@ -563,21 +560,12 @@ export const handleSubmit = async (
   }
 
   if (musicUserPreferences) {
-    const {
-      moods,
-      timeAvailability,
-      artists,
-      producers,
-      countries,
-      pacing,
-      depth,
-      targetGroup
-    } = musicUserPreferences;
+    const { moods, artists, producers, countries, pacing, depth, targetGroup } =
+      musicUserPreferences;
 
     if (
       !renderBrainAnalysis &&
       (!moods ||
-        !timeAvailability ||
         !artists ||
         !producers ||
         !countries ||
@@ -674,7 +662,7 @@ export const handleSubmit = async (
           musicUserPreferences &&
           Object.keys(musicUserPreferences).length > 0
         ) {
-          // await saveMusicUserPreferences(date, musicUserPreferences, token);
+          await saveMusicUserPreferences(date, musicUserPreferences, token);
           await generateMusicRecommendations(
             date,
             setRecommendationList,

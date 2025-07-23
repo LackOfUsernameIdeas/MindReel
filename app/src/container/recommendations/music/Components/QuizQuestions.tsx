@@ -13,7 +13,6 @@ import {
 import {
   ageOptions,
   moodOptions,
-  timeAvailabilityOptions,
   pacingOptions,
   depthOptions,
   targetGroupOptions
@@ -45,7 +44,6 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
   const [preferencesType, setPreferencesType] = useState<string | null>(null);
   const [genres, setGenres] = useState<Genre[]>([]);
   const [moods, setMoods] = useState<string[]>([]);
-  const [timeAvailability, setTimeAvailability] = useState("");
   const [age, setAge] = useState("");
   const [artists, setArtists] = useState("");
   const [producers, setProducers] = useState("");
@@ -86,12 +84,6 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
       isMultipleChoice: true,
       value: moods,
       setter: setMoods
-    },
-    {
-      question: "С какво време за слушане на музика разполагате?",
-      options: timeAvailabilityOptions,
-      value: timeAvailability,
-      setter: setTimeAvailability
     },
     {
       question: "Изберете приблизително време на създаване на песента.",
@@ -155,7 +147,6 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
   const musicUserPreferences = {
     genres,
     moods: moods?.map((mood) => mood.split(" ")[0]),
-    timeAvailability,
     age,
     artists,
     producers,
