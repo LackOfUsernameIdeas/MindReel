@@ -1,394 +1,358 @@
-import { FC, useEffect, useState } from "react";
-import { FaStar } from "react-icons/fa";
-import { SiRottentomatoes } from "react-icons/si";
-import { RecommendationCardProps } from "../musicRecommendations-types";
-import { translate } from "../../../helper_functions_common";
+import { FC, useState } from "react";
+import {
+  Play,
+  ExternalLink,
+  Clock,
+  Calendar,
+  Users,
+  Disc,
+  Eye,
+  ThumbsUp,
+  MessageCircle,
+  Bookmark,
+  BookmarkCheck
+} from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { InfoboxModal } from "@/components/common/infobox/InfoboxModal";
+import { RecommendationCardProps } from "../musicRecommendations-types";
 
-// Кард за генериран филм/сериал спрямо потребителските предпочитания
-const RecommendationCard: FC<RecommendationCardProps> = ({
+const MusicRecommendationCard: FC<RecommendationCardProps> = ({
   recommendationList,
   currentIndex,
+  isExpanded,
   openModal,
   setBookmarkedMusic,
   setCurrentBookmarkStatus,
   setAlertVisible,
   bookmarkedMusic
 }) => {
-  const [translatedProducers, setTranslatedProducers] = useState<string>(""); // Преведените режисьори
-  const [translatedWriters, setTranslatedWriters] = useState<string>(""); // Преведените сценаристи
-  const [translatedArtists, setTranslatedArtists] = useState<string>(""); // Преведените актьори
-  const [translatedAwards, setTranslatedAwards] = useState<string>(""); // Преведените награди
-  const [translatedGenres, setTranslatedGenres] = useState<string>(""); // Преведените жанрове
-  const [translatedPlot, setTranslatedPlot] = useState<string>(""); // Преведеното описание на сюжета
-  const [translatedCountry, setTranslatedCountry] = useState<string>(""); // Преведената страна
-  const [translatedLanguage, setTranslatedLanguage] = useState<string>(""); // Преведеният език
+  const [isVideoModalOpen, setIsVideoModalOpen] = useState(false); // Състояние за отваряне на модалния прозорец
 
-  const [isTrailerModalOpen, setIsTrailerModalOpen] = useState(false); // Състояние за отваряне на модалния прозорец
+  const recommendation = recommendationList[currentIndex];
+  const isBookmarked = recommendation.id
+    ? bookmarkedMusic[recommendation.id]
+    : false;
+
+  const handleBookmark = () => {
+    if (!recommendation.id) return;
+
+    setBookmarkedMusic((prev) => {
+      const newBookmarked = { ...prev };
+      if (isBookmarked) {
+        delete newBookmarked[recommendation.id!];
+        setCurrentBookmarkStatus(false);
+      } else {
+        newBookmarked[recommendation.id!] = recommendation;
+        setCurrentBookmarkStatus(true);
+      }
+      return newBookmarked;
+    });
+    setAlertVisible(true);
+  };
 
   const handleTrailerModalClick = () => {
-    setIsTrailerModalOpen((prev) => !prev);
+    recommendation.youtubeMusicVideoUrl && setIsVideoModalOpen((prev) => !prev);
   }; // Функция за обработка на клик - модален прозорец
 
-  const plotPreviewLength = 150; // Дължина на прегледа на съдържанието (oписаниeто и сюжета)
-  const recommendation = recommendationList[currentIndex]; // Генерираният филм/сериал
-  // Времетраене (за филм - времетраеното на филма, за сериал - средното времетраене на един епизод)
-  const runtime = recommendation.runtimeGoogle || recommendation.runtime;
-  const isMovie = recommendation.type === "movie"; // Bool филм или не
-  // Рейтинг от Rotten Tomatoes, ако е наличен
-  const rottenTomatoesRating =
-    recommendation.ratings?.find(
-      (rating) => rating.Source === "Rotten Tomatoes"
-    )?.Value || "N/A";
+  const formatDuration = (ms: number | null | undefined) => {
+    if (!ms) return "Неизвестно";
+    const minutes = Math.floor(ms / 60000);
+    const seconds = Math.floor((ms % 60000) / 1000);
+    return `${minutes}:${seconds.toString().padStart(2, "0")}`;
+  };
 
-  // useEffect за превод на името на режисьора
-  useEffect(() => {
-    async function fetchProducerTranslation() {
-      const translated = await translate(recommendation.producer);
-      setTranslatedProducers(translated);
+  const formatNumber = (num: number | null) => {
+    if (!num) return "N/A";
+    if (num >= 1000000000) {
+      return (num / 1000000000).toFixed(1) + "B";
     }
-
-    fetchProducerTranslation();
-  }, [recommendation.producer]);
-
-  // useEffect за превод на името на сценариста
-  useEffect(() => {
-    async function fetchWriterTranslation() {
-      const translated = await translate(recommendation.writer);
-      setTranslatedWriters(translated);
+    if (num >= 1000000) {
+      return (num / 1000000).toFixed(1) + "M";
     }
-
-    fetchWriterTranslation();
-  }, [recommendation.writer]);
-
-  // useEffect за превод на името на актьорите
-  useEffect(() => {
-    async function fetchArtistsTranslation() {
-      const translated = await translate(recommendation.artists);
-      setTranslatedArtists(translated);
+    if (num >= 1000) {
+      return (num / 1000).toFixed(1) + "K";
     }
+    return num.toString();
+  };
 
-    fetchArtistsTranslation();
-  }, [recommendation.artists]);
+  const formatDate = (dateString: string | null | undefined) => {
+    if (!dateString) return "Неизвестна";
+    return new Date(dateString).toLocaleDateString("bg-BG", {
+      year: "numeric",
+      month: "long",
+      day: "numeric"
+    });
+  };
 
-  // useEffect за превод на наградите на филма/сериала
-  useEffect(() => {
-    async function fetchAwardsTranslation() {
-      const translated = await translate(recommendation.awards);
-      setTranslatedAwards(translated);
-    }
+  const descriptionPreviewLength = 150;
 
-    fetchAwardsTranslation();
-  }, [recommendation.awards]);
-
-  // useEffect за превод на жанровете на филма/сериала
-  useEffect(() => {
-    async function fetchGenresTranslation() {
-      const translated = await translate(recommendation.genre);
-      setTranslatedGenres(translated);
-    }
-
-    fetchGenresTranslation();
-  }, [recommendation.genre]);
-
-  // useEffect за превод на сюжета на филма/сериала
-  useEffect(() => {
-    async function fetchPlotTranslation() {
-      const translated = await translate(recommendation.plot);
-      setTranslatedPlot(translated);
-    }
-
-    fetchPlotTranslation();
-  }, [recommendation.plot]);
-
-  // useEffect за превод на държавата на филма/сериала
-  useEffect(() => {
-    async function fetchCountryTranslation() {
-      const translated = await translate(recommendation.country);
-      setTranslatedCountry(translated);
-    }
-
-    fetchCountryTranslation();
-  }, [recommendation.country]);
-
-  // useEffect за превод на езика на филма/сериала
-  useEffect(() => {
-    async function fetchLanguageTranslation() {
-      const translated = await translate(recommendation.language);
-      setTranslatedLanguage(translated);
-    }
-
-    fetchLanguageTranslation();
-  }, [recommendation.language]);
-
-  console.log("recommendationList", recommendationList);
   return (
-    <div className="recommendation-card">
-      <div className="flex w-full items-center sm:items-start flex-col md:flex-row">
-        <div className="relative flex-shrink-0 mb-4 md:mb-0 md:mr-8 flex flex-col items-center">
-          {/* Постер */}
-          <div
-            className={`relative group ${
-              recommendation.youtubeTrailerUrl ? "cursor-pointer" : ""
-            } `}
-            onClick={handleTrailerModalClick}
-          >
-            <img
-              src={recommendation.poster}
-              alt={`${recommendation.bgName || "Movie"} Poster`}
-              className={`rounded-lg w-96 h-auto transition-all duration-300 ${
-                recommendation.youtubeTrailerUrl
-                  ? "group-hover:scale-102 group-hover:blur-sm"
-                  : ""
-              }`}
-            />
-
-            {/* Play button */}
-            {recommendation.youtubeTrailerUrl && (
-              <div className="absolute inset-0 flex items-center justify-center transition-opacity duration-300">
-                <div className="group relative">
-                  <div className="absolute inset-0 rounded-full bg-white/20 blur-xl scale-150 group-hover:scale-[1.7] transition-transform duration-500"></div>
-                  <div className="relative bg-white/10 backdrop-blur-md rounded-full p-6 border border-white/30 shadow-2xl transform transition-all duration-300 group-hover:scale-110 group-hover:bg-white/20 group-hover:border-white/50">
-                    <div className="absolute inset-2 rounded-full bg-gradient-to-br from-white/10 to-transparent"></div>
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="white"
-                      viewBox="0 0 24 24"
-                      className="size-16 text-white drop-shadow-lg relative z-10 transform transition-transform duration-300 group-hover:scale-105"
-                      style={{
-                        filter:
-                          "drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2)) drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3))"
-                      }}
-                    >
-                      <path d="M8 5v14l11-7z" />
-                    </svg>
-                    <div className="absolute inset-0 rounded-full border-2 border-white/40 group-hover:animate-ping"></div>
-                  </div>
-                  <div className="absolute top-2 left-2 right-2 bottom-2 rounded-full bg-black/20 blur-lg -z-10"></div>
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
-
-        <div className="flex-grow">
-          {/* Главна информация */}
-          <div className="top-0 z-10">
-            <a href="#" className="block text-xl sm:text-3xl font-bold mb-1">
-              {recommendation.bgName || "Заглавие не е налично"}
-            </a>
-            <a
-              href="#"
-              className="block text-md sm:text-lg font-semibold text-opacity-60 italic mb-2"
-            >
-              {recommendation.title || "Заглавие на английски не е налично"}
-            </a>
-            <p className="flex gap-1 recommendation-small-details text-sm italic text-defaulttextcolor/70">
-              {translatedGenres || "Жанр неизвестен"} |{" "}
-              {!isMovie &&
-                `Брой сезони: ${
-                  recommendation.totalSeasons || "Неизвестен"
-                } | `}
-              {runtime || "Неизвестно времетраене"}{" "}
-              {!isMovie && (
-                <p title="Средно аритметично времетраене на един епизод">
-                  (Ср. за 1 епизод)
-                </p>
-              )}
-              | {recommendation.year || "Година неизвестна"} | Рейтинг:{" "}
-              {recommendation.rated || "N/A"}
-            </p>
-            {/* Рейтинги */}
-            <div className="flex flex-col sm:flex-row sm:items-center space-y-4 sm:space-y-0 sm:space-x-8 py-2">
+    <div className="w-full max-w-6xl mx-auto">
+      <Card className="overflow-hidden shadow-2xl border-0 bg-gradient-to-br from-white to-gray-50 dark:from-gray-900 dark:to-gray-800">
+        <CardContent className="p-0">
+          <div className="flex w-full items-center sm:items-start flex-col lg:flex-row">
+            {/* Album Cover Section */}
+            <div className="relative flex-shrink-0 mb-6 lg:mb-0 lg:mr-8 flex flex-col items-center p-6">
               <div
-                className="flex items-center space-x-2 dark:text-[#FFCC33] text-[#bf9413]"
-                title="IMDb рейтинг: Базиран на отзиви и оценки от потребители."
+                className={`relative group ${
+                  recommendation.youtubeMusicVideoUrl ? "cursor-pointer" : ""
+                }`}
+                onClick={handleTrailerModalClick}
               >
-                <span className="font-bold text-lg">IMDb: </span>
-                <FaStar className="w-8 h-8" />
-                <span className="font-bold text-lg">
-                  {recommendation.imdbRating || "N/A"} /{" "}
-                  {recommendation.imdbVotes || "N/A"} гласа
-                </span>
-              </div>
-              {isMovie && (
-                <div
-                  className="flex items-center space-x-2"
-                  title="Метаскор: Средно претеглена оценка от критически рецензии за филма."
-                >
-                  <div
-                    className={`flex items-center justify-center rounded-md text-white ${
-                      parseInt(recommendation.metascore) >= 60
-                        ? "bg-[#54A72A]"
-                        : parseInt(recommendation.metascore) >= 40
-                        ? "bg-[#FFCC33]"
-                        : "bg-[#FF0000]"
-                    }`}
-                    style={{ width: "2.2rem", height: "2.2rem" }}
-                  >
-                    <span
-                      className={`${
-                        recommendation.metascore === "N/A" ||
-                        !recommendation.metascore
-                          ? "text-sm"
-                          : "text-xl"
-                      }`}
-                    >
-                      {recommendation.metascore || "N/A"}
-                    </span>
+                <img
+                  src={
+                    recommendation.albumCover ||
+                    "/placeholder.svg?height=320&width=320&query=music album cover"
+                  }
+                  alt={`${recommendation.albumTitle || "Album"} Cover`}
+                  className={`rounded-2xl w-80 h-80 object-cover transition-all duration-300 shadow-2xl ${
+                    recommendation.youtubeMusicVideoUrl
+                      ? "group-hover:scale-105 group-hover:blur-sm"
+                      : ""
+                  }`}
+                />
+
+                {/* Play Button Overlay */}
+                {recommendation.youtubeMusicVideoUrl && (
+                  <div className="absolute inset-0 flex items-center justify-center transition-opacity duration-300">
+                    <div className="group-hover:scale-110 transition-transform duration-300">
+                      <div className="relative">
+                        <div className="absolute inset-0 rounded-full bg-white/20 blur-xl scale-150 group-hover:scale-[1.7] transition-transform duration-500"></div>
+                        <div className="relative bg-white/10 backdrop-blur-md rounded-full p-6 border border-white/30 shadow-2xl">
+                          <div className="absolute inset-2 rounded-full bg-gradient-to-br from-white/10 to-transparent"></div>
+                          <Play className="w-16 h-16 text-white fill-white drop-shadow-lg relative z-10" />
+                          <div className="absolute inset-0 rounded-full border-2 border-white/40 group-hover:animate-ping"></div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                  <span className="font-semibold text-md sm:text-sm md:text-lg">
-                    Метаскор
-                  </span>
-                </div>
-              )}
-              {isMovie && (
-                <div
-                  className="flex items-center space-x-2"
-                  title="Rotten Tomatoes рейтинг: Процент положителни рецензии от професионални критици."
-                >
-                  <SiRottentomatoes className="text-[#FF0000] w-8 h-8" />
-                  <span className="text-red-400 font-semibold text-md sm:text-sm md:text-lg">
-                    {rottenTomatoesRating}
-                  </span>
-                </div>
-              )}
-            </div>
-          </div>
-          {/* Причина за препоръчване */}
-          {recommendation.reason && (
-            <div className="mb-4">
-              <h3 className="text-lg font-semibold mb-2">
-                Защо препоръчваме{" "}
-                {recommendation.bgName || "Заглавие не е налично"}?
-              </h3>
-              <p className="text-opacity-80 italic">{recommendation.reason}</p>
-            </div>
-          )}
-          {/* Описание */}
-          <div className="mb-4">
-            <h3 className="text-lg font-semibold mb-2">Описание</h3>
-            <div className="overflow-hidden transition-all duration-500 ease-in-out max-h-[3rem] opacity-70">
-              <p className="text-opacity-80 italic">
-                {recommendation.description.length > plotPreviewLength
-                  ? `${recommendation.description.substring(
-                      0,
-                      plotPreviewLength
-                    )}...`
-                  : recommendation.description}
-              </p>
-            </div>
-            {recommendation.description &&
-              recommendation.description.length > plotPreviewLength && (
-                <button
-                  onClick={() => openModal("description")}
-                  className="mt-2 underline hover:scale-105 transition"
-                >
-                  Пълно описание
-                </button>
-              )}
-          </div>
-          {/* Сюжет */}
-          <div className="mb-4">
-            <h3 className="text-lg font-semibold mb-2">Сюжет</h3>
-            <div className="overflow-hidden transition-all duration-500 ease-in-out max-h-[3rem] opacity-70">
-              <p className="text-opacity-80 italic">
-                {translatedPlot.length > plotPreviewLength
-                  ? `${translatedPlot.substring(0, plotPreviewLength)}...`
-                  : translatedPlot}
-              </p>
+                )}
+              </div>
+
+              {/* Quick Stats */}
+              <div className="mt-4 flex flex-wrap gap-2 justify-center">
+                {recommendation.youtubeMusicVideoViews && (
+                  <Badge
+                    variant="secondary"
+                    className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
+                  >
+                    <Eye className="w-3 h-3 mr-1" />
+                    {formatNumber(recommendation.youtubeMusicVideoViews)}
+                  </Badge>
+                )}
+                {recommendation.youtubeMusicVideoLikes && (
+                  <Badge
+                    variant="secondary"
+                    className="bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200"
+                  >
+                    <ThumbsUp className="w-3 h-3 mr-1" />
+                    {formatNumber(recommendation.youtubeMusicVideoLikes)}
+                  </Badge>
+                )}
+                {recommendation.youtubeMusicVideoComments && (
+                  <Badge
+                    variant="secondary"
+                    className="bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200"
+                  >
+                    <MessageCircle className="w-3 h-3 mr-1" />
+                    {formatNumber(recommendation.youtubeMusicVideoComments)}
+                  </Badge>
+                )}
+              </div>
+
+              {/* Bookmark Button */}
+              <Button
+                onClick={handleBookmark}
+                variant={isBookmarked ? "default" : "outline"}
+                className="mt-4 w-full"
+              >
+                {isBookmarked ? (
+                  <>
+                    <BookmarkCheck className="w-4 h-4 mr-2" />
+                    Запазено
+                  </>
+                ) : (
+                  <>
+                    <Bookmark className="w-4 h-4 mr-2" />
+                    Запази
+                  </>
+                )}
+              </Button>
             </div>
 
-            {translatedPlot && translatedPlot.length > plotPreviewLength && (
-              <button
-                onClick={() => openModal("plot")}
-                className="mt-2 underline hover:scale-105 transition"
-              >
-                Пълен сюжет
-              </button>
-            )}
+            {/* Content Section */}
+            <div className="flex-grow p-6 space-y-6">
+              {/* Title and Artist */}
+              <div>
+                <h1 className="text-3xl lg:text-4xl font-bold mb-2 bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+                  {recommendation.title}
+                </h1>
+                <h2 className="text-xl lg:text-2xl font-semibold text-gray-600 dark:text-gray-300 mb-4">
+                  {recommendation.artists}
+                </h2>
+
+                {/* Song Details */}
+                <div className="flex flex-wrap gap-4 text-sm text-gray-500 dark:text-gray-400 mb-4">
+                  <div className="flex items-center gap-1">
+                    <Clock className="w-4 h-4" />
+                    {formatDuration(recommendation.durationMs)}
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <Calendar className="w-4 h-4" />
+                    {formatDate(recommendation.albumReleaseDateInSpotify)}
+                  </div>
+                  {recommendation.albumType && (
+                    <div className="flex items-center gap-1">
+                      <Disc className="w-4 h-4" />
+                      {recommendation.albumType}
+                    </div>
+                  )}
+                  {recommendation.spotifyPopularity && (
+                    <div className="flex items-center gap-1">
+                      <Users className="w-4 h-4" />
+                      Популярност: {recommendation.spotifyPopularity}/100
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Spotify Rating */}
+              {recommendation.spotifyPopularity && (
+                <div className="flex items-center space-x-4 py-4 px-6 bg-green-50 dark:bg-green-900/20 rounded-xl border border-green-200 dark:border-green-800">
+                  <div className="flex items-center space-x-2">
+                    <div className="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center">
+                      <span className="text-white font-bold text-lg">S</span>
+                    </div>
+                    <div>
+                      <div className="font-semibold text-green-800 dark:text-green-200">
+                        Spotify Популярност
+                      </div>
+                      <div className="text-2xl font-bold text-green-600 dark:text-green-400">
+                        {recommendation.spotifyPopularity}/100
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Reason for Recommendation */}
+              {recommendation.reason && (
+                <div className="bg-blue-50 dark:bg-blue-900/20 p-6 rounded-xl border border-blue-200 dark:border-blue-800">
+                  <h3 className="text-lg font-semibold mb-3 text-blue-800 dark:text-blue-200">
+                    Защо препоръчваме "{recommendation.title}"?
+                  </h3>
+                  <p className="text-blue-700 dark:text-blue-300 italic leading-relaxed">
+                    {recommendation.reason}
+                  </p>
+                </div>
+              )}
+
+              {/* Description */}
+              <div className="bg-purple-50 dark:bg-purple-900/20 p-6 rounded-xl border border-purple-200 dark:border-purple-800">
+                <h3 className="text-lg font-semibold mb-3 text-purple-800 dark:text-purple-200">
+                  Описание
+                </h3>
+                <div
+                  className={`text-purple-700 dark:text-purple-300 italic leading-relaxed transition-all duration-500 ease-in-out ${
+                    isExpanded ? "" : "max-h-[3rem] overflow-hidden opacity-70"
+                  }`}
+                >
+                  <p>
+                    {isExpanded ||
+                    recommendation.description.length <=
+                      descriptionPreviewLength
+                      ? recommendation.description
+                      : `${recommendation.description.substring(
+                          0,
+                          descriptionPreviewLength
+                        )}...`}
+                  </p>
+                </div>
+                {recommendation.description.length >
+                  descriptionPreviewLength && (
+                  <Button
+                    variant="link"
+                    onClick={() => openModal("description")}
+                    className="mt-2 p-0 h-auto text-purple-600 hover:text-purple-800"
+                  >
+                    Пълно описание
+                  </Button>
+                )}
+              </div>
+
+              {/* Album Information */}
+              {(recommendation.albumTitle ||
+                recommendation.albumType ||
+                recommendation.albumTotalTracks) && (
+                <div className="bg-gray-50 dark:bg-gray-800/50 p-6 rounded-xl">
+                  <h3 className="text-lg font-semibold mb-4">
+                    Информация за албума:
+                  </h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                    {recommendation.albumTitle && (
+                      <div>
+                        <strong className="text-primary">Албум:</strong>{" "}
+                        {recommendation.albumTitle}
+                      </div>
+                    )}
+                    {recommendation.albumType && (
+                      <div>
+                        <strong className="text-primary">Тип:</strong>{" "}
+                        {recommendation.albumType}
+                      </div>
+                    )}
+                    {recommendation.albumTotalTracks && (
+                      <div>
+                        <strong className="text-primary">Общо песни:</strong>{" "}
+                        {recommendation.albumTotalTracks}
+                      </div>
+                    )}
+                    {recommendation.albumReleaseDateInSpotify && (
+                      <div>
+                        <strong className="text-primary">
+                          Дата на издаване:
+                        </strong>{" "}
+                        {formatDate(recommendation.albumReleaseDateInSpotify)}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* Action Buttons */}
+              <div className="flex flex-wrap gap-4 pt-4">
+                {recommendation.spotifyUrl && (
+                  <Button asChild className="bg-green-600 hover:bg-green-700">
+                    <a
+                      href={recommendation.spotifyUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <ExternalLink className="w-4 h-4 mr-2" />
+                      Слушай в Spotify
+                    </a>
+                  </Button>
+                )}
+                {recommendation.youtubeMusicVideoUrl && (
+                  <Button variant="outline" onClick={handleTrailerModalClick}>
+                    <Play className="w-4 h-4 mr-2" />
+                    Гледай видеото
+                  </Button>
+                )}
+              </div>
+            </div>
           </div>
-          {/* Допълнителна информация */}
-          <div className="mb-4">
-            <h3 className="text-lg font-semibold mb-2">
-              Допълнителна информация:
-            </h3>
-            <ul className="flex flex-wrap gap-x-4 text-opacity-80">
-              <li>
-                <strong className="text-primary">Режисьор:</strong>{" "}
-                {translatedProducers && translatedProducers !== "N/A"
-                  ? translatedProducers
-                  : "Неизвестен"}
-              </li>
-              <li>
-                <strong className="text-primary">Сценаристи:</strong>{" "}
-                {translatedWriters && translatedWriters !== "N/A"
-                  ? translatedWriters
-                  : "Неизвестни"}
-              </li>
-              <li>
-                <strong className="text-primary">Актьори:</strong>{" "}
-                {translatedArtists && translatedArtists !== "N/A"
-                  ? translatedArtists
-                  : "Неизвестни"}
-              </li>
-              {isMovie && (
-                <li>
-                  <strong className="text-primary">Продукция:</strong>{" "}
-                  {recommendation.production || "N/A"}
-                </li>
-              )}
-              <li>
-                <strong className="text-primary">Пуснат на:</strong>{" "}
-                {recommendation.released || "N/A"}
-              </li>
-              <li>
-                <strong className="text-primary">Език:</strong>{" "}
-                {translatedLanguage && translatedLanguage !== "N/A"
-                  ? translatedLanguage
-                  : "Неизвестен"}
-              </li>
-              <li>
-                <strong className="text-primary">Държава/-и:</strong>{" "}
-                {translatedCountry && translatedCountry !== "N/A"
-                  ? translatedCountry
-                  : "Неизвестна/-и"}
-              </li>
-              <li>
-                <strong className="text-primary">Награди:</strong>{" "}
-                {translatedAwards && translatedAwards !== "N/A"
-                  ? translatedAwards
-                  : "Няма"}
-              </li>
-              {isMovie && (
-                <li>
-                  <strong className="text-primary">Боксофис:</strong>{" "}
-                  {recommendation.boxOffice || "N/A"}
-                </li>
-              )}
-              {isMovie && (
-                <li>
-                  <strong className="text-primary">DVD:</strong>{" "}
-                  {recommendation.DVD !== "N/A" ? recommendation.DVD : "Няма"}
-                </li>
-              )}
-              {isMovie && (
-                <li>
-                  <strong className="text-primary">Уебсайт:</strong>{" "}
-                  {recommendation.website !== "N/A"
-                    ? recommendation.website
-                    : "Няма"}
-                </li>
-              )}
-            </ul>
-          </div>
-        </div>
-      </div>
-      {recommendation.youtubeTrailerUrl && (
+        </CardContent>
+      </Card>
+
+      {/* Video Modal */}
+      {recommendation.youtubeMusicVideoUrl && (
         <InfoboxModal
           onClick={handleTrailerModalClick}
-          isModalOpen={isTrailerModalOpen}
-          title={`Трейлър на ${recommendation.bgName} - ${recommendation.title}`}
+          isModalOpen={isVideoModalOpen}
+          title={`Трейлър на ${recommendation.title}`}
           description={
             <div className="container text-center">
               <div className="flex justify-center">
@@ -396,7 +360,7 @@ const RecommendationCard: FC<RecommendationCardProps> = ({
                   <div className="aspect-video">
                     <iframe
                       className="w-full h-full"
-                      src={recommendation.youtubeTrailerUrl}
+                      src={recommendation.youtubeMusicVideoUrl}
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                       allowFullScreen
                     ></iframe>
@@ -411,4 +375,4 @@ const RecommendationCard: FC<RecommendationCardProps> = ({
   );
 };
 
-export default RecommendationCard;
+export default MusicRecommendationCard;
