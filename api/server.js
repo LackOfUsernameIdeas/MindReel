@@ -410,8 +410,6 @@ app.post("/save-preferences", (req, res) => {
       .json({ error: "Preferences type and preferences are required" });
   }
 
-  const { token, ...data } = preferences;
-
   // Тип към съответната функция за запис
   const savingFunctions = {
     movies_series: db.saveMoviesSeriesUserPreferences,
@@ -425,6 +423,8 @@ app.post("/save-preferences", (req, res) => {
   if (!currentSavingFunction) {
     return res.status(400).json({ error: "Unsupported preferences type" });
   }
+
+  const { token, ...data } = preferences;
 
   // Верификация на токена и вземане на потребителското ID
   jwt.verify(token, SECRET_KEY, (err, decoded) => {
@@ -457,30 +457,34 @@ app.post("/save-recommendation", (req, res) => {
       .json({ error: "Recommendation type and recommendation are required" });
   }
 
+  // Тип към съответната функция за запис
+  const savingFunctions = {
+    movies_series: db.saveMovieSeriesRecommendation,
+    books: db.saveBookRecommendation,
+    music: db.saveMusicRecommendation
+  };
+
+  const currentSavingFunction = savingFunctions[recommendationType];
+
+  if (!currentSavingFunction) {
+    return res.status(400).json({ error: "Unsupported recommendation type" });
+  }
+
   const { token, ...data } = recommendation;
 
   jwt.verify(token, SECRET_KEY, (err, decoded) => {
     if (err) return res.status(401).json({ error: "Invalid token" });
     const userId = decoded.id;
-    if (recommendationType === "movies_series") {
-      db.saveMovieSeriesRecommendation(userId, data, (err, result) => {
-        if (err) {
-          return res.status(500).json({ error: err.message });
-        }
-        res.status(201).json({
-          message: "Movie/series recommendation added successfully!"
-        });
+
+    currentSavingFunction(userId, data, (err, result) => {
+      if (err) {
+        return res.status(500).json({ error: err.message });
+      }
+
+      res.status(201).json({
+        message: `${recommendationType} recommendation added successfully!`
       });
-    } else {
-      db.saveBookRecommendation(userId, data, (err, result) => {
-        if (err) {
-          return res.status(500).json({ error: err.message });
-        }
-        res.status(201).json({
-          message: "Book recommendation added successfully!"
-        });
-      });
-    }
+    });
   });
 });
 

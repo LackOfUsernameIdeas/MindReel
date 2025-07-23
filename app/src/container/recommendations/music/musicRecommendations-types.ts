@@ -19,42 +19,29 @@ export interface Rating {
   Value: string; // Стойност на рейтинга
 }
 
-// Интерфейс за филм с всички основни данни за филма или сериала.
+// Интерфейс за песен с всички основни данни за нея.
 export interface Recommendation {
-  id?: string; // ID на филма или сериала
-  user_id?: string; // ID на потребителя, свързан с филма или сериала
-  imdbID: string; // IMDb идентификатор
-  title: string; // Английско заглавие на филма или сериала
-  bgName: string; // Българско заглавие на филма или сериала
-  genre: string; // Жанрове на английски
-  reason: string; // Причина за препоръката на филма или сериала
-  youtubeTrailerUrl: string; // URL на YouTube трейлъра
-  description: string; // Описание на филма или сериала
-  year: string; // Година на издаване
-  rated: string; // Възрастова оценка
-  released: string; // Дата на излизане
-  runtime: string; // Времетраене в минути
-  runtimeGoogle: string; // Времетраене, директно от Гугъл
-  producer: string; // Име на режисьора
-  writer: string; // Име на сценариста
-  artists: string; // Списък с актьори
-  plot: string; // Сюжет на филма или сериала
-  language: string; // Езици на филма или сериала
-  country: string; // Страни, участващи в производството
-  awards: string; // Награди, спечелени от филма или сериала
-  poster: string; // URL на постера
-  ratings: { Source: string; Value: string }[]; // Масив с рейтингови източници и стойности
-  metascore: string; // Метаскор стойност
-  imdbRating: string; // IMDb рейтинг
-  imdbRatingGoogle: string; // IMDb рейтинг от Гугъл
-  imdbVotes: string; // Брой IMDb гласове
-  type: string; // Вид (например, филм)
-  DVD: string; // Информация за DVD издание (ако е налично)
-  boxOffice: string; // Приходи от бокс офиса
-  production: string; // Продуцентско студио (ако е налично)
-  website: string; // Официален уебсайт (ако е наличен)
-  totalSeasons?: string | null; // Общо сезони (за сериали)
-  date?: string; // Дата на въвеждане на данните
+  id?: string; // ID на препоръката
+  user_id?: string; // ID на потребителя
+  title: string; // Заглавие на песента
+  artists: string[]; // Артисти
+  description: string; // Описание на песента
+  reason: string; // Причина за препоръката
+  durationMs?: number | null; // Продължителност в милисекунди
+  albumTitle?: string | null; // Име на албума
+  albumType?: string | null; // Тип на албума (single, album и т.н.)
+  albumCover?: string | null; // URL към корицата на албума
+  albumTotalTracks?: number | null; // Брой песни в албума
+  albumReleaseDateInSpotify?: string | null; // Дата на издаване
+  spotifyID?: string | null; // Spotify ID
+  spotifyUrl?: string | null; // Spotify линк
+  spotifyPopularity?: number | null; // Популярност в Spotify
+  youtubeMusicVideoID?: string | null; // YouTube ID
+  youtubeMusicVideoUrl?: string | null; // YouTube линк
+  youtubeMusicVideoViews?: number | null; // Брой гледания
+  youtubeMusicVideoLikes?: number | null; // Брой харесвания
+  youtubeMusicVideoComments?: number | null; // Брой коментари
+  date?: string; // Дата на запис на препоръката
 }
 
 // Интерфейс за предпочитания на потребителя.

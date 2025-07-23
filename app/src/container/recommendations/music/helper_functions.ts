@@ -366,29 +366,37 @@ export const generateMusicRecommendations = async (
 
       const recommendationData = {
         title: musicData.name, // Official title from Spotify
-        artists: musicData?.artists?.map((artist: any) => artist.name) || [], // Artists from Spotify
+        artists:
+          musicData?.artists?.map((artist: any) => artist.name).join(", ") ||
+          "", // Artists from Spotify
         description: recommendation.description,
         reason: recommendation.reason,
-        youtubeMusicVideoID: youtubeMusicVideoID,
-        youtubeMusicVideoUrl: youtubeMusicVideoUrl,
-        youtubeMusicVideoViews: youtubeMusicVideoStats
-          ? youtubeMusicVideoStats.viewCount
-          : null,
-        youtubeMusicVideoLikes: youtubeMusicVideoStats
-          ? youtubeMusicVideoStats.likeCount
-          : null,
-        youtubeMusicVideoComments: youtubeMusicVideoStats
-          ? youtubeMusicVideoStats.commentCount
-          : null,
-        spotifyID: musicData.id,
-        spotifyUrl: musicData?.external_urls?.spotify || null,
-        spotifyPopularity: musicData?.popularity || null,
         durationMs: musicData?.duration_ms || null,
         albumTitle: musicData?.album?.name || null,
         albumType: musicData?.album?.album_type || null,
         albumCover: musicData?.album?.images?.[0]?.url || null,
         albumTotalTracks: musicData?.album?.total_tracks || null,
-        albumReleaseDateInSpotify: musicData?.album?.release_date || null
+        albumReleaseDateInSpotify: musicData?.album?.release_date || null,
+        spotifyID: musicData.id,
+        spotifyUrl: musicData?.external_urls?.spotify || null,
+        spotifyPopularity: musicData?.popularity || null,
+        youtubeMusicVideoID: youtubeMusicVideoID,
+        youtubeMusicVideoUrl: youtubeMusicVideoUrl,
+        youtubeMusicVideoViews:
+          typeof youtubeMusicVideoStats === "object" &&
+          youtubeMusicVideoStats?.viewCount
+            ? Number(youtubeMusicVideoStats.viewCount)
+            : null,
+        youtubeMusicVideoLikes:
+          typeof youtubeMusicVideoStats === "object" &&
+          youtubeMusicVideoStats?.likeCount
+            ? Number(youtubeMusicVideoStats.likeCount)
+            : null,
+        youtubeMusicVideoComments:
+          typeof youtubeMusicVideoStats === "object" &&
+          youtubeMusicVideoStats?.commentCount
+            ? Number(youtubeMusicVideoStats.commentCount)
+            : null
       };
 
       // Първо, задаваме списъка с препоръки
@@ -397,12 +405,13 @@ export const generateMusicRecommendations = async (
         recommendationData
       ]);
 
-      // await saveMusicRecommendation(recommendationData, date, token);
+      await saveMusicRecommendation(recommendationData, date, token);
     }
   } catch (error) {
     console.error("Error generating recommendations:", error);
   }
 };
+
 /**
  * Записва препоръка за филм или сериал в базата данни.
  * Препоръката съдържа подробности за филма/сериала като заглавие, жанр, рейтинг и други.
@@ -427,54 +436,10 @@ export const saveMusicRecommendation = async (
       return;
     }
 
-    const genresEn = recommendation.genre
-      ? recommendation.genre.split(", ")
-      : null;
-
-    const genresBg = genresEn.map((genre: string) => {
-      const matchedGenre = musicGenreOptions.find(
-        (option) => option.en.trim() === genre.trim()
-      );
-      return matchedGenre ? matchedGenre.bg : null;
-    });
-
-    const runtime = recommendation.runtimeGoogle || recommendation.runtime;
-    const imdbRating =
-      recommendation.imdbRatingGoogle || recommendation.imdbRating;
-
     const formattedRecommendation = {
       token,
-      imdbID: recommendation.imdbID || null,
-      title_en: recommendation.title || null,
-      title_bg: recommendation.bgName || null,
-      genre_en: genresEn.join(", "),
-      genre_bg: genresBg.join(", "),
-      reason: recommendation.reason || null,
-      youtubeTrailerUrl: recommendation.youtubeTrailerUrl || null,
-      description: recommendation.description || null,
-      year: recommendation.year || null,
-      rated: recommendation.rated || null,
-      released: recommendation.released || null,
-      runtime: runtime || null,
-      producer: recommendation.producer || null,
-      writer: recommendation.writer || null,
-      artists: recommendation.artists || null,
-      plot: recommendation.plot || null,
-      language: recommendation.language || null,
-      country: recommendation.country || null,
-      awards: recommendation.awards || null,
-      poster: recommendation.poster || null,
-      ratings: recommendation.ratings || [],
-      metascore: recommendation.metascore || null,
-      imdbRating: imdbRating || null,
-      imdbVotes: recommendation.imdbVotes || null,
-      type: recommendation.type || null,
-      DVD: recommendation.DVD || null,
-      boxOffice: recommendation.boxOffice || null,
-      production: recommendation.production || null,
-      website: recommendation.website || null,
-      totalSeasons: recommendation.totalSeasons || null,
-      date: date
+      ...recommendation,
+      date
     };
 
     console.log("Formatted Recommendation:", formattedRecommendation);
@@ -487,7 +452,7 @@ export const saveMusicRecommendation = async (
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          recommendationType: "movies_series",
+          recommendationType: "music",
           recommendation: formattedRecommendation
         })
       }
@@ -695,56 +660,6 @@ export const handleSubmit = async (
     setLoading(false);
     if (renderBrainAnalysis) setSubmitted(true);
   }
-};
-
-/**
- * Добавя или премахва филм от списъка с любими на потребителя.
- * Прикрепя състоянията на компонентите като параметри, за да актуализира състоянието.
- *
- * @param {object} movie - Филмът, който ще бъде добавен или премахнат.
- * @param {string} movie.imdbID - Уникален идентификатор на филма (IMDb ID).
- * @param {Function} setBookmarkedMusic - Функция за актуализиране на състоянието на отметките.
- * @param {Function} setCurrentBookmarkStatus - Функция за актуализиране на текущия статус на отметката.
- * @param {Function} setAlertVisible - Функция за показване на алармата.
- * @returns {void} - Функцията не връща стойност.
- */
-export const handleBookmarkClick = (
-  movie: Recommendation,
-  setBookmarkedMusic?: React.Dispatch<
-    React.SetStateAction<{ [key: string]: any }>
-  >,
-  setCurrentBookmarkStatus?: React.Dispatch<React.SetStateAction<boolean>>,
-  setAlertVisible?: React.Dispatch<React.SetStateAction<boolean>>
-) => {
-  setBookmarkedMusic &&
-    setBookmarkedMusic((prev) => {
-      const isBookmarked = !!prev[movie.imdbID];
-      const updatedBookmarks = { ...prev };
-      const token =
-        localStorage.getItem("authToken") ||
-        sessionStorage.getItem("authToken");
-
-      if (isBookmarked) {
-        // Remove the movie from bookmarks if it's already bookmarked
-        delete updatedBookmarks[movie.imdbID];
-
-        removeFromWatchlist(movie.imdbID, token).catch((error) => {
-          console.error("Error removing from watchlist:", error);
-        });
-      } else {
-        // Add the movie to bookmarks if it's not already bookmarked
-        updatedBookmarks[movie.imdbID] = movie;
-
-        saveToWatchlist(movie, token).catch((error) => {
-          console.error("Error saving to watchlist:", error);
-        });
-      }
-
-      setCurrentBookmarkStatus && setCurrentBookmarkStatus(!isBookmarked); // Update the current bookmark status
-      setAlertVisible && setAlertVisible(true); // Show the alert
-
-      return updatedBookmarks; // Return the updated bookmarks object
-    });
 };
 
 /**

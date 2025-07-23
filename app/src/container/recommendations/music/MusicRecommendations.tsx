@@ -40,38 +40,6 @@ const MusicRecommendations: FC<MusicRecommendationsProps> = () => {
     setNotification(null);
   };
 
-  const handleBookmarkClick = (movie: Recommendation) => {
-    setBookmarkedMusic((prev) => {
-      const isBookmarked = !!prev[movie.imdbID];
-      const updatedBookmarks = { ...prev };
-      const token =
-        localStorage.getItem("authToken") ||
-        sessionStorage.getItem("authToken");
-
-      if (isBookmarked) {
-        // Remove the movie from bookmarks if it's already bookmarked
-        delete updatedBookmarks[movie.imdbID];
-
-        removeFromWatchlist(movie.imdbID, token).catch((error) => {
-          console.error("Error removing from watchlist:", error);
-        });
-      } else {
-        // Add the movie to bookmarks if it's not already bookmarked
-        updatedBookmarks[movie.imdbID] = movie;
-
-        saveToWatchlist(movie, token).catch((error) => {
-          console.error("Error saving to watchlist:", error);
-        });
-      }
-
-      setCurrentBookmarkStatus(!isBookmarked); // Update the current bookmark status
-      setAlertVisible(true); // Show the alert
-
-      return updatedBookmarks; // Return the updated bookmarks object
-    });
-  };
-  console.log("bookmarkedMusic: ", bookmarkedMusic);
-
   const handleDismiss = () => {
     setAlertVisible(false);
   };

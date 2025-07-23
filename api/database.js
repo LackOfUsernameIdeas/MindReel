@@ -177,6 +177,62 @@ const saveBookRecommendation = (userId, data, callback) => {
 };
 
 /**
+ * Запазва препоръчана песен в базата данни.
+ * @param {number} userId - Идентификатор на потребителя.
+ * @param {Object} data - Данни за препоръката.
+ * @param {Function} callback - Функция за обратно извикване след завършване на заявката.
+ */
+const saveMusicRecommendation = (userId, data, callback) => {
+  const query = `INSERT INTO music_recommendations (
+    user_id,
+    title,
+    artists,
+    description,
+    reason,
+    durationMs,
+    albumTitle,
+    albumType,
+    albumCover,
+    albumTotalTracks,
+    albumReleaseDateInSpotify,
+    spotifyID,
+    spotifyUrl,
+    spotifyPopularity,
+    youtubeMusicVideoID,
+    youtubeMusicVideoUrl,
+    youtubeMusicVideoViews,
+    youtubeMusicVideoLikes,
+    youtubeMusicVideoComments,
+    date
+  ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`;
+
+  const values = [
+    userId,
+    data.title || null,
+    data.artists || null,
+    data.description || null,
+    data.reason || null,
+    data.durationMs || null,
+    data.albumTitle || null,
+    data.albumType || null,
+    data.albumCover || null,
+    data.albumTotalTracks || null,
+    data.albumReleaseDateInSpotify || null,
+    data.spotifyID || null,
+    data.spotifyUrl || null,
+    data.spotifyPopularity || null,
+    data.youtubeMusicVideoID || null,
+    data.youtubeMusicVideoUrl || null,
+    data.youtubeMusicVideoViews || null,
+    data.youtubeMusicVideoLikes || null,
+    data.youtubeMusicVideoComments || null,
+    data.date || null
+  ];
+
+  db.query(query, values, callback);
+};
+
+/**
  * Запазва филм или сериал в списъка за гледане на потребителя.
  * @param {number} userId - Идентификатор на потребителя.
  * @param {Object} data - Данни за филма или сериала.
@@ -442,8 +498,8 @@ const saveBooksUserPreferences = (userId, preferences, callback) => {
  * @param {string[]} preferences.preferred_genres_bg - Избрани жанрове на български.
  * @param {string} preferences.mood - Настроение на потребителя.
  * @param {string} preferences.preferred_age - Предпочитана възрастова група.
- * @param {string[]} preferences.preferred_artists - Предпочитани актьори.
- * @param {string[]} preferences.preferred_producers - Предпочитани режисьори.
+ * @param {string[]} preferences.preferred_artists - Предпочитани изпълнители.
+ * @param {string[]} preferences.preferred_producers - Предпочитани музикални продуценти и/или композитори.
  * @param {string[]} preferences.preferred_countries - Предпочитани държави.
  * @param {string} preferences.preferred_pacing - Предпочитан ритъм.
  * @param {string} preferences.preferred_depth - Предпочитана дълбочина на съдържанието.
@@ -4544,7 +4600,7 @@ module.exports = {
   getUserById,
   saveMovieSeriesRecommendation,
   saveBookRecommendation,
-  saveMusicUserPreferences,
+  saveMusicRecommendation,
   saveToWatchlist,
   saveToReadlist,
   removeFromWatchlist,
@@ -4553,6 +4609,7 @@ module.exports = {
   checkRecommendationExistsInReadlist,
   saveMoviesSeriesUserPreferences,
   saveBooksUserPreferences,
+  saveMusicUserPreferences,
   getUsersCount,
   getAverageBoxOfficeAndScores,
   getTopRecommendationsPlatform,

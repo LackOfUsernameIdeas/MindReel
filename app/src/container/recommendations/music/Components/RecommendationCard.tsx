@@ -3,7 +3,6 @@ import { FaStar } from "react-icons/fa";
 import { SiRottentomatoes } from "react-icons/si";
 import { RecommendationCardProps } from "../musicRecommendations-types";
 import { translate } from "../../../helper_functions_common";
-import { handleBookmarkClick } from "../helper_functions";
 import { InfoboxModal } from "@/components/common/infobox/InfoboxModal";
 
 // Кард за генериран филм/сериал спрямо потребителските предпочитания
@@ -170,35 +169,6 @@ const RecommendationCard: FC<RecommendationCardProps> = ({
               </div>
             )}
           </div>
-          {/* Бутон за добавяне/премахване от watchlist */}
-          <button
-            onClick={() =>
-              handleBookmarkClick(
-                recommendation,
-                setBookmarkedMusic,
-                setCurrentBookmarkStatus,
-                setAlertVisible
-              )
-            }
-            className="absolute top-4 left-4 p-2 text-[#FFCC33] bg-black/50 bg-opacity-60 rounded-full transition-all duration-300 transform hover:scale-110"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="35"
-              height="35"
-              viewBox="0 0 24 24"
-              fill="currentColor"
-            >
-              {bookmarkedMusic[recommendation.imdbID] ? (
-                <>
-                  <path d="M18 2H6c-1.103 0-2 .897-2 2v18l8-4.572L20 22V4c0-1.103-.897-2-2-2zm0 16.553L12 15.125 6 18.553V4h12v14.553z"></path>
-                  <path d="M6 18.553V4h12v14.553L12 15.125l-6 3.428z"></path>
-                </>
-              ) : (
-                <path d="M18 2H6c-1.103 0-2 .897-2 2v18l8-4.572L20 22V4c0-1.103-.897-2-2-2zm0 16.553-6-3.428-6 3.428V4h12v14.553z"></path>
-              )}
-            </svg>
-          </button>
         </div>
 
         <div className="flex-grow">
