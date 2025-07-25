@@ -302,7 +302,7 @@ const MoviesAndSeriesTable: FC<MoviesAndSeriesTableProps> = ({
                 <div className="flex items-center gap-4 w-full">
                   <img
                     src={item.poster}
-                    alt={`${item.title_bg || "Movie"} Poster`}
+                    alt=""
                     className="rounded-lg w-32 h-auto !shadow-lg"
                   />
                   <div className="flex flex-col items-start">

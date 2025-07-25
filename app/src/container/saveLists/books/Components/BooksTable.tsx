@@ -263,7 +263,7 @@ const BooksTable: FC<BooksTableProps> = ({
                 <div className="flex items-center gap-4 w-full mb-4">
                   <img
                     src={item.imageLink}
-                    alt={`${item.title_bg || "Book"} Cover`}
+                    alt=""
                     className="rounded-lg w-32 h-auto !shadow-lg"
                   />
                   <div className="flex flex-col items-start">

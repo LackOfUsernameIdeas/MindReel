@@ -40,6 +40,8 @@ const RecommendationCardAlert: FC<RecommendationCardAlertProps> = ({
 
   const [isTrailerModalOpen, setIsTrailerModalOpen] = useState(false); // Състояние за отваряне на модалния прозорец
 
+  const [posterError, setPosterError] = useState(false); // Състояние за грешка при зареждане на изображението
+
   const handleTrailerModalClick = () => {
     setIsTrailerModalOpen((prev) => !prev);
   }; // Функция за обработка на клик - модален прозорец
@@ -195,6 +197,10 @@ const RecommendationCardAlert: FC<RecommendationCardAlertProps> = ({
     }
   }, [selectedItem?.language]);
 
+  useEffect(() => {
+    setPosterError(false); // Ресет на грешката при зареждане на изображението
+  }, [selectedItem?.poster]);
+
   // Ако няма избран елемент, връщаме null (не рендерираме компонента)
   if (!selectedItem) return null;
 
@@ -244,16 +250,20 @@ const RecommendationCardAlert: FC<RecommendationCardAlertProps> = ({
                 } `}
                 onClick={handleTrailerModalClick}
               >
-                <img
-                  src={selectedItem.poster}
-                  alt={`${selectedItem.title_bg || "Movie"} Poster`}
-                  className={`rounded-lg w-96 h-auto transition-all duration-300 ${
-                    selectedItem.youtubeTrailerUrl
-                      ? "group-hover:scale-102 group-hover:blur-sm"
-                      : ""
-                  }`}
-                />
-
+                {!posterError && selectedItem.poster ? (
+                  <img
+                    src={selectedItem.poster}
+                    alt=""
+                    onError={() => setPosterError(true)}
+                    className={`rounded-lg w-96 h-auto transition-all duration-300 ${
+                      selectedItem.youtubeTrailerUrl
+                        ? "group-hover:scale-102 group-hover:blur-sm"
+                        : ""
+                    }`}
+                  />
+                ) : (
+                  <div className="rounded-lg w-96 aspect-[2.8/4] bg-white/70 dark:bg-bodybg2" />
+                )}
                 {/* Play button */}
                 {selectedItem.youtubeTrailerUrl && (
                   <div className="absolute inset-0 flex items-center justify-center transition-opacity duration-300">

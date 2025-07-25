@@ -38,6 +38,8 @@ const RecommendationCardAlert: FC<RecommendationCardProps> = ({
   const [dragging, setDragging] = useState<boolean>(false); // Флаг, който показва дали потребителят в момента влачи модала
   const [lastY, setLastY] = useState<number>(0); // Запазва последната Y-координата на допир за плавно движение
 
+  const [posterError, setPosterError] = useState(false); // Състояние за грешка при зареждане на изображението
+
   // useEffect, който предотвратява скролването на фоновата страница, докато потребителят влачи модала
   useEffect(() => {
     const preventScroll = (e: TouchEvent) => {
@@ -205,10 +207,13 @@ const RecommendationCardAlert: FC<RecommendationCardProps> = ({
     resolveGenres(); // Извикваме функцията за разрешаване на жанра
   }, [selectedItem?.genre_bg]); // Зависимост: когато жанрът на избрания елемент се промени
 
+  useEffect(() => {
+    setPosterError(false); // Ресет на грешката при зареждане на изображението
+  }, [selectedItem?.imageLink]);
+
   // Ако няма избран елемент, връщаме null, за да не рендерираме компонентата
   if (!selectedItem) return null;
 
-  console.log("selectedItem: ", selectedItem);
   return (
     <div
       className={`fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm z-50 transition-opacity duration-300 ${
@@ -232,11 +237,16 @@ const RecommendationCardAlert: FC<RecommendationCardProps> = ({
           <div className="flex w-full items-center sm:items-start flex-col md:flex-row">
             <div className="relative flex-shrink-0 mb-4 md:mb-0 md:mr-8 flex flex-col items-center">
               {/* Постер */}
-              <img
-                src={selectedItem.imageLink}
-                alt={`${selectedItem.title_bg || "Book"} Poster`}
-                className="rounded-lg w-[15rem] h-auto"
-              />
+              {!posterError && selectedItem.imageLink ? (
+                <img
+                  src={selectedItem.imageLink}
+                  alt=""
+                  onError={() => setPosterError(true)}
+                  className="rounded-lg w-[15rem] h-auto"
+                />
+              ) : (
+                <div className="rounded-lg w-[15rem] aspect-[2.8/4] mb-4 bg-white/70 dark:bg-bodybg2" />
+              )}
               {/* Бутон за добавяне/премахване от readlist */}
               <button
                 onClick={() =>
