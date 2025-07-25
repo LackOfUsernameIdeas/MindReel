@@ -1,7 +1,6 @@
 import { Component } from "react";
 import ReactApexChart from "react-apexcharts";
 import type { ApexOptions } from "apexcharts";
-import { ChevronLeft, ChevronRight } from "lucide-react";
 import Infobox from "@/components/common/infobox/infobox";
 
 // Интерфейс за свойствата на компонента
@@ -183,56 +182,55 @@ export class AverageMetricsTrend extends Component<
     const { seriesData } = this.props;
     const totalPages = Math.ceil(seriesData.length / itemsPerPage);
     const showPagination = seriesData.length > itemsPerPage;
-
-    const startIndex = currentPage * itemsPerPage + 1;
-    const endIndex = Math.min(
-      (currentPage + 1) * itemsPerPage,
-      seriesData.length
-    );
+    const totalItems = seriesData.length;
 
     return (
-      <div className="relative">
+      <div className="relative h-full flex flex-col">
         <div className="absolute top-2 right-2 z-10">
           <Infobox onClick={this.props.onClick} />
         </div>
 
-        <ReactApexChart
-          options={this.state.options}
-          series={this.state.series}
-          type="line"
-          height={350}
-          width="100%"
-        />
+        <div className="flex-1 min-h-0">
+          <ReactApexChart
+            options={this.state.options}
+            series={this.state.series}
+            type="line"
+            height={280}
+            width="100%"
+          />
+        </div>
 
         {showPagination && (
-          <div className="flex items-center justify-between mt-4 px-4">
-            <button
-              onClick={this.handlePrevPage}
-              disabled={currentPage === 0}
-              className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 disabled:opacity-50 disabled:cursor-not-allowed dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-            >
-              <ChevronLeft className="w-4 h-4" />
-              Previous
-            </button>
+          <div className="mt-2 pt-2 border-t border-gray-200 dark:border-gray-700 flex-shrink-0">
+            <div className="flex items-center justify-between text-xs">
+              <div className="text-defaulttextcolor dark:text-defaulttextcolor/70 text-[0.6rem]">
+                <b>{currentPage * itemsPerPage + 1}</b>-
+                <b>{Math.min((currentPage + 1) * itemsPerPage, totalItems)}</b>{" "}
+                от <b>{totalItems}</b>
+              </div>
 
-            <div className="flex items-center gap-4">
-              <span className="text-sm text-gray-700 dark:text-gray-300">
-                Showing {startIndex} to {endIndex} of {seriesData.length}{" "}
-                entries
-              </span>
-              <span className="text-sm text-gray-500 dark:text-gray-400">
-                Page {currentPage + 1} of {totalPages}
-              </span>
+              <div className="flex items-center gap-1">
+                <button
+                  onClick={this.handlePrevPage}
+                  disabled={currentPage === 0}
+                  className="px-2 py-1 text-[0.6rem] border rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                >
+                  ‹
+                </button>
+
+                <span className="px-2 py-1 text-[0.6rem] bg-gray-100 dark:bg-gray-700 rounded">
+                  {currentPage + 1}/{totalPages}
+                </span>
+
+                <button
+                  onClick={this.handleNextPage}
+                  disabled={currentPage >= totalPages - 1}
+                  className="px-2 py-1 text-[0.6rem] border rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                >
+                  ›
+                </button>
+              </div>
             </div>
-
-            <button
-              onClick={this.handleNextPage}
-              disabled={currentPage >= totalPages - 1}
-              className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 disabled:opacity-50 disabled:cursor-not-allowed dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-            >
-              Next
-              <ChevronRight className="w-4 h-4" />
-            </button>
           </div>
         )}
       </div>
