@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { Play, ExternalLink, Eye, ThumbsUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { InfoboxModal } from "@/components/common/infobox/InfoboxModal";
@@ -9,6 +9,8 @@ const RecommendationCard: FC<RecommendationCardProps> = ({
   currentIndex
 }) => {
   const [isVideoModalOpen, setIsVideoModalOpen] = useState(false); // Състояние за отваряне на модалния прозорец
+
+  const [albumCoverError, setAlbumCoverError] = useState(false); // Състояние за грешка при зареждане на изображението
 
   const recommendation = recommendationList[currentIndex];
 
@@ -48,6 +50,11 @@ const RecommendationCard: FC<RecommendationCardProps> = ({
 
   const descriptionPreviewLength = 150;
 
+  useEffect(() => {
+    setAlbumCoverError(false); // Ресет на грешката при зареждане на изображението
+  }, [recommendation.albumCover]);
+
+  console.log("recommendationList", recommendationList);
   return (
     <div className="recommendation-card">
       <div className="flex w-full items-center sm:items-start flex-col md:flex-row">
@@ -59,18 +66,20 @@ const RecommendationCard: FC<RecommendationCardProps> = ({
             } `}
             onClick={handleTrailerModalClick}
           >
-            <img
-              src={
-                recommendation.albumCover ||
-                "/placeholder.svg?height=400&width=400&query=music album cover"
-              }
-              alt={`${recommendation.albumTitle || "Album"} Cover`}
-              className={`rounded-lg w-96 h-auto transition-all duration-300 ${
-                recommendation.youtubeMusicVideoUrl
-                  ? "group-hover:scale-102 group-hover:blur-sm"
-                  : ""
-              }`}
-            />
+            {!albumCoverError && recommendation.albumCover ? (
+              <img
+                src={recommendation.albumCover}
+                alt=""
+                onError={() => setAlbumCoverError(true)}
+                className={`rounded-lg w-96 h-auto transition-all duration-300 ${
+                  recommendation.youtubeMusicVideoUrl
+                    ? "group-hover:scale-102 group-hover:blur-sm"
+                    : ""
+                }`}
+              />
+            ) : (
+              <div className="rounded-lg w-96 aspect-[3.8/4] bg-white/70 dark:bg-bodybg2" />
+            )}
             {/* Play button */}
             {recommendation.youtubeMusicVideoUrl && (
               <div className="absolute inset-0 flex items-center justify-center transition-opacity duration-300">
@@ -134,6 +143,18 @@ const RecommendationCard: FC<RecommendationCardProps> = ({
                   <span className="font-bold text-lg">
                     {recommendation.spotifyPopularity}/100
                   </span>
+                  {recommendation.spotifyUrl && (
+                    <Button asChild className="bg-green-600 hover:bg-green-700">
+                      <a
+                        href={recommendation.spotifyUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <ExternalLink className="w-4 h-4 mr-2" />
+                        Слушай в Spotify
+                      </a>
+                    </Button>
+                  )}
                 </div>
               )}
 
@@ -190,7 +211,7 @@ const RecommendationCard: FC<RecommendationCardProps> = ({
           </div>
 
           {/* Допълнителна информация */}
-          <div className="mb-4">
+          <div className="mb-0">
             <h3 className="text-lg font-semibold mb-2">
               Допълнителна информация:
             </h3>
@@ -230,28 +251,6 @@ const RecommendationCard: FC<RecommendationCardProps> = ({
                 </li>
               )}
             </ul>
-          </div>
-
-          {/* Бутони за действия */}
-          <div className="flex flex-wrap gap-4 mb-4">
-            {recommendation.spotifyUrl && (
-              <Button asChild className="bg-green-600 hover:bg-green-700">
-                <a
-                  href={recommendation.spotifyUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <ExternalLink className="w-4 h-4 mr-2" />
-                  Слушай в Spotify
-                </a>
-              </Button>
-            )}
-            {recommendation.youtubeMusicVideoUrl && (
-              <Button variant="outline" onClick={handleTrailerModalClick}>
-                <Play className="w-4 h-4 mr-2" />
-                Гледай видеото
-              </Button>
-            )}
           </div>
         </div>
       </div>

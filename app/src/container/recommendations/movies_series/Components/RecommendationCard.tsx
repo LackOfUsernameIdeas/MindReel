@@ -27,6 +27,8 @@ const RecommendationCard: FC<RecommendationCardProps> = ({
 
   const [isTrailerModalOpen, setIsTrailerModalOpen] = useState(false); // Състояние за отваряне на модалния прозорец
 
+  const [posterError, setPosterError] = useState(false); // Състояние за грешка при зареждане на изображението
+
   const handleTrailerModalClick = () => {
     setIsTrailerModalOpen((prev) => !prev);
   }; // Функция за обработка на клик - модален прозорец
@@ -122,6 +124,10 @@ const RecommendationCard: FC<RecommendationCardProps> = ({
     fetchLanguageTranslation();
   }, [recommendation.language]);
 
+  useEffect(() => {
+    setPosterError(false); // Ресет на грешката при зареждане на изображението
+  }, [recommendation.poster]);
+
   console.log("recommendationList", recommendationList);
   return (
     <div className="recommendation-card">
@@ -134,16 +140,20 @@ const RecommendationCard: FC<RecommendationCardProps> = ({
             } `}
             onClick={handleTrailerModalClick}
           >
-            <img
-              src={recommendation.poster}
-              alt={`${recommendation.bgName || "Movie"} Poster`}
-              className={`rounded-lg w-96 h-auto transition-all duration-300 ${
-                recommendation.youtubeTrailerUrl
-                  ? "group-hover:scale-102 group-hover:blur-sm"
-                  : ""
-              }`}
-            />
-
+            {!posterError && recommendation.poster ? (
+              <img
+                src={recommendation.poster}
+                alt=""
+                onError={() => setPosterError(true)}
+                className={`rounded-lg w-96 h-auto transition-all duration-300 ${
+                  recommendation.youtubeTrailerUrl
+                    ? "group-hover:scale-102 group-hover:blur-sm"
+                    : ""
+                }`}
+              />
+            ) : (
+              <div className="rounded-lg w-96 aspect-[2.8/4] bg-white/70 dark:bg-bodybg2" />
+            )}
             {/* Play button */}
             {recommendation.youtubeTrailerUrl && (
               <div className="absolute inset-0 flex items-center justify-center transition-opacity duration-300">

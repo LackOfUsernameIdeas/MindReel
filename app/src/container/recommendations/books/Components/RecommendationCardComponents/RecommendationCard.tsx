@@ -22,6 +22,9 @@ const RecommendationCard: FC<RecommendationCardProps> = ({
   const [author, setAuthor] = useState<string | null>(null); // Автор на книгата
   const [language, setLanguage] = useState<string | null>(null); // Език на книгата
   const [genres, setGenres] = useState<string[]>([]); // Жанрове на книгата
+
+  const [posterError, setPosterError] = useState(false); // Състояние за грешка при зареждане на изображението
+
   const plotPreviewLength = 150; // Дължина на прегледа на съдържанието (oписаниeто)
 
   const recommendation = recommendationList[currentIndex]; // Генерираната книга
@@ -130,16 +133,25 @@ const RecommendationCard: FC<RecommendationCardProps> = ({
     resolveGenres(); // Извиква функцията при промяна на зависимостта
   }, [recommendation.genre_bg]);
 
+  useEffect(() => {
+    setPosterError(false); // Ресет на грешката при зареждане на изображението
+  }, [recommendation.imageLink]);
+
   return (
     <div className="recommendation-card">
       <div className="flex w-full items-center sm:items-start flex-col md:flex-row">
         <div className="relative flex-shrink-0 mb-4 md:mb-0 md:mr-8 flex flex-col items-center">
           {/* Постер */}
-          <img
-            src={recommendation.imageLink}
-            alt={`${recommendation.title_bg || "Book"} Poster`}
-            className="rounded-lg w-[15rem] h-auto"
-          />
+          {!posterError && recommendation.imageLink ? (
+            <img
+              src={recommendation.imageLink}
+              alt=""
+              onError={() => setPosterError(true)}
+              className="rounded-lg w-[15rem] h-auto"
+            />
+          ) : (
+            <div className="rounded-lg w-[15rem] aspect-[2.8/4] mb-4 bg-white/70 dark:bg-bodybg2" />
+          )}
           {/* Бутон за добавяне/премахване от readlist */}
           <button
             onClick={() =>
