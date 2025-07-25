@@ -13,12 +13,6 @@ export interface Genre {
   bg: string; // Българско име на жанра
 }
 
-// Интерфейс за рейтинг на филм с източник и стойност.
-export interface Rating {
-  Source: string; // Източник на рейтинга
-  Value: string; // Стойност на рейтинга
-}
-
 // Интерфейс за песен с всички основни данни за нея.
 export interface Recommendation {
   id?: string; // ID на препоръката
@@ -49,8 +43,8 @@ export interface MusicUserPreferences {
   genres: { en: string; bg: string }[]; // Жанрове на английски и български
   moods: string[]; // Настроения
   age: string; // Възраст
-  artists: string; // Любими актьори
-  producers: string; // Любими режисьори
+  artists: string; // Любими изпълнители
+  producers: string; // Любими продуценти
   interests: string; // Интереси
   countries: string; // Предпочитани държави
   pacing: string; // Бързина на сюжетното действие
@@ -60,15 +54,15 @@ export interface MusicUserPreferences {
 
 // Пропс за компонентата Recommendations, отговорна за показване на препоръки.
 export interface RecommendationsProps {
-  recommendationList: Recommendation[]; // Списък с препоръчани филми
+  recommendationList: Recommendation[]; // Списък с препоръчани песни
   currentIndex: number;
   setCurrentIndex: React.Dispatch<React.SetStateAction<number>>;
 }
 
-// Пропс за компонентата RecommendationCard, която показва информация за филм.
+// Пропс за компонентата RecommendationCard, която показва информация за песен.
 export interface RecommendationCardProps {
-  recommendationList: Recommendation[]; // Списък с препоръчани филми
-  currentIndex: number; // Текущ индекс на филма
+  recommendationList: Recommendation[]; // Списък с препоръчани песни
+  currentIndex: number; // Текущ индекс на песента
   isExpanded: boolean; // Флаг дали картата е разширена
 }
 
@@ -140,13 +134,4 @@ export interface ConfirmationModalProps {
 
   // Броят на изпратените заявки
   submitCount: number;
-}
-
-// Интерфейс за критериите на модала за оценяване
-export interface CriteriaScores {
-  genres: number; // жанровете
-  type: number; // типа (филм/сериал)
-  mood: number; // настроението
-  preferredAge: number; // предпочитаната възраст (спрямо година на издаване)
-  targetGroup: number; // целевата аудитория
 }

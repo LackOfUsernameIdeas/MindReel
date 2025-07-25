@@ -396,13 +396,13 @@ export const generateMusicRecommendations = async (
 };
 
 /**
- * Записва препоръка за филм или сериал в базата данни.
- * Препоръката съдържа подробности за филма/сериала като заглавие, жанр, рейтинг и други.
+ * Записва препоръка за песен в базата данни.
+ * Препоръката съдържа подробности за песента като заглавие, жанр, рейтинг и други.
  * След успешното записване, препоръката се изпраща в сървъра.
  *
  * @async
  * @function saveMusicRecommendation
- * @param {Recommendation} recommendation - Обект, съдържащ данни за препоръчания филм или сериал.
+ * @param {Recommendation} recommendation - Обект, съдържащ данни за препоръчаната песен.
  * @param {string} date - Дата на генерирането на препоръката.
  * @param {string | null} token - Токенът на потребителя за аутентификация.
  * @returns {Promise<void>} - Няма връщан резултат, но извършва записване на препоръката.
@@ -464,7 +464,7 @@ let isOnCooldown = false;
  * @param {React.Dispatch<React.SetStateAction<boolean>>} setSubmitted - Функция за задаване на статус за подадена заявка.
  * @param {React.Dispatch<React.SetStateAction<number>>} setSubmitCount - Функция за актуализиране на броя на подадените заявки.
  * @param {React.Dispatch<React.SetStateAction<any[]>>} setRecommendationList - Функция за актуализиране на списъка с препоръки.
- * @param {MusicUserPreferences} musicUserPreferences - Предпочитания на потребителя за филми/сериали.
+ * @param {MusicUserPreferences} musicUserPreferences - Предпочитания на потребителя за музика.
  * @param {string | null} token - Токенът за аутентификация на потребителя.
  * @param {number} submitCount - Броят на подадените заявки.
  * @param {boolean} [renderBrainAnalysis=false] - Опционален параметър за генериране на препоръки, спрямо анализ на мозъчните вълни.
@@ -772,7 +772,7 @@ export const handleViewRecommendations = (
  * @param {React.Dispatch<React.SetStateAction<string[] | null>>} setSelectedAnswer - Функцията за изчистване на избраните отговори.
  * @param {React.Dispatch<React.SetStateAction<boolean>>} setShowQuestion - Функцията за показване на следващия въпрос.
  * @param {React.Dispatch<React.SetStateAction<number>>} setCurrentQuestionIndex - Функцията за актуализиране на индекса на текущия въпрос.
- * @param {any[]} questions - Массив от въпроси за анкета.
+ * @param {any[]} questions - Масив от въпроси за анкета.
  * @returns {void} - Няма връщан резултат, но актуализира състоянието на въпросите.
  */
 export const handleNext = (
