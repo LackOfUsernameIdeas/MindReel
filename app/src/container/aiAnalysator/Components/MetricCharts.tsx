@@ -3,7 +3,6 @@ import { MetricChartsProps } from "../aiAnalysator-types";
 import { AverageMetricsTrend } from "./Charts";
 import { Card } from "@/components/ui/card";
 import { InfoboxModal } from "@/components/common/infobox/InfoboxModal";
-import Infobox from "@/components/common/infobox/infobox";
 import {
   Accordion,
   AccordionItem,

@@ -1,6 +1,7 @@
 import { Component } from "react";
 import ReactApexChart from "react-apexcharts";
-import { ApexOptions } from "apexcharts";
+import type { ApexOptions } from "apexcharts";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import Infobox from "@/components/common/infobox/infobox";
 
 // Интерфейс за свойствата на компонента
@@ -17,7 +18,9 @@ interface AverageMetricsTrendProps {
 // Интерфейс за състоянието на компонента
 interface AverageMetricsTrendState {
   options: ApexOptions;
-  series: ApexAxisChartSeries;
+  series: ApexOptions["series"];
+  currentPage: number;
+  itemsPerPage: number;
 }
 
 // Компонент за визуализация на метриките
@@ -29,38 +32,100 @@ export class AverageMetricsTrend extends Component<
     super(props);
     this.state = {
       options: this.getUpdatedOptions(),
-      series: this.transformData(props.seriesData)
+      series: this.transformData(
+        this.getPaginatedData(props.seriesData, 0, 10)
+      ),
+      currentPage: 0,
+      itemsPerPage: 12
     };
   }
 
+  // Проверява дали има промяна в props и обновява данните
   componentDidUpdate(prevProps: AverageMetricsTrendProps) {
     if (prevProps.seriesData !== this.props.seriesData) {
-      this.setState({ series: this.transformData(this.props.seriesData) });
+      const paginatedData = this.getPaginatedData(
+        this.props.seriesData,
+        this.state.currentPage,
+        this.state.itemsPerPage
+      );
+      this.setState({
+        series: this.transformData(paginatedData)
+      });
     }
   }
 
-  // Преобразуване на входните данни към подходящ формат за ApexCharts
+  // Връща част от данните според страницата
+  getPaginatedData(
+    data: AverageMetricsTrendProps["seriesData"],
+    page: number,
+    itemsPerPage: number
+  ) {
+    const startIndex = page * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    return data.slice(startIndex, endIndex);
+  }
+
+  // Обработва преминаването към следваща страница
+  handleNextPage = () => {
+    const { currentPage, itemsPerPage } = this.state;
+    const totalPages = Math.ceil(this.props.seriesData.length / itemsPerPage);
+
+    if (currentPage < totalPages - 1) {
+      const newPage = currentPage + 1;
+      const paginatedData = this.getPaginatedData(
+        this.props.seriesData,
+        newPage,
+        itemsPerPage
+      );
+
+      this.setState({
+        currentPage: newPage,
+        series: this.transformData(paginatedData)
+      });
+    }
+  };
+
+  // Обработва преминаването към предишна страница
+  handlePrevPage = () => {
+    const { currentPage, itemsPerPage } = this.state;
+
+    if (currentPage > 0) {
+      const newPage = currentPage - 1;
+      const paginatedData = this.getPaginatedData(
+        this.props.seriesData,
+        newPage,
+        itemsPerPage
+      );
+
+      this.setState({
+        currentPage: newPage,
+        series: this.transformData(paginatedData)
+      });
+    }
+  };
+
+  // Трансформира входните данни във формат подходящ за ApexCharts
   transformData(data: AverageMetricsTrendProps["seriesData"]) {
     return [
       {
         name: "Precision (%)",
         data: data.map((entry) => ({
           x: entry.record_date,
-          y: parseFloat(entry.average_precision_percentage)
+          y: Number.parseFloat(entry.average_precision_percentage)
         }))
       },
       {
         name: "Recall (%)",
         data: data.map((entry) => ({
           x: entry.record_date,
-          y: parseFloat(entry.average_recall_percentage)
+          y: Number.parseFloat(entry.average_recall_percentage)
         }))
       },
       {
         name: "F1 Score (%)",
         data: data.map((entry) => ({
           x: entry.record_date,
-          y: parseFloat(entry.average_f1_score_percentage)
+          y: Number.parseFloat(entry.average_f1_score_percentage)
         }))
       }
     ];
@@ -102,23 +167,35 @@ export class AverageMetricsTrend extends Component<
         }
       },
       legend: {
-        position: "top", // Move the legend above the chart
-        horizontalAlign: "center", // Center the legend horizontally
-        floating: false, // Make the legend float
-        fontSize: "12rem", // Set font size for the legend
+        position: "top",
+        horizontalAlign: "center",
+        floating: false,
+        fontSize: "12rem",
         labels: {
-          useSeriesColors: true // Use the series colors for the legend labels
+          useSeriesColors: true
         }
       }
     };
   }
 
   render() {
+    const { currentPage, itemsPerPage } = this.state;
+    const { seriesData } = this.props;
+    const totalPages = Math.ceil(seriesData.length / itemsPerPage);
+    const showPagination = seriesData.length > itemsPerPage;
+
+    const startIndex = currentPage * itemsPerPage + 1;
+    const endIndex = Math.min(
+      (currentPage + 1) * itemsPerPage,
+      seriesData.length
+    );
+
     return (
       <div className="relative">
         <div className="absolute top-2 right-2 z-10">
           <Infobox onClick={this.props.onClick} />
         </div>
+
         <ReactApexChart
           options={this.state.options}
           series={this.state.series}
@@ -126,6 +203,38 @@ export class AverageMetricsTrend extends Component<
           height={350}
           width="100%"
         />
+
+        {showPagination && (
+          <div className="flex items-center justify-between mt-4 px-4">
+            <button
+              onClick={this.handlePrevPage}
+              disabled={currentPage === 0}
+              className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 disabled:opacity-50 disabled:cursor-not-allowed dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+            >
+              <ChevronLeft className="w-4 h-4" />
+              Previous
+            </button>
+
+            <div className="flex items-center gap-4">
+              <span className="text-sm text-gray-700 dark:text-gray-300">
+                Showing {startIndex} to {endIndex} of {seriesData.length}{" "}
+                entries
+              </span>
+              <span className="text-sm text-gray-500 dark:text-gray-400">
+                Page {currentPage + 1} of {totalPages}
+              </span>
+            </div>
+
+            <button
+              onClick={this.handleNextPage}
+              disabled={currentPage >= totalPages - 1}
+              className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 disabled:opacity-50 disabled:cursor-not-allowed dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+            >
+              Next
+              <ChevronRight className="w-4 h-4" />
+            </button>
+          </div>
+        )}
       </div>
     );
   }
