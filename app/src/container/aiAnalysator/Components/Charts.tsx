@@ -201,21 +201,19 @@ export class AverageMetricsTrend extends Component<
         </div>
 
         {showPagination && (
-          <div className="mt-4 pt-2 border-t border-gray-400 dark:border-gray-600 flex-shrink-0">
+          <div className="mt-4 pt-2 border-t border-gray-400 dark:border-gray-500 flex-shrink-0">
             <div className="flex items-center justify-between text-xs">
-              {/* Диапазон: 1-12 от 36 */}
-              <div className="text-sm text-defaulttextcolor dark:text-defaulttextcolor/70 font-semibold font-opsilion">
+              <div className="flex items-center gap-1 text-sm text-defaulttextcolor dark:text-white/80 font-opsilion">
                 <b>{currentPage * itemsPerPage + 1}</b> -
                 <b>{Math.min((currentPage + 1) * itemsPerPage, totalItems)}</b>{" "}
                 от <b>{totalItems}</b>
               </div>
 
-              {/* Навигационни стрелки + брояч */}
-              <div className="flex items-center gap-1">
+              <div className="flex items-center gap-1 text-defaulttextcolor dark:text-white/80 font-opsilion">
                 <button
                   onClick={this.handlePrevPage}
                   disabled={currentPage === 0}
-                  className="w-7 h-7 flex items-center justify-center border rounded text-sm font-bold text-defaulttextcolor dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  className="w-7 h-7 flex items-center justify-center border-2 border-defaulttextcolor dark:border-white rounded-full text-sm font-bold hover:scale-110 hover:bg-gray-50 dark:hover:bg-bodybg/40 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -228,7 +226,7 @@ export class AverageMetricsTrend extends Component<
                     <path
                       strokeLinecap="round"
                       strokeLinejoin="round"
-                      d="M15 19l-7-7 7-7"
+                      d="M14.7 5.3c.4.4.4 1 0 1.4L9.4 12l5.3 5.3a1 1 0 11-1.4 1.4l-6-6a1 1 0 010-1.4l6-6a1 1 0 011.4 0z"
                     />
                   </svg>
                 </button>
@@ -240,7 +238,7 @@ export class AverageMetricsTrend extends Component<
                 <button
                   onClick={this.handleNextPage}
                   disabled={currentPage >= totalPages - 1}
-                  className="w-7 h-7 flex items-center justify-center border rounded text-sm font-bold text-defaulttextcolor dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  className="w-7 h-7 flex items-center justify-center border-2 border-defaulttextcolor dark:border-white rounded-full text-sm font-bold hover:scale-110 hover:bg-gray-50 dark:hover:bg-bodybg/40 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -253,7 +251,7 @@ export class AverageMetricsTrend extends Component<
                     <path
                       strokeLinecap="round"
                       strokeLinejoin="round"
-                      d="M9 5l7 7-7 7"
+                      d="M9.3 18.7a1 1 0 010-1.4L14.6 12 9.3 6.7a1 1 0 011.4-1.4l6 6a1 1 0 010 1.4l-6 6a1 1 0 01-1.4 0z"
                     />
                   </svg>
                 </button>
