@@ -1,9 +1,4 @@
-import {
-  Genre,
-  MusicUserPreferences,
-  Recommendation,
-  RecommendationsAnalysis
-} from "./musicRecommendations-types";
+import { Genre, MusicUserPreferences } from "./musicRecommendations-types";
 import {
   Question,
   BrainData,
@@ -16,14 +11,7 @@ import {
   openAIKey
 } from "./musicRecommendations-data";
 import { musicGenreOptions } from "../../data_common";
-import {
-  checkRecommendationExistsInWatchlist,
-  removeFromWatchlist,
-  saveBrainAnalysis,
-  saveToWatchlist,
-  showNotification,
-  validateToken
-} from "../../helper_functions_common";
+import { showNotification, validateToken } from "../../helper_functions_common";
 
 /**
  * Записва предпочитанията на потребителя в базата данни чрез POST заявка.
@@ -290,11 +278,6 @@ const fetchYouTubeVideoStats = async (
 export const generateMusicRecommendations = async (
   date: string,
   setRecommendationList: React.Dispatch<React.SetStateAction<any[]>>,
-  setBookmarkedMusic: React.Dispatch<
-    React.SetStateAction<{
-      [key: string]: any;
-    }>
-  >,
   token: string | null,
   renderBrainAnalysis: boolean,
   musicUserPreferences?: MusicUserPreferences,
@@ -496,11 +479,6 @@ export const handleSubmit = async (
   setSubmitted: React.Dispatch<React.SetStateAction<boolean>>,
   setSubmitCount: React.Dispatch<React.SetStateAction<number>>,
   setRecommendationList: React.Dispatch<React.SetStateAction<any[]>>,
-  setBookmarkedMusic: React.Dispatch<
-    React.SetStateAction<{
-      [key: string]: any;
-    }>
-  >,
   token: string | null,
   submitCount: number,
   renderBrainAnalysis: boolean = false,
@@ -586,7 +564,6 @@ export const handleSubmit = async (
           await generateMusicRecommendations(
             date,
             setRecommendationList,
-            setBookmarkedMusic,
             token,
             true,
             musicUserPreferences,
@@ -631,7 +608,6 @@ export const handleSubmit = async (
           await generateMusicRecommendations(
             date,
             setRecommendationList,
-            setBookmarkedMusic,
             token,
             false,
             musicUserPreferences

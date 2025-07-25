@@ -58,41 +58,11 @@ export interface MusicUserPreferences {
   targetGroup: string; // Целева група
 }
 
-export type RecommendationsAnalysis = {
-  relevantCount: number; // Броят на релевантните препоръки
-  totalCount: number; // Общо броят на препоръките
-  precisionValue: number; // Стойността на прецизността
-  precisionPercentage: number; // Процентното изражение на прецизността
-  relevantRecommendations: Analysis[]; // Списък с релевантни препоръки
-};
-
-// Пропс за компонентата Quiz, свързана с маркирането на филми.
-export interface QuizProps {
-  setBookmarkedMusic: React.Dispatch<
-    // Функция за маркиране на филм
-    React.SetStateAction<{
-      [key: string]: any; // Динамичен обект с маркирани книги
-    }>
-  >;
-  setCurrentBookmarkStatus: React.Dispatch<React.SetStateAction<boolean>>; // Функция за задаване на текущия статус на маркиране
-  setAlertVisible: React.Dispatch<React.SetStateAction<boolean>>; // Функция за показване на известие
-  bookmarkedMusic: { [key: string]: Recommendation }; // Списък с маркирани филми
-}
-
 // Пропс за компонентата Recommendations, отговорна за показване на препоръки.
 export interface RecommendationsProps {
   recommendationList: Recommendation[]; // Списък с препоръчани филми
-  setBookmarkedMusic: React.Dispatch<
-    // Функция за маркиране на филм
-    React.SetStateAction<{
-      [key: string]: any; // Динамичен обект с маркирани книги
-    }>
-  >;
   currentIndex: number;
   setCurrentIndex: React.Dispatch<React.SetStateAction<number>>;
-  setCurrentBookmarkStatus: React.Dispatch<React.SetStateAction<boolean>>; // Функция за задаване на текущия статус на маркиране
-  setAlertVisible: React.Dispatch<React.SetStateAction<boolean>>; // Функция за показване на известие
-  bookmarkedMusic: { [key: string]: Recommendation }; // Списък с маркирани филми
 }
 
 // Пропс за компонентата RecommendationCard, която показва информация за филм.
@@ -100,24 +70,6 @@ export interface RecommendationCardProps {
   recommendationList: Recommendation[]; // Списък с препоръчани филми
   currentIndex: number; // Текущ индекс на филма
   isExpanded: boolean; // Флаг дали картата е разширена
-  openModal: (type: "description" | "plot") => void; // Функция за отваряне на модала
-  setBookmarkedMusic: React.Dispatch<
-    // Функция за маркиране на филм
-    React.SetStateAction<{
-      [key: string]: any; // Динамичен обект с маркирани книги
-    }>
-  >;
-  setCurrentBookmarkStatus: React.Dispatch<React.SetStateAction<boolean>>; // Функция за задаване на текущия статус на маркиране
-  setAlertVisible: React.Dispatch<React.SetStateAction<boolean>>; // Функция за показване на известие
-  bookmarkedMusic: { [key: string]: Recommendation }; // Списък с маркирани филми
-}
-
-// Пропс за компонентата PlotModal, показваща сюжетната линия на филма.
-export interface PlotModalProps {
-  recommendationList: Recommendation[]; // Списък с препоръчани филми
-  currentIndex: number; // Текущ индекс на филма
-  closeModal: () => void; // Функция за затваряне на модала
-  modalType: "description" | "plot"; // Флаг за проверка дали е подаден сюжет или описание
 }
 
 // Пропс за компонентата QuizQuestion, която съдържа въпросите и опции.
@@ -128,9 +80,6 @@ export interface QuizQuestionProps {
   showViewRecommendations: boolean; // Флаг за показване на препоръките
   alreadyHasRecommendations: boolean; // Флаг за проверка дали вече има препоръки
   setRecommendationList: React.Dispatch<React.SetStateAction<any[]>>; // Функция за задаване на списък с препоръки
-  setBookmarkedMusic: React.Dispatch<
-    React.SetStateAction<{ [key: string]: any }>
-  >; // Функция за актуализиране на маркираните филми
   setIsBrainAnalysisComplete: React.Dispatch<React.SetStateAction<boolean>>; // Функция за актуализиране състоянието на мозъчния анализ
   isBrainAnalysisComplete: boolean; // Състоянието на мозъчния анализ
   renderBrainAnalysis: boolean; // Флаг за управление на визуализирането на мозъчния анализ
@@ -171,11 +120,6 @@ export interface ConfirmationModalProps {
     setSubmitted: React.Dispatch<React.SetStateAction<boolean>>,
     setSubmitCount: React.Dispatch<React.SetStateAction<number>>,
     setRecommendationList: React.Dispatch<React.SetStateAction<any[]>>,
-    setBookmarkedMusic: React.Dispatch<
-      React.SetStateAction<{
-        [key: string]: any;
-      }>
-    >,
     token: string | null,
     submitCount: number,
     renderBrainAnalysis: boolean,
@@ -187,13 +131,6 @@ export interface ConfirmationModalProps {
 
   // Функция за задаване на списък с препоръки
   setRecommendationList: React.Dispatch<React.SetStateAction<any[]>>;
-
-  // Функция за задаване на списък с любими филми
-  setBookmarkedMusic: React.Dispatch<
-    React.SetStateAction<{
-      [key: string]: any;
-    }>
-  >;
 
   // Предпочитания на потребителя
   musicUserPreferences: MusicUserPreferences;
@@ -212,13 +149,4 @@ export interface CriteriaScores {
   mood: number; // настроението
   preferredAge: number; // предпочитаната възраст (спрямо година на издаване)
   targetGroup: number; // целевата аудитория
-}
-
-export interface Analysis {
-  imdbID: string; // Уникален идентификатор на филма/сериала в IMDb
-  title_en: string; // Английско заглавие на филма/сериала
-  title_bg: string; // Българско заглавие на филма/сериала
-  isRelevant: boolean; // Дали препоръката е подходяща според критериите
-  relevanceScore: number; // Общ резултат за релевантност
-  criteriaScores: CriteriaScores; // Подробен резултат по отделни критерии
 }

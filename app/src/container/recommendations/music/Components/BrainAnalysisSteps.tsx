@@ -2,8 +2,7 @@ import { FC, useState, useEffect } from "react";
 import { CSSTransition } from "react-transition-group";
 import {
   MusicUserPreferences,
-  NotificationState,
-  RecommendationsAnalysis
+  NotificationState
 } from "../musicRecommendations-types";
 import { handleSubmit } from "../helper_functions";
 import BrainAnalysisTrackStats from "../../../../components/common/brainAnalysis/BrainAnalysisTrackStats";
@@ -33,9 +32,6 @@ export const BrainAnalysisSteps: FC<{
     React.SetStateAction<NotificationState | null>
   >;
   setRecommendationList: React.Dispatch<React.SetStateAction<any[]>>;
-  setBookmarkedMusic: React.Dispatch<
-    React.SetStateAction<{ [key: string]: any }>
-  >;
   submitted: boolean;
   token: string | null;
   submitCount: number;
@@ -48,7 +44,6 @@ export const BrainAnalysisSteps: FC<{
   setSubmitted,
   setNotification,
   setRecommendationList,
-  setBookmarkedMusic,
   submitted,
   token,
   submitCount,
@@ -219,7 +214,6 @@ export const BrainAnalysisSteps: FC<{
       setSubmitted,
       setSubmitCount,
       setRecommendationList,
-      setBookmarkedMusic,
       token,
       submitCount,
       true,

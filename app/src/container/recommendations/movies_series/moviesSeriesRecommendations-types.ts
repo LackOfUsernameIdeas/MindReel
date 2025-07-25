@@ -1,5 +1,3 @@
-import { Dispatch, SetStateAction } from "react";
-
 // Вида на уведомлението.
 export type NotificationType = "success" | "error" | "warning";
 

@@ -2,25 +2,16 @@ import { FC, useState } from "react";
 import { CSSTransition } from "react-transition-group";
 import { RecommendationsProps } from "../musicRecommendations-types";
 import RecommendationCard from "./RecommendationCard";
-import { PlotModal } from "./PlotModal";
 import ErrorCard from "../../../../components/common/error/error";
 
 export const RecommendationsList: FC<RecommendationsProps> = ({
   recommendationList,
-  setBookmarkedMusic,
-  setCurrentBookmarkStatus,
   currentIndex,
-  setCurrentIndex,
-  setAlertVisible,
-  bookmarkedMusic
+  setCurrentIndex
 }) => {
   const [inTransition, setInTransition] = useState(false);
   const [direction, setDirection] = useState<"left" | "right">("right");
   const [isExpanded, setIsExpanded] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalType, setModalType] = useState<"description" | "plot">(
-    "description"
-  );
   const animationDuration = 500;
 
   if (!recommendationList.length) {
@@ -56,15 +47,6 @@ export const RecommendationsList: FC<RecommendationsProps> = ({
       setIsExpanded(false);
       setInTransition(false);
     }, 500);
-  };
-
-  const openModal = (type: "description" | "plot") => {
-    setModalType(type);
-    setIsModalOpen(true);
-  };
-
-  const closeModal = () => {
-    setIsModalOpen(false);
   };
 
   return (
@@ -107,11 +89,6 @@ export const RecommendationsList: FC<RecommendationsProps> = ({
           recommendationList={recommendationList}
           currentIndex={currentIndex}
           isExpanded={isExpanded}
-          openModal={openModal}
-          setCurrentBookmarkStatus={setCurrentBookmarkStatus}
-          setAlertVisible={setAlertVisible}
-          setBookmarkedMusic={setBookmarkedMusic}
-          bookmarkedMusic={bookmarkedMusic}
         />
       </CSSTransition>
 
@@ -140,20 +117,6 @@ export const RecommendationsList: FC<RecommendationsProps> = ({
         >
           <path d="M9 18l6-6-6-6" />
         </svg>
-      </CSSTransition>
-
-      <CSSTransition
-        in={isModalOpen}
-        timeout={300}
-        classNames="fade-no-transform"
-        unmountOnExit
-      >
-        <PlotModal
-          recommendationList={recommendationList}
-          currentIndex={currentIndex}
-          closeModal={closeModal}
-          modalType={modalType}
-        />
       </CSSTransition>
     </div>
   );

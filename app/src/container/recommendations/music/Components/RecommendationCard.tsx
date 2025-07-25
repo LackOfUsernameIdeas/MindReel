@@ -4,10 +4,9 @@ import { Button } from "@/components/ui/button";
 import { InfoboxModal } from "@/components/common/infobox/InfoboxModal";
 import { RecommendationCardProps } from "../musicRecommendations-types";
 
-const MusicRecommendationCard: FC<RecommendationCardProps> = ({
+const RecommendationCard: FC<RecommendationCardProps> = ({
   recommendationList,
-  currentIndex,
-  openModal
+  currentIndex
 }) => {
   const [isVideoModalOpen, setIsVideoModalOpen] = useState(false); // Състояние за отваряне на модалния прозорец
 
@@ -188,15 +187,6 @@ const MusicRecommendationCard: FC<RecommendationCardProps> = ({
                   : recommendation.description}
               </p>
             </div>
-            {recommendation.description &&
-              recommendation.description.length > descriptionPreviewLength && (
-                <button
-                  onClick={() => openModal("description")}
-                  className="mt-2 underline hover:scale-105 transition"
-                >
-                  Пълно описание
-                </button>
-              )}
           </div>
 
           {/* Допълнителна информация */}
@@ -293,4 +283,4 @@ const MusicRecommendationCard: FC<RecommendationCardProps> = ({
   );
 };
 
-export default MusicRecommendationCard;
+export default RecommendationCard;
