@@ -201,33 +201,61 @@ export class AverageMetricsTrend extends Component<
         </div>
 
         {showPagination && (
-          <div className="mt-2 pt-2 border-t border-gray-200 dark:border-gray-700 flex-shrink-0">
+          <div className="mt-4 pt-2 border-t border-gray-400 dark:border-gray-600 flex-shrink-0">
             <div className="flex items-center justify-between text-xs">
-              <div className="text-defaulttextcolor dark:text-defaulttextcolor/70 text-[0.6rem]">
-                <b>{currentPage * itemsPerPage + 1}</b>-
+              {/* Диапазон: 1-12 от 36 */}
+              <div className="text-sm text-defaulttextcolor dark:text-defaulttextcolor/70 font-semibold font-opsilion">
+                <b>{currentPage * itemsPerPage + 1}</b> -
                 <b>{Math.min((currentPage + 1) * itemsPerPage, totalItems)}</b>{" "}
                 от <b>{totalItems}</b>
               </div>
 
+              {/* Навигационни стрелки + брояч */}
               <div className="flex items-center gap-1">
                 <button
                   onClick={this.handlePrevPage}
                   disabled={currentPage === 0}
-                  className="px-2 py-1 text-[0.6rem] border rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                  className="w-7 h-7 flex items-center justify-center border rounded text-sm font-bold text-defaulttextcolor dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
-                  ‹
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="w-4 h-4"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M15 19l-7-7 7-7"
+                    />
+                  </svg>
                 </button>
 
-                <span className="px-2 py-1 text-[0.6rem] bg-gray-100 dark:bg-gray-700 rounded">
+                <span className="text-sm font-semibold font-opsilion px-2">
                   {currentPage + 1}/{totalPages}
                 </span>
 
                 <button
                   onClick={this.handleNextPage}
                   disabled={currentPage >= totalPages - 1}
-                  className="px-2 py-1 text-[0.6rem] border rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                  className="w-7 h-7 flex items-center justify-center border rounded text-sm font-bold text-defaulttextcolor dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
-                  ›
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="w-4 h-4"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M9 5l7 7-7 7"
+                    />
+                  </svg>
                 </button>
               </div>
             </div>
