@@ -133,7 +133,7 @@ export const Quiz: FC<QuizProps> = ({
             setBookmarkedMovies={setBookmarkedMovies}
             bookmarkedMovies={bookmarkedMovies}
           />
-          {isAnalysisUpdated() && (
+          {recommendationList.length && isAnalysisUpdated() && (
             <RecommendationsAnalysesWidgets
               recommendationsAnalysis={recommendationsAnalysis}
               currentIndex={currentIndex}
