@@ -222,6 +222,13 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
     ) {
       // Set state to render BrainAnalysisSteps
       setRenderBrainAnalysis(true);
+    } else if (
+      currentQuestionIndex === 0 &&
+      selectedAnswer?.includes(
+        "VR сцена - потапяне в киноизкуството чрез препоръчване на филми и сериали в реалистична VR среда"
+      )
+    ) {
+      // TODO: Тук добавяш какво се случва при избор на VR сцена
     } else {
       if (currentQuestionIndex === totalQuestions - 1) {
         if (alreadyHasRecommendations) {
