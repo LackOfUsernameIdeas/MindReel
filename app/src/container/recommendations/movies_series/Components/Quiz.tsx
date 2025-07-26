@@ -22,6 +22,7 @@ export const Quiz: FC<QuizProps> = ({
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isBrainAnalysisComplete, setIsBrainAnalysisComplete] = useState(false);
   const [renderBrainAnalysis, setRenderBrainAnalysis] = useState(false);
+  const [renderVrScene, setRenderVrScene] = useState(false);
   const [recommendationsAnalysis, setRecommendationsAnalysis] =
     useState<RecommendationsAnalysis>({
       relevantCount: 0,
@@ -81,10 +82,9 @@ export const Quiz: FC<QuizProps> = ({
             submitted={submitted}
             showViewRecommendations={
               alreadyHasRecommendations &&
-              // Случай 1: Когато не сме в режим на мозъчен анализ и не сме изпратили въпросника
-              ((!renderBrainAnalysis && !submitted) ||
-                // Случай 2: Когато сме в режим на мозъчен анализ, но анализът не е завършен
-                (renderBrainAnalysis && !isBrainAnalysisComplete))
+              ((!renderBrainAnalysis && !renderVrScene && !submitted) ||
+                (renderBrainAnalysis && !isBrainAnalysisComplete) ||
+                (renderVrScene && !submitted))
             }
             alreadyHasRecommendations={alreadyHasRecommendations}
             setRecommendationList={setRecommendationList}
@@ -94,6 +94,8 @@ export const Quiz: FC<QuizProps> = ({
             isBrainAnalysisComplete={isBrainAnalysisComplete}
             renderBrainAnalysis={renderBrainAnalysis}
             setRenderBrainAnalysis={setRenderBrainAnalysis}
+            renderVrScene={renderVrScene}
+            setRenderVrScene={setRenderVrScene}
           />
         </div>
       </CSSTransition>
@@ -115,7 +117,9 @@ export const Quiz: FC<QuizProps> = ({
                     setSubmitted,
                     setIsBrainAnalysisComplete,
                     setCurrentIndex,
-                    renderBrainAnalysis
+                    renderBrainAnalysis,
+                    renderVrScene,
+                    setRenderBrainAnalysis
                   )
                 }
                 className="text-primary font-semibold hover:text-secondary transition-colors underline"

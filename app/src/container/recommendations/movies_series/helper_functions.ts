@@ -973,6 +973,8 @@ export const handleBack = (
  * @param {React.Dispatch<React.SetStateAction<boolean>>} setIsBrainAnalysisComplete - Функцията за нулиране на състоянието на завършен мозъчен анализ.
  * @param {React.Dispatch<React.SetStateAction<number>>} setCurrentIndex - Функцията за нулиране на текущия индекс.
  * @param {boolean} renderBrainAnalysis - Дали се използва мозъчен анализ.
+ * @param {boolean} renderVrScene - Дали се използва VR сцена.
+ * @param {React.Dispatch<React.SetStateAction<boolean>>} setRenderVrScene - Функцията за нулиране на VR сцената.
  * @returns {void} - Няма връщан резултат, но актуализира състоянието на компонентите.
  */
 export const handleRetakeQuiz = (
@@ -980,7 +982,9 @@ export const handleRetakeQuiz = (
   setSubmitted: React.Dispatch<React.SetStateAction<boolean>>,
   setIsBrainAnalysisComplete?: React.Dispatch<React.SetStateAction<boolean>>,
   setCurrentIndex?: React.Dispatch<React.SetStateAction<number>>,
-  renderBrainAnalysis?: boolean
+  renderBrainAnalysis?: boolean,
+  renderVrScene?: boolean,
+  setRenderVrScene?: React.Dispatch<React.SetStateAction<boolean>>
 ): void => {
   setLoading(true);
   setTimeout(() => {
@@ -990,6 +994,11 @@ export const handleRetakeQuiz = (
     // Reset brain analysis state if in brain analysis mode
     if (renderBrainAnalysis && setIsBrainAnalysisComplete) {
       setIsBrainAnalysisComplete(false);
+    }
+
+    // Reset VR scene state if in VR mode
+    if (renderVrScene && setRenderVrScene) {
+      setRenderVrScene(false);
     }
 
     // Reset current index if provided

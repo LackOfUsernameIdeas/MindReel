@@ -44,7 +44,9 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
   setIsBrainAnalysisComplete,
   isBrainAnalysisComplete,
   renderBrainAnalysis,
-  setRenderBrainAnalysis
+  setRenderBrainAnalysis,
+  renderVrScene,
+  setRenderVrScene
 }) => {
   const [preferencesType, setPreferencesType] = useState<string | null>(null);
   const [recommendationType, setRecommendationType] = useState("");
@@ -228,7 +230,8 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
         "VR сцена - потапяне в киноизкуството чрез препоръчване на филми и сериали в реалистична VR среда"
       )
     ) {
-      // TODO: Тук добавяш какво се случва при избор на VR сцена
+      // Set state to render VR Scene
+      setRenderVrScene(true);
     } else {
       if (currentQuestionIndex === totalQuestions - 1) {
         if (alreadyHasRecommendations) {
@@ -364,7 +367,16 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
           }`}
         >
           {/* Ако е избрана опцията за генериране на препоръки с устройство за анализ на мозъчните импулси, визуализираме компонента BrainAnalysisSteps */}
-          {renderBrainAnalysis ? (
+          {renderVrScene ? (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.9 }}
+              transition={{ duration: 0.5, ease: "easeOut" }}
+            >
+              <h1>egege</h1>
+            </motion.div>
+          ) : renderBrainAnalysis ? (
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}

@@ -153,6 +153,8 @@ export interface QuizQuestionProps {
   isBrainAnalysisComplete: boolean; // Състоянието на мозъчния анализ
   renderBrainAnalysis: boolean; // Флаг за управление на визуализирането на мозъчния анализ
   setRenderBrainAnalysis: React.Dispatch<React.SetStateAction<boolean>>; // Функция за задаване на състоянието на мозъчния анализ
+  renderVrScene: boolean; // Флаг за управление на визуализирането на VR сцената
+  setRenderVrScene: React.Dispatch<React.SetStateAction<boolean>>; // Функция за задаване на състоянието на VR сцената
 }
 
 // Пропс за компонентата ViewRecommendations, която показва резултатите от препоръките.
