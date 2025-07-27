@@ -47,7 +47,28 @@ export default function reducer(state = initialState, action: any) {
         colorTertiaryRgb:
           payload.class === "dark" ? "153 226 180" : "70 157 137",
         colorTertiary: payload.class === "dark" ? "153 226 180" : "70 157 137",
-        dataNavLayout: "vertical"
+        lang: "bg",
+        dir: "ltr",
+        dataNavLayout: "vertical",
+        dataVerticalStyle: "overlay",
+        toggled: "",
+        dataNavStyle: "menu-click",
+        horStyle: "",
+        dataPageStyle: "modern",
+        dataWidth: "fullwidth",
+        dataMenuPosition: "fixed",
+        dataHeaderPosition: "fixed",
+        loader: "disable",
+        iconOverlay: "",
+        bodyBg: "",
+        Light: "",
+        darkBg: "",
+        inputBorder: "",
+        bgImg: "",
+        iconText: "",
+        body: {
+          class: ""
+        }
       };
       return state;
 

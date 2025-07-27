@@ -100,7 +100,7 @@ const Landing: FC<LandingProps> = () => {
     <Fragment>
       <HelmetProvider>
         <Helmet>
-          <body className="landing-body jobs-landing"></body>
+          <body className="landing-body"></body>
         </Helmet>
       </HelmetProvider>
       <header className="app-header">
