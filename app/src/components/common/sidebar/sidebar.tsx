@@ -10,9 +10,10 @@ import Menuloop from "../../ui/menuloop";
 import gradientDark from "../../../assets/images/menu-bg-images/layered-waves-haikei-dark.svg";
 import gradientLight from "../../../assets/images/menu-bg-images/layered-waves-haikei-light.svg";
 
-interface SidebarProps {}
+import logo from "../../../assets/images/brand-logos/logo_large.png";
+import logoPink from "../../../assets/images/brand-logos/logo_large_pink.png";
 
-const Sidebar: FC<SidebarProps> = ({ local_varaiable, ThemeChanger }: any) => {
+const Sidebar: FC = ({ local_varaiable, ThemeChanger }: any) => {
   const [menuitems, setMenuitems] = useState<any>(MENUITEMS);
 
   function closeMenuFn() {
@@ -186,8 +187,6 @@ const Sidebar: FC<SidebarProps> = ({ local_varaiable, ThemeChanger }: any) => {
       setMenuAncestorsActive(parent);
     } else if (!hasParent) {
       if (theme.dataVerticalStyle == "doublemenu") {
-        // console.log("closee")
-        // html.setAttribute('data-toggled', 'double-menu-close');
         ThemeChanger({ ...theme, toggled: "double-menu-close" });
       }
     }
@@ -451,6 +450,23 @@ const Sidebar: FC<SidebarProps> = ({ local_varaiable, ThemeChanger }: any) => {
           transition: "background-image 0.3s ease"
         }}
       >
+        <div className="main-sidebar-header">
+          <Link
+            to={`${import.meta.env.BASE_URL}app/recommendations`}
+            className="header-logo group relative inline-block"
+          >
+            <img
+              src={local_varaiable.class === "dark" ? logoPink : logo}
+              alt="logo"
+              className="transition-all duration-100 transform opacity-100 scale-90 group-hover:scale-110 group-hover:opacity-0"
+            />
+            <img
+              src={local_varaiable.class === "dark" ? logoPink : logo}
+              alt="logo-hover"
+              className="absolute top-0 left-0 transition-all duration-100 transform opacity-0 group-hover:scale-100 group-hover:opacity-100"
+            />
+          </Link>
+        </div>
         <SimpleBar
           className="main-sidebar"
           id="sidebar-scroll"
