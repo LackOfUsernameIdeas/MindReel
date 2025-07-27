@@ -178,52 +178,54 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
   };
 
   const handleClick = () => {
-    if (
-      !(
-        (selectedAnswer && selectedAnswer.length > 0) ||
-        (currentQuestion.isInput &&
-          typeof currentQuestion.value === "string" &&
-          currentQuestion.value.trim() !== "")
-      )
-    ) {
-      return;
-    }
+    const isInputValid =
+      currentQuestion.isInput &&
+      typeof currentQuestion.value === "string" &&
+      currentQuestion.value.trim() !== "";
+
+    const isAnswerSelected = selectedAnswer && selectedAnswer.length > 0;
+
+    if (!(isAnswerSelected || isInputValid)) return;
+
+    const isLastQuestion = currentQuestionIndex === totalQuestions - 1;
+
+    const isBrainAnalysisSelected = selectedAnswer?.includes(
+      "Мозъчен анализ - препоръките се дават на база анализ от устройство за измерване на мозъчни вълни"
+    );
+
+    const proceedToNext = () => {
+      if (isLastQuestion) {
+        return alreadyHasRecommendations
+          ? handleOpenModal()
+          : handleSubmit(
+              setNotification,
+              setLoading,
+              setSubmitted,
+              setSubmitCount,
+              setRecommendationList,
+              token,
+              submitCount,
+              false,
+              musicUserPreferences
+            );
+      }
+
+      handleNext(
+        setSelectedAnswer,
+        setShowQuestion,
+        setCurrentQuestionIndex,
+        questions
+      );
+    };
 
     // Handle the "Мозъчен анализ" case
-    if (
-      currentQuestionIndex === 0 &&
-      selectedAnswer?.includes(
-        "Мозъчен анализ - препоръките се дават на база анализ от устройство за измерване на мозъчни вълни"
-      )
-    ) {
-      // Set state to render BrainAnalysisSteps
-      setRenderBrainAnalysis(true);
-    } else {
-      if (currentQuestionIndex === totalQuestions - 1) {
-        if (alreadyHasRecommendations) {
-          handleOpenModal();
-        } else {
-          handleSubmit(
-            setNotification,
-            setLoading,
-            setSubmitted,
-            setSubmitCount,
-            setRecommendationList,
-            token,
-            submitCount,
-            false,
-            musicUserPreferences
-          );
-        }
-      } else {
-        handleNext(
-          setSelectedAnswer,
-          setShowQuestion,
-          setCurrentQuestionIndex,
-          questions
-        );
+    if (currentQuestionIndex === 0) {
+      if (isBrainAnalysisSelected) {
+        return setRenderBrainAnalysis(true);
       }
     }
+
+    proceedToNext();
   };
 
   const handleNotificationClose = () => {
