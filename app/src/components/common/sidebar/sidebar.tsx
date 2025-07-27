@@ -7,8 +7,8 @@ import store from "../../../redux/store";
 import SimpleBar from "simplebar-react";
 import Menuloop from "../../ui/menuloop";
 
-import gradientDark from "../../../assets/images/menu-bg-images/low-poly-grid-haikei-dark.svg";
-import gradientLight from "../../../assets/images/menu-bg-images/low-poly-grid-haikei-light.svg";
+import gradientDark from "../../../assets/images/menu-bg-images/layered-waves-haikei-dark.svg";
+import gradientLight from "../../../assets/images/menu-bg-images/layered-waves-haikei-light.svg";
 
 interface SidebarProps {}
 
@@ -448,16 +448,14 @@ const Sidebar: FC<SidebarProps> = ({ local_varaiable, ThemeChanger }: any) => {
         onMouseEnter={() => Onhover()}
         onMouseLeave={() => Outhover()}
         style={{
-          backgroundImage:
-            local_varaiable.class === "dark"
-              ? `url(${gradientDark})`
-              : `url(${gradientLight})`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
           transition: "background-image 0.3s ease"
         }}
       >
-        <SimpleBar className="main-sidebar" id="sidebar-scroll">
+        <SimpleBar
+          className="main-sidebar"
+          id="sidebar-scroll"
+          style={{ position: "relative", height: "100%" }}
+        >
           <nav className="main-menu-container nav nav-pills flex-column sub-open">
             <ul className="main-menu" onClick={() => Sideclick()}>
               {MENUITEMS.map((levelone: any) => (
@@ -531,6 +529,26 @@ const Sidebar: FC<SidebarProps> = ({ local_varaiable, ThemeChanger }: any) => {
             </ul>
           </nav>
         </SimpleBar>
+        {/* Bottom background image */}
+        <div
+          className="sidebar-bottom-image"
+          style={{
+            position: "absolute",
+            bottom: 0,
+            left: 0,
+            right: 0,
+            height: "75%",
+            backgroundImage:
+              local_varaiable.class === "dark"
+                ? `url(${gradientDark})`
+                : `url(${gradientLight})`,
+            backgroundSize: "cover",
+            backgroundPosition: "center bottom",
+            backgroundRepeat: "no-repeat",
+            pointerEvents: "none", // Prevents interference with menu interactions
+            zIndex: -1 // Places it behind the menu content
+          }}
+        />
       </aside>
     </Fragment>
   );
