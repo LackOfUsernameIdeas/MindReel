@@ -4856,12 +4856,12 @@ label {
   @apply -translate-x-full;
   @apply lg:translate-x-0 !important;
 }
-/* [data-toggled="close"] .app-sidebar .main-sidebar-header {
+[data-toggled="close"] .app-sidebar .main-sidebar-header {
   @apply hidden;
-} */
-/* [data-toggled="close"] .app-sidebar #sidebar-scroll {
+}
+[data-toggled="close"] .app-sidebar #sidebar-scroll {
   @apply mt-0;
-} */
+}
 [data-toggled="close"][dir="ltr"] .app-sidebar {
   @apply -translate-x-full;
 }

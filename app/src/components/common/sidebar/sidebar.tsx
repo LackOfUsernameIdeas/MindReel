@@ -13,7 +13,9 @@ import gradientLight from "../../../assets/images/menu-bg-images/layered-waves-h
 import logo from "../../../assets/images/brand-logos/logo_large.png";
 import logoPink from "../../../assets/images/brand-logos/logo_large_pink.png";
 
-const Sidebar: FC = ({ local_varaiable, ThemeChanger }: any) => {
+interface SidebarProps {}
+
+const Sidebar: FC<SidebarProps> = ({ local_varaiable, ThemeChanger }: any) => {
   const [menuitems, setMenuitems] = useState<any>(MENUITEMS);
 
   function closeMenuFn() {
@@ -187,6 +189,8 @@ const Sidebar: FC = ({ local_varaiable, ThemeChanger }: any) => {
       setMenuAncestorsActive(parent);
     } else if (!hasParent) {
       if (theme.dataVerticalStyle == "doublemenu") {
+        // console.log("closee")
+        // html.setAttribute('data-toggled', 'double-menu-close');
         ThemeChanger({ ...theme, toggled: "double-menu-close" });
       }
     }
@@ -442,7 +446,7 @@ const Sidebar: FC = ({ local_varaiable, ThemeChanger }: any) => {
         }}
       ></div>
       <aside
-        className="app-sidebar"
+        className="app-sidebar bg-primary dark:bg-bodybg"
         id="sidebar"
         onMouseEnter={() => Onhover()}
         onMouseLeave={() => Outhover()}
@@ -450,7 +454,7 @@ const Sidebar: FC = ({ local_varaiable, ThemeChanger }: any) => {
           transition: "background-image 0.3s ease"
         }}
       >
-        <div className="main-sidebar-header">
+        <div className="main-sidebar-header bg-primary dark:bg-bodybg">
           <Link
             to={`${import.meta.env.BASE_URL}app/recommendations`}
             className="header-logo group relative inline-block"
@@ -468,7 +472,7 @@ const Sidebar: FC = ({ local_varaiable, ThemeChanger }: any) => {
           </Link>
         </div>
         <SimpleBar
-          className="main-sidebar"
+          className="main-sidebar bg-primary dark:bg-bodybg"
           id="sidebar-scroll"
           style={{ position: "relative", height: "100%" }}
         >
@@ -553,7 +557,7 @@ const Sidebar: FC = ({ local_varaiable, ThemeChanger }: any) => {
             bottom: 0,
             left: 0,
             right: 0,
-            height: "75%",
+            height: "50%",
             backgroundImage:
               local_varaiable.class === "dark"
                 ? `url(${gradientDark})`
@@ -561,8 +565,7 @@ const Sidebar: FC = ({ local_varaiable, ThemeChanger }: any) => {
             backgroundSize: "cover",
             backgroundPosition: "center bottom",
             backgroundRepeat: "no-repeat",
-            pointerEvents: "none", // Prevents interference with menu interactions
-            zIndex: -1 // Places it behind the menu content
+            pointerEvents: "none" // Prevents interference with menu interactions
           }}
         />
       </aside>

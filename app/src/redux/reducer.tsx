@@ -6,7 +6,7 @@ const initialState = {
   dataNavLayout: "vertical",
   dataHeaderStyles: `${import.meta.env.VITE_DEFAULT_THEME}`,
   dataVerticalStyle: "overlay",
-  toggled: "close",
+  toggled: "",
   dataNavStyle: "menu-click",
   horStyle: "",
   dataPageStyle: "modern",
@@ -47,28 +47,7 @@ export default function reducer(state = initialState, action: any) {
         colorTertiaryRgb:
           payload.class === "dark" ? "153 226 180" : "70 157 137",
         colorTertiary: payload.class === "dark" ? "153 226 180" : "70 157 137",
-        lang: "bg",
-        dir: "ltr",
-        dataNavLayout: "vertical",
-        dataVerticalStyle: "overlay",
-        toggled: "close",
-        dataNavStyle: "menu-click",
-        horStyle: "",
-        dataPageStyle: "modern",
-        dataWidth: "fullwidth",
-        dataMenuPosition: "fixed",
-        dataHeaderPosition: "fixed",
-        loader: "disable",
-        iconOverlay: "",
-        bodyBg: "",
-        Light: "",
-        darkBg: "",
-        inputBorder: "",
-        bgImg: "",
-        iconText: "",
-        body: {
-          class: ""
-        }
+        dataNavLayout: "vertical"
       };
       return state;
 
