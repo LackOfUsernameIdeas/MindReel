@@ -128,24 +128,34 @@ export const Quiz: FC<QuizProps> = ({
               </button>
             </p>
           </div>
-          <RecommendationsList
-            recommendationList={recommendationList}
-            setCurrentBookmarkStatus={setCurrentBookmarkStatus}
-            currentIndex={currentIndex}
-            setCurrentIndex={setCurrentIndex}
-            setAlertVisible={setAlertVisible}
-            setBookmarkedMovies={setBookmarkedMovies}
-            bookmarkedMovies={bookmarkedMovies}
-          />
-          {recommendationList.length && isAnalysisUpdated() && (
-            <RecommendationsAnalysesWidgets
-              recommendationsAnalysis={recommendationsAnalysis}
-              currentIndex={currentIndex}
-              handlePrev={handlePrev}
-              handleNext={handleNext}
-              isSwitching={false}
-              newGeneration
-            />
+
+          {/* Conditional rendering based on renderVrScene */}
+          {renderVrScene ? (
+            <h1 className="text-3xl font-bold text-center text-white">
+              VR Scene Experience Complete
+            </h1>
+          ) : (
+            <>
+              <RecommendationsList
+                recommendationList={recommendationList}
+                setCurrentBookmarkStatus={setCurrentBookmarkStatus}
+                currentIndex={currentIndex}
+                setCurrentIndex={setCurrentIndex}
+                setAlertVisible={setAlertVisible}
+                setBookmarkedMovies={setBookmarkedMovies}
+                bookmarkedMovies={bookmarkedMovies}
+              />
+              {recommendationList.length && isAnalysisUpdated() && (
+                <RecommendationsAnalysesWidgets
+                  recommendationsAnalysis={recommendationsAnalysis}
+                  currentIndex={currentIndex}
+                  handlePrev={handlePrev}
+                  handleNext={handleNext}
+                  isSwitching={false}
+                  newGeneration
+                />
+              )}
+            </>
           )}
         </div>
       </CSSTransition>

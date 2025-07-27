@@ -417,6 +417,7 @@ export const generateMoviesSeriesRecommendations = async (
     console.error("Error generating recommendations:", error);
   }
 };
+
 /**
  * Записва препоръка за филм или сериал в базата данни.
  * Препоръката съдържа подробности за филма/сериала като заглавие, жанр, рейтинг и други.
