@@ -123,7 +123,7 @@ const MoviesAndSeriesByRatingsComponent: FC<
                       className={`ti-btn-group !border-0 !text-xs !py-2 !px-3 opsilion ${
                         category === moviesAndSeriesSortCategory
                           ? "ti-btn-primary-full text-white"
-                          : "text-[#CC3333] dark:text-[#E74581] bg-[#9A110A] dark:bg-[#AF0B48] bg-opacity-10 dark:bg-opacity-10"
+                          : "text-primary dark:text-primary bg-secondary/40 dark:bg-secondary/20"
                       } ${
                         index === 0
                           ? "rounded-l-md"
