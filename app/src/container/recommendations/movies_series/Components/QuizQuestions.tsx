@@ -204,89 +204,64 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
   };
 
   const handleClick = () => {
-    if (
-      !(
-        (selectedAnswer && selectedAnswer.length > 0) ||
-        (currentQuestion.isInput &&
-          typeof currentQuestion.value === "string" &&
-          currentQuestion.value.trim() !== "")
-      )
-    ) {
-      return;
-    }
+    const isInputValid =
+      currentQuestion.isInput &&
+      typeof currentQuestion.value === "string" &&
+      currentQuestion.value.trim() !== "";
 
-    // Handle the "Мозъчен анализ" case
-    if (
-      currentQuestionIndex === 0 &&
-      selectedAnswer?.includes(
-        "Мозъчен анализ - препоръките се дават на база анализ от устройство за измерване на мозъчни вълни"
-      )
-    ) {
-      // Set state to render BrainAnalysisSteps
-      setRenderBrainAnalysis(true);
-    } else if (
-      currentQuestionIndex === 0 &&
-      selectedAnswer?.includes(
-        "VR сцена - потапяне в киноизкуството чрез препоръчване на филми и сериали в реалистична VR среда"
-      )
-    ) {
-      // Set state to render VR Scene
-      setRenderVrScene(true);
+    const isAnswerSelected = selectedAnswer && selectedAnswer.length > 0;
 
-      if (currentQuestionIndex === totalQuestions - 1) {
-        if (alreadyHasRecommendations) {
-          handleOpenModal();
-        } else {
-          handleSubmit(
-            setNotification,
-            setLoading,
-            setSubmitted,
-            setSubmitCount,
-            setRecommendationList,
-            setRecommendationsAnalysis,
-            setBookmarkedMovies,
-            token,
-            submitCount,
-            false,
-            moviesSeriesUserPreferences
-          );
-        }
-      } else {
-        handleNext(
-          setSelectedAnswer,
-          setShowQuestion,
-          setCurrentQuestionIndex,
-          questions
-        );
+    if (!(isAnswerSelected || isInputValid)) return;
+
+    const isLastQuestion = currentQuestionIndex === totalQuestions - 1;
+
+    const isBrainAnalysisSelected = selectedAnswer?.includes(
+      "Мозъчен анализ - препоръките се дават на база анализ от устройство за измерване на мозъчни вълни"
+    );
+
+    const isVrSceneSelected = selectedAnswer?.includes(
+      "VR сцена - потапяне в киноизкуството чрез препоръчване на филми и сериали в реалистична VR среда"
+    );
+
+    const proceedToNext = () => {
+      if (isLastQuestion) {
+        return alreadyHasRecommendations
+          ? handleOpenModal()
+          : handleSubmit(
+              setNotification,
+              setLoading,
+              setSubmitted,
+              setSubmitCount,
+              setRecommendationList,
+              setRecommendationsAnalysis,
+              setBookmarkedMovies,
+              token,
+              submitCount,
+              false,
+              moviesSeriesUserPreferences
+            );
       }
-    } else {
-      if (currentQuestionIndex === totalQuestions - 1) {
-        if (alreadyHasRecommendations) {
-          handleOpenModal();
-        } else {
-          handleSubmit(
-            setNotification,
-            setLoading,
-            setSubmitted,
-            setSubmitCount,
-            setRecommendationList,
-            setRecommendationsAnalysis,
-            setBookmarkedMovies,
-            token,
-            submitCount,
-            false,
-            moviesSeriesUserPreferences
-          );
-        }
-      } else {
-        handleNext(
-          setSelectedAnswer,
-          setShowQuestion,
-          setCurrentQuestionIndex,
-          questions
-        );
+
+      handleNext(
+        setSelectedAnswer,
+        setShowQuestion,
+        setCurrentQuestionIndex,
+        questions
+      );
+    };
+
+    if (currentQuestionIndex === 0) {
+      if (isBrainAnalysisSelected) {
+        return setRenderBrainAnalysis(true);
+      }
+
+      if (isVrSceneSelected) {
+        setRenderVrScene(true);
+        return proceedToNext();
       }
     }
+
+    proceedToNext();
   };
 
   const handleNotificationClose = () => {
@@ -394,7 +369,7 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
           }`}
         >
           {/* Ако е избрана опцията за генериране на препоръки с устройство за анализ на мозъчните импулси, визуализираме компонента BrainAnalysisSteps */}
-          {renderVrScene ? (
+          {renderVrScene || !renderBrainAnalysis ? (
             <>
               <div className="question bg-opacity-70 border-2 text-white rounded-lg p-4 glow-effect transition-all duration-300">
                 <h2 className="text-xl font-semibold break-words">
@@ -648,7 +623,7 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
                 )}
               </div>
             </>
-          ) : renderBrainAnalysis ? (
+          ) : (
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -671,260 +646,6 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
                 isBrainAnalysisComplete={isBrainAnalysisComplete}
               />
             </motion.div>
-          ) : (
-            <>
-              <div className="question bg-opacity-70 border-2 text-white rounded-lg p-4 glow-effect transition-all duration-300">
-                <h2 className="text-xl font-semibold break-words">
-                  {currentQuestion.question}
-                </h2>
-                {currentQuestion.description && (
-                  <p className="text-sm text-gray-500 mt-2">
-                    {currentQuestion.description}
-                  </p>
-                )}
-              </div>
-              <div className={isBackDisabled ? "my-8" : "mb-2"}>
-                {!isBackDisabled && (
-                  <div className="flex justify-start ">
-                    <button
-                      onClick={() =>
-                        handleBack(
-                          setSelectedAnswer,
-                          setShowQuestion,
-                          setCurrentQuestionIndex,
-                          questions
-                        )
-                      }
-                      className="back-button text-secondary dark:text-white hover:opacity-70 text-3xl transition-all duration-300 "
-                    >
-                      &#8592;
-                    </button>
-                  </div>
-                )}
-              </div>
-              {currentQuestion.isInput ? (
-                <div className="mb-4">
-                  {currentQuestion.setter === setInterests ? (
-                    <div>
-                      <textarea
-                        className="form-control bg-opacity-70 border-2 rounded-lg p-4 mb-4 text-white glow-effect transition-all duration-300 hover:text-secondary"
-                        placeholder={currentQuestion.placeholder}
-                        value={interests}
-                        onChange={(e) => {
-                          handleInputChange(
-                            currentQuestion.setter,
-                            e.target.value
-                          );
-
-                          if (e.target.value.trim() === "") {
-                            setSelectedAnswer([]);
-                          } else {
-                            setSelectedAnswer([e.target.value]);
-                          }
-                        }}
-                        rows={4}
-                        maxLength={200}
-                        disabled={
-                          currentQuestion.value === "Нямам предпочитания"
-                        }
-                      />
-                      <div className="flex justify-between mx-2">
-                        <label className="flex items-center cursor-pointer hover:text-secondary">
-                          <input
-                            type="checkbox"
-                            className="checkbox"
-                            checked={
-                              currentQuestion.value === "Нямам предпочитания"
-                            }
-                            onChange={() => {
-                              const newValue =
-                                currentQuestion.value === "Нямам предпочитания"
-                                  ? ""
-                                  : "Нямам предпочитания";
-                              currentQuestion.setter(newValue);
-                              setSelectedAnswer(
-                                newValue === "" ? [] : [newValue]
-                              );
-                            }}
-                          />
-                          <span>Нямам предпочитания</span>
-                        </label>
-                        <div className="text-right mt-2">
-                          <small>{`${interests.length} / 200`}</small>
-                        </div>
-                      </div>
-                    </div>
-                  ) : (
-                    <div>
-                      <input
-                        type="text"
-                        className="input-field form-control bg-opacity-70 border-2 rounded-lg p-4 mb-4 text-white glow-effect transition-all duration-300 hover:text-secondary"
-                        placeholder={currentQuestion.placeholder}
-                        value={currentQuestion.value}
-                        onChange={(e) => {
-                          handleInputChange(
-                            currentQuestion.setter,
-                            e.target.value
-                          );
-                          if (e.target.value.trim() === "") {
-                            setSelectedAnswer([]);
-                          } else {
-                            setSelectedAnswer([e.target.value]);
-                          }
-                        }}
-                        disabled={
-                          currentQuestion.value === "Нямам предпочитания"
-                        }
-                        required
-                      />
-                      <div className="flex items-center text-white">
-                        <label className="flex items-center ml-2 cursor-pointer text-secondary dark:text-white hover:text-secondary">
-                          <input
-                            type="checkbox"
-                            className="checkbox"
-                            checked={
-                              currentQuestion.value === "Нямам предпочитания"
-                            }
-                            onChange={() => {
-                              const newValue =
-                                currentQuestion.value === "Нямам предпочитания"
-                                  ? ""
-                                  : "Нямам предпочитания";
-                              currentQuestion.setter(newValue);
-                              setSelectedAnswer(
-                                newValue === "" ? [] : [newValue]
-                              );
-                            }}
-                          />
-                          <span className="ml-2">Нямам предпочитания</span>
-                        </label>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              ) : (
-                <div
-                  className={`grid gap-4 ${
-                    (currentQuestion.options?.length ?? 0) > 6
-                      ? "grid-cols-2 md:grid-cols-5"
-                      : "grid-cols-1"
-                  }`}
-                >
-                  {currentQuestion.options?.map(
-                    (option: any, index: number) => {
-                      if (
-                        Array.isArray(currentQuestion.options) &&
-                        currentQuestion.options.every(isGenreOption)
-                      ) {
-                        return (
-                          <div
-                            key={index}
-                            onClick={() =>
-                              handleAnswerClick(
-                                currentQuestion.setter,
-                                option.bg,
-                                setGenres,
-                                currentQuestion,
-                                selectedAnswer,
-                                setSelectedAnswer
-                              )
-                            }
-                            className={`${
-                              selectedAnswer &&
-                              selectedAnswer.includes(option.bg)
-                                ? "selected-answer transform scale-105"
-                                : "question hover:bg-secondary hover:text-white"
-                            } bg-opacity-70 p-6 text-white rounded-lg glow-effect transition-all duration-300 cursor-pointer flex justify-center items-center text-center`}
-                          >
-                            {option.bg}
-                          </div>
-                        );
-                      } else {
-                        return (
-                          <div
-                            key={index}
-                            onClick={() =>
-                              handleAnswerClick(
-                                currentQuestion.setter,
-                                option,
-                                setGenres,
-                                currentQuestion,
-                                selectedAnswer,
-                                setSelectedAnswer
-                              )
-                            }
-                            className={`${
-                              selectedAnswer && selectedAnswer.includes(option)
-                                ? "selected-answer transform scale-105"
-                                : "question hover:bg-secondary hover:text-white"
-                            } bg-opacity-70 p-6 text-white rounded-lg glow-effect transition-all duration-300 cursor-pointer ${
-                              currentQuestion.options === moodOptions
-                                ? "flex flex-col"
-                                : "flex"
-                            } justify-center items-center text-center`}
-                          >
-                            {currentQuestion.options === moodOptions ? (
-                              <>
-                                <span>{option.split(" ")[0]}</span>
-                                <span className="text-lg">
-                                  {option.split(" ").slice(-1)}
-                                </span>{" "}
-                              </>
-                            ) : (
-                              <>{option}</>
-                            )}
-                          </div>
-                        );
-                      }
-                    }
-                  )}
-                </div>
-              )}
-              <div>
-                <div
-                  onClick={handleClick}
-                  className={`next glow-next bg-opacity-70 text-white font-bold rounded-lg p-6 mt-4 flex justify-center items-center transition-all duration-300 ease-in-out transform ${
-                    (selectedAnswer && selectedAnswer.length > 0) ||
-                    (currentQuestion.isInput &&
-                      typeof currentQuestion.value === "string" &&
-                      currentQuestion.value.trim() !== "")
-                      ? "opacity-100 pointer-events-auto cursor-pointer hover:scale-105"
-                      : "opacity-50 pointer-events-none cursor-not-allowed"
-                  }`}
-                >
-                  {currentQuestionIndex === totalQuestions - 1
-                    ? "Изпрати"
-                    : "Следващ въпрос"}
-                </div>
-                {/* Modal Component */}
-                {isModalOpen && alreadyHasRecommendations && (
-                  <div
-                    className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
-                    role="dialog"
-                    aria-modal="true"
-                  >
-                    <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-lg">
-                      <ConfirmationModal
-                        setNotification={setNotification}
-                        setIsModalOpen={setIsModalOpen}
-                        setLoading={setLoading}
-                        setSubmitted={setSubmitted}
-                        handleSubmit={handleSubmit}
-                        setRecommendationList={setRecommendationList}
-                        setRecommendationsAnalysis={setRecommendationsAnalysis}
-                        setBookmarkedMovies={setBookmarkedMovies}
-                        setSubmitCount={setSubmitCount}
-                        moviesSeriesUserPreferences={
-                          moviesSeriesUserPreferences
-                        }
-                        token={token}
-                        submitCount={submitCount}
-                      />
-                    </div>
-                  </div>
-                )}
-              </div>
-            </>
           )}
         </div>
       </CSSTransition>
