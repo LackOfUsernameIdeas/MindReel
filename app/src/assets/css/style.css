@@ -604,12 +604,6 @@ Background Image
   @apply text-primary;
 }
 
-.tech-stack img {
-  max-width: 150px;
-  width: 100%;
-  margin: 0 auto;
-}
-
 .footer-text {
   display: block;
 }
@@ -665,10 +659,6 @@ Background Image
 
   .footer-links a {
     font-size: 0.9rem; /* Slightly smaller text for links */
-  }
-
-  .tech-stack img {
-    max-width: 120px; /* Reduce image size for smaller screens */
   }
 }
 
