@@ -457,7 +457,23 @@ const Sidebar: FC<SidebarProps> = ({ local_varaiable, ThemeChanger }: any) => {
         <div
           className="main-sidebar-header"
           style={{ boxSizing: "border-box" }}
-        ></div>
+        >
+          <Link
+            to={`${import.meta.env.BASE_URL}app/recommendations`}
+            className="header-logo group relative inline-block"
+          >
+            <img
+              src={local_varaiable.class === "dark" ? logoPink : logo}
+              alt="logo"
+              className="transition-all duration-100 transform opacity-100 scale-90 group-hover:scale-110 group-hover:opacity-0"
+            />
+            <img
+              src={local_varaiable.class === "dark" ? logoPink : logo}
+              alt="logo-hover"
+              className="absolute top-0 left-0 transition-all duration-100 transform opacity-0 group-hover:scale-100 group-hover:opacity-100"
+            />
+          </Link>
+        </div>
         <SimpleBar
           className="main-sidebar bg-primary dark:bg-bodybg"
           id="sidebar-scroll"
