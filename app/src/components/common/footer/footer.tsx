@@ -7,18 +7,6 @@ import { Link } from "react-router-dom";
 const Footer: FC = () => (
   <Fragment>
     <div className="relative">
-      {/* Gradient Background */}
-      <img
-        src={gradientLight}
-        alt="Gradient Background Light"
-        className="absolute bottom-0 left-0 w-full h-auto dark:hidden z-[-1]"
-      />
-      <img
-        src={gradientDark}
-        alt="Gradient Background Dark"
-        className="absolute bottom-0 left-0 w-full h-auto hidden dark:block z-[-1]"
-      />
-
       {/* Footer Content */}
       <footer className="footer font-normal font-Opsilon !bg-white text-defaultsize leading-normal text-[0.813] shadow-[0_0_0.4rem_rgba(0,0,0,0.1)] dark:!bg-bodybg py-8 rounded-[2rem] border-t-4 border-t-primary mt-[3rem] mx-4 mb-4 relative z-10">
         <div className="container mx-auto px-8">

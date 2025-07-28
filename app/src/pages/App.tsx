@@ -8,6 +8,9 @@ import store from "../redux/store";
 import { Provider } from "react-redux";
 import { Outlet } from "react-router-dom";
 
+import gradientDark from "../assets/images/menu-bg-images/layered-peaks-haikei-dark.svg";
+import gradientLight from "../assets/images/menu-bg-images/layered-peaks-haikei-light.svg";
+
 function App() {
   const [MyclassName, setMyClass] = useState("");
 
@@ -51,9 +54,20 @@ function App() {
               <div className="main-content" onClick={Bodyclickk}>
                 <Outlet />
               </div>
+              <Footer />
             </div>
-            <Footer />
           </div>
+          {/* Gradient Background */}
+          <img
+            src={gradientLight}
+            alt="Gradient Background Light"
+            className="absolute bottom-0 left-0 w-full h-auto dark:hidden z-[-1]"
+          />
+          <img
+            src={gradientDark}
+            alt="Gradient Background Dark"
+            className="absolute bottom-0 left-0 w-full h-auto hidden dark:block z-[-1]"
+          />
         </HelmetProvider>
       </Provider>
     </Fragment>

@@ -4706,10 +4706,10 @@ label {
 }
 
 .app-sidebar {
-  @apply w-[15rem] h-full bg-[#111c43] dark:bg-bodybg dark:border-e dark:border-e-white/10 fixed top-0 start-0 font-Opsilon z-[49] transition-all ease-linear duration-[0.05s];
+  @apply w-[15rem] h-full bg-[#111c43] dark:bg-bodybg border-e border-e-white/10 fixed top-0 start-0 font-Opsilon z-[49] transition-all ease-linear duration-[0.05s];
 }
 .app-sidebar .main-sidebar-header {
-  @apply h-[3.75rem] w-[15rem] fixed flex dark:bg-bodybg z-[9] items-center justify-center py-[0.813rem] px-5 border-b border-b-white/10 dark:border-e dark:border-e-white/10 transition-all ease-linear duration-[0.05s];
+  @apply h-[3.75rem] w-[15rem] fixed flex dark:bg-bodybg z-[9] items-center justify-center py-[0.813rem] px-5 border-b border-b-white/10 border-e dark:border-e-white/10 transition-all ease-linear duration-[0.05s];
 }
 .app-sidebar .main-sidebar-header .header-logo img {
   @apply h-8 leading-8;
@@ -10766,7 +10766,7 @@ label {
   @apply border-black/50;
 }
 [data-menu-styles="light"] .app-sidebar .main-sidebar-header {
-  @apply bg-primary border-b-[defaultborder/10] border-r-0 backdrop-blur-3xl !important;
+  @apply bg-primary border-b-[defaultborder/10] backdrop-blur-3xl !important;
 }
 [data-menu-styles="light"] .app-sidebar .main-sidebar-header .header-logo img {
   @apply h-8 leading-8;

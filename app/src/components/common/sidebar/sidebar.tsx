@@ -454,7 +454,10 @@ const Sidebar: FC<SidebarProps> = ({ local_varaiable, ThemeChanger }: any) => {
           transition: "background-image 0.3s ease"
         }}
       >
-        <div className="main-sidebar-header">
+        <div
+          className="main-sidebar-header"
+          style={{ boxSizing: "border-box" }}
+        >
           <Link
             to={`${import.meta.env.BASE_URL}app/recommendations`}
             className="header-logo group relative inline-block"
