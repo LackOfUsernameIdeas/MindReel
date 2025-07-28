@@ -4706,10 +4706,10 @@ label {
 }
 
 .app-sidebar {
-  @apply w-[15rem] h-full bg-[#111c43] dark:bg-bodybg border-e border-e-white/10 fixed top-0 start-0 font-Opsilon z-[49] transition-all ease-linear duration-[0.05s];
+  @apply w-[15rem] h-full bg-[#111c43] dark:bg-bodybg dark:border-e dark:border-e-white/10 fixed top-0 start-0 font-Opsilon z-[49] transition-all ease-linear duration-[0.05s];
 }
 .app-sidebar .main-sidebar-header {
-  @apply h-[3.75rem] w-[15rem] fixed flex  dark:bg-bodybg z-[9] items-center justify-center py-[0.813rem] px-5 border-b border-b-white/10 border-e border-e-white/10 transition-all ease-linear duration-[0.05s];
+  @apply h-[3.75rem] w-[15rem] fixed flex dark:bg-bodybg z-[9] items-center justify-center py-[0.813rem] px-5 border-b border-b-white/10 dark:border-e dark:border-e-white/10 transition-all ease-linear duration-[0.05s];
 }
 .app-sidebar .main-sidebar-header .header-logo img {
   @apply h-8 leading-8;
@@ -10766,7 +10766,7 @@ label {
   @apply border-black/50;
 }
 [data-menu-styles="light"] .app-sidebar .main-sidebar-header {
-  @apply bg-white border-[#f3f3f3] backdrop-blur-3xl !important;
+  @apply bg-primary border-b-[defaultborder/10] border-r-0 backdrop-blur-3xl !important;
 }
 [data-menu-styles="light"] .app-sidebar .main-sidebar-header .header-logo img {
   @apply h-8 leading-8;
@@ -10816,13 +10816,13 @@ label {
   @apply text-[#ffffff] bg-white/[0.10] !important;
 }
 [data-menu-styles="light"] .app-sidebar .side-sub-menu__icon {
-  @apply text-[#536485] !important;
+  @apply text-[#ffffff] !important;
 }
 [data-menu-styles="light"] .app-sidebar .side-sub-menu__item {
-  @apply text-[#536485];
+  @apply text-[#ffffff];
 }
 [data-menu-styles="light"] .app-sidebar .side-sub-menu__item:hover {
-  @apply text-[#536485] bg-white/[0.10] !important;
+  @apply text-[#ffffff] bg-white/[0.10] !important;
 }
 [data-menu-styles="light"]
   .app-sidebar
@@ -10832,13 +10832,13 @@ label {
   .app-sidebar
   .side-menu__item:hover
   .side-menu__angle {
-  @apply text-[#536485];
+  @apply text-[#ffffff];
 }
 [data-menu-styles="light"]
   .app-sidebar
   .side-menu__item:hover
   .side-menu__icon {
-  @apply text-[#ffffff] fill-[#536485] !important;
+  @apply text-[#ffffff] fill-[#ffffff] !important;
 }
 [data-menu-styles="light"] .app-sidebar .side-menu__item.active {
   @apply font-semibold bg-white/[0.10];
@@ -10846,7 +10846,7 @@ label {
 [data-menu-styles="light"] .app-sidebar .slide-menu.child1 .side-menu__item,
 [data-menu-styles="light"] .app-sidebar .slide-menu.child2 .side-menu__item,
 [data-menu-styles="light"] .app-sidebar .slide-menu.child3 .side-menu__item {
-  @apply text-[#536485] before:border-[#536485]/80;
+  @apply text-[#ffffff] before:border-[#ffffff]/80;
 }
 [data-menu-styles="light"]
   .app-sidebar
@@ -10896,7 +10896,7 @@ label {
   .app-sidebar
   .slide-menu.child3
   .side-menu__item.hover {
-  @apply text-[#536485] before:border-[#536485] !important;
+  @apply text-[#ffffff] before:border-[#ffffff] !important;
 }
 [data-menu-styles="light"]
   .app-sidebar
@@ -10958,10 +10958,10 @@ label {
   .slide-menu.child3
   .side-menu__item.hover
   .side-menu__angle {
-  @apply text-[#536485] !important;
+  @apply text-[#ffffff] !important;
 }
 [data-menu-styles="light"] .app-sidebar .slide__category {
-  @apply text-[#536485];
+  @apply text-[#ffffff];
 }
 [data-menu-styles="light"][data-vertical-style="overlay"][data-toggled="icon-overlay-close"]:not(
     [icon-overlay="open"]
@@ -11480,16 +11480,16 @@ label {
   @apply bg-white border-[#f3f3f3] !important;
 }
 [data-menu-styles="light"].dark .app-sidebar .side-menu__label {
-  @apply text-[#536485] !important;
+  @apply text-[#ffffff] !important;
 }
 [data-menu-styles="light"].dark .app-sidebar .side-menu__icon {
-  @apply text-[#536485] !important;
+  @apply text-[#ffffff] !important;
 }
 [data-menu-styles="light"].dark .app-sidebar .side-menu__item {
-  @apply text-[#536485];
+  @apply text-[#ffffff];
 }
 [data-menu-styles="light"].dark .app-sidebar .side-menu__item:hover {
-  @apply text-[#536485] bg-[#f3f6f8] !important;
+  @apply text-[#ffffff] bg-[#f3f6f8] !important;
 }
 [data-menu-styles="light"].dark
   .app-sidebar
@@ -11572,7 +11572,7 @@ label {
   .app-sidebar
   .slide-menu.child3
   .side-menu__item.hover {
-  @apply text-[#536485] before:border-[#536485] !important;
+  @apply text-[#ffffff] before:border-[#536485] !important;
 }
 [data-menu-styles="light"].dark
   .app-sidebar

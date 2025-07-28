@@ -15,7 +15,7 @@ const Header: FC<HeaderProps> = ({ local_varaiable, ThemeChanger }: any) => {
       class: local_varaiable.class == "dark" ? "light" : "dark",
       dataHeaderStyles: local_varaiable.class == "dark" ? "light" : "dark",
       dataMenuStyles:
-        local_varaiable.dataNavLayout == "horizontal"
+        local_varaiable.dataNavLayout == "vertical"
           ? local_varaiable.class == "dark"
             ? "light"
             : "dark"

@@ -11,7 +11,7 @@ export function Dark(actionfunction: any) {
     class: "dark",
     dataHeaderStyles: "dark",
     dataMenuStyles: "dark",
-    dataNavLayout: "horizontal",
+    dataNavLayout: "vertical",
     dataVerticalStyle: "overlay",
     toggled: "",
     dataNavStyle: "menu-click",
@@ -52,7 +52,7 @@ export function Light(actionfunction: any) {
     class: "light",
     dataHeaderStyles: "light",
     dataMenuStyles: "light",
-    dataNavLayout: "horizontal",
+    dataNavLayout: "vertical",
     dataVerticalStyle: "overlay",
     toggled: "",
     dataNavStyle: "menu-click",
@@ -116,7 +116,7 @@ export const HorizontalClick = (actionfunction: any) => {
     class: "light",
     dataHeaderStyles: "light",
     dataMenuStyles: "light",
-    dataNavLayout: "horizontal",
+    dataNavLayout: "vertical",
     dataVerticalStyle: "overlay",
     toggled: "",
     dataNavStyle: "menu-click",
@@ -143,7 +143,7 @@ export const HorizontalClick = (actionfunction: any) => {
       class: ""
     }
   });
-  localStorage.setItem("artlayout", "horizontal");
+  localStorage.setItem("artlayout", "vertical");
   localStorage.removeItem("artverticalstyles");
   closeMenuFn();
   const Sidebar: any = document.querySelector(".main-menu");
@@ -160,7 +160,7 @@ export const Vertical = (actionfunction: any) => {
     class: "light",
     dataHeaderStyles: "light",
     dataMenuStyles: "light",
-    dataNavLayout: "horizontal",
+    dataNavLayout: "vertical",
     dataVerticalStyle: "overlay",
     toggled: "",
     dataNavStyle: "menu-click",
@@ -187,7 +187,7 @@ export const Vertical = (actionfunction: any) => {
       class: ""
     }
   });
-  localStorage.setItem("artlayout", "horizontal");
+  localStorage.setItem("artlayout", "vertical");
   localStorage.removeItem("artnavstyles");
 };
 
@@ -348,7 +348,7 @@ export const Defaultmenu = (actionfunction: any) => {
     class: "light",
     dataHeaderStyles: "light",
     dataMenuStyles: "light",
-    dataNavLayout: "horizontal",
+    dataNavLayout: "vertical",
     dataVerticalStyle: "overlay",
     toggled: "",
     dataNavStyle: "menu-click",
@@ -388,7 +388,7 @@ export const Closedmenu = (actionfunction: any) => {
   const theme = store.getState();
   actionfunction({
     ...theme,
-    dataNavLayout: "horizontal",
+    dataNavLayout: "vertical",
     dataVerticalStyle: "closed",
     toggled: "close-menu-close",
     dataNavStyle: ""
@@ -413,7 +413,7 @@ export const iconTextfn = (actionfunction: any) => {
   const theme = store.getState();
   actionfunction({
     ...theme,
-    dataNavLayout: "horizontal",
+    dataNavLayout: "vertical",
     dataVerticalStyle: "icontext",
     toggled: "icon-text-close",
     dataNavStyle: ""
@@ -435,7 +435,7 @@ export const iconOverayFn = (actionfunction: any) => {
   const theme = store.getState();
   actionfunction({
     ...theme,
-    dataNavLayout: "horizontal",
+    dataNavLayout: "vertical",
     dataVerticalStyle: "overlay",
     toggled: "icon-overlay-close",
     dataNavStyle: ""
@@ -485,7 +485,7 @@ export const DetachedFn = (actionfunction: any) => {
   const theme = store.getState();
   actionfunction({
     ...theme,
-    dataNavLayout: "horizontal",
+    dataNavLayout: "vertical",
     dataVerticalStyle: "detached",
     toggled: "detached-close",
     dataNavStyle: ""
@@ -508,7 +508,7 @@ export const DoubletFn = (actionfunction: any) => {
   const theme = store.getState();
   actionfunction({
     ...theme,
-    dataNavLayout: "horizontal",
+    dataNavLayout: "vertical",
     dataVerticalStyle: "doublemenu",
     toggled: "double-menu-open",
     dataNavStyle: ""
@@ -888,7 +888,7 @@ export const Reset = (actionfunction: any) => {
     dir: "ltr",
     class: `${import.meta.env.VITE_DEFAULT_THEME}`,
     dataMenuStyles: `${import.meta.env.VITE_DEFAULT_THEME}`,
-    dataNavLayout: "horizontal",
+    dataNavLayout: "vertical",
     dataHeaderStyles: `${import.meta.env.VITE_DEFAULT_THEME}`,
     dataVerticalStyle: "overlay",
     toggled: "",
@@ -933,7 +933,7 @@ export const Reset1 = (actionfunction: any) => {
     dir: "ltr",
     class: `${import.meta.env.VITE_DEFAULT_THEME}`,
     dataMenuStyles: `${import.meta.env.VITE_DEFAULT_THEME}`,
-    dataNavLayout: "horizontal",
+    dataNavLayout: "vertical",
     dataHeaderStyles: `${import.meta.env.VITE_DEFAULT_THEME}`,
     dataVerticalStyle: "overlay",
     toggled: "",

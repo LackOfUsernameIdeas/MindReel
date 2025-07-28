@@ -446,7 +446,7 @@ const Sidebar: FC<SidebarProps> = ({ local_varaiable, ThemeChanger }: any) => {
         }}
       ></div>
       <aside
-        className="app-sidebar bg-primary dark:bg-bodybg"
+        className="app-sidebar"
         id="sidebar"
         onMouseEnter={() => Onhover()}
         onMouseLeave={() => Outhover()}
@@ -454,7 +454,7 @@ const Sidebar: FC<SidebarProps> = ({ local_varaiable, ThemeChanger }: any) => {
           transition: "background-image 0.3s ease"
         }}
       >
-        <div className="main-sidebar-header bg-primary dark:bg-bodybg">
+        <div className="main-sidebar-header">
           <Link
             to={`${import.meta.env.BASE_URL}app/recommendations`}
             className="header-logo group relative inline-block"
