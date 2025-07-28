@@ -8818,7 +8818,7 @@ label {
 }
 
 [data-header-styles="light"] .app-header {
-  @apply bg-white border-[#f3f3f3] !important;
+  @apply bg-bodybg border-[#f3f3f3] !important;
 }
 [data-header-styles="light"]
   .app-header
