@@ -30,7 +30,7 @@ const FadeInWrapper: React.FC<FadeInWrapperProps> = ({
     <>
       <CSSTransition
         in={loading}
-        timeout={500}
+        timeout={100}
         classNames="fade"
         unmountOnExit
         key="loading"

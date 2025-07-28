@@ -61,7 +61,7 @@ export const Quiz: FC<QuizProps> = ({
     <div className="flex items-center justify-center px-4">
       <CSSTransition
         in={loading}
-        timeout={500}
+        timeout={100}
         classNames="fade"
         unmountOnExit
         key="loading"

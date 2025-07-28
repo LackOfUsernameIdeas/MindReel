@@ -144,7 +144,7 @@ const ChooseRecommendations: FC = () => {
       {/* Анимация за показване на Loader при зареждане */}
       <CSSTransition
         in={loading} // Loader се показва, ако зареждаме
-        timeout={500} // Продължителност на анимацията
+        timeout={100} // Продължителност на анимацията
         classNames="fade" // CSS класове за анимация
         unmountOnExit // Loader се премахва от DOM, ако не се показва
         key="loading"
