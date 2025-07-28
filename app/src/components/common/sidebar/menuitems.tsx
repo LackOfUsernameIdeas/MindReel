@@ -1,6 +1,6 @@
 export const MENUITEMS = [
   {
-    menutitle: "ГЛАВНИ СТРАНИЦИ"
+    menutitle: "ОСНОВНИ СТРАНИЦИ"
   },
   {
     path: `${import.meta.env.BASE_URL}app/recommendations`,
@@ -71,6 +71,9 @@ export const MENUITEMS = [
     ]
   },
   {
+    menutitle: "СТАТИСТИКИ"
+  },
+  {
     icon: <i className="side-menu__icon bx bx-line-chart"></i>,
     type: "sub",
     Name: "",
@@ -88,7 +91,7 @@ export const MENUITEMS = [
         type: "link",
         active: false,
         selected: false,
-        title: "Най-успешни филми по Просперитет, IMDb Рейтинг и Боксофис"
+        title: "Най-успешни филми"
       },
       {
         path: `${
@@ -98,7 +101,7 @@ export const MENUITEMS = [
         type: "link",
         active: false,
         selected: false,
-        title: "Актьори, режисьори и сценаристи по Просперитет"
+        title: "Творци"
       },
       {
         path: `${
@@ -108,7 +111,7 @@ export const MENUITEMS = [
         type: "link",
         active: false,
         selected: false,
-        title: "Популярност на жанровете във времето"
+        title: "Жанрове"
       },
       {
         path: `${import.meta.env.BASE_URL}app/platformStats/topRecommendations`,
@@ -126,7 +129,7 @@ export const MENUITEMS = [
         type: "link",
         active: false,
         selected: false,
-        title: "Филми и сериали по оценки"
+        title: "Заглавия по оценки"
       },
       {
         path: `${import.meta.env.BASE_URL}app/platformStats/topCountries`,
