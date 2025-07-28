@@ -8,7 +8,7 @@ export const ViewRecommendations: FC<ViewRecommendationsProps> = ({
   setShowQuestion
 }) => {
   return (
-    <div className="mt-6 text-center">
+    <div className="m-6 text-center">
       <p className="text-lg text-gray-600">
         Искате да се върнете при препоръките?{" "}
         <button
