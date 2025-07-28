@@ -13,7 +13,7 @@ const Loader: FC<LoaderProps> = ({
   loadingMessage = "Зареждане..."
 }) => {
   return (
-    <div className="fixed inset-0 flex flex-col items-center justify-center space-y-4 text-center">
+    <div className="flex flex-col justify-center items-center h-screen">
       {brainAnalysis ? (
         <CSSTransition in={true} appear timeout={300} unmountOnExit>
           <div className="flex flex-col items-center justify-center space-y-4">
