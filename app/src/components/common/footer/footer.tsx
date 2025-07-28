@@ -1,7 +1,5 @@
 import { FC, Fragment } from "react";
 
-import gradientDark from "../../../assets/images/menu-bg-images/layered-peaks-haikei-dark.svg";
-import gradientLight from "../../../assets/images/menu-bg-images/layered-peaks-haikei-light.svg";
 import { Link } from "react-router-dom";
 
 const Footer: FC = () => (
@@ -19,9 +17,10 @@ const Footer: FC = () => (
                 <span className="footer-brand-name-compass">КОМПАС</span>
               </div>
               <ul className="footer-links">
-                <li>НОИТ 2025</li>
+                <li>НЕТИТ "Джон Атанасов" 2025</li>
+                <li>Разпределени приложения</li>
                 <li>Калоян Костадинов</li>
-                <li>Мария Малчева</li>
+                <li>Ивайло Здравков</li>
                 <li>
                   <a
                     href="https://pgi-pernik.bg-schools.com/"
@@ -60,13 +59,12 @@ const Footer: FC = () => (
                 </li>
               </ul>
             </div>
-
             <div className="footer-column">
               <h3 className="footer-title !text-[1.25rem] !max-sm:text-[1.1rem]">
                 Източници
               </h3>
-              <ul className="footer-links">
-                <li>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-2 auto-rows-min footer-links">
+                <div className="flex items-center space-x-2 md:ml-[2rem]">
                   <a
                     href="https://platform.openai.com/docs/overview"
                     target="_blank"
@@ -77,10 +75,10 @@ const Footer: FC = () => (
                       <span>OpenAI API</span>
                     </div>
                   </a>
-                </li>
-                <li>
+                </div>
+                <div className="flex items-center space-x-2 md:ml-[2rem]">
                   <a
-                    href="https://www.omdbapi.com/#top"
+                    href="https://ai.google.dev/gemini-api/docs"
                     target="_blank"
                     rel="noopener noreferrer"
                   >
@@ -89,8 +87,8 @@ const Footer: FC = () => (
                       <span>Gemini API</span>
                     </div>
                   </a>
-                </li>
-                <li>
+                </div>
+                <div className="flex items-center space-x-[0.40rem] md:ml-[2rem]">
                   <a
                     href="https://www.omdbapi.com/#top"
                     target="_blank"
@@ -101,20 +99,8 @@ const Footer: FC = () => (
                       <span>OMDb API</span>
                     </div>
                   </a>
-                </li>
-                <li>
-                  <a
-                    href="https://www.omdbapi.com/#top"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <div className="space-x-1">
-                      <i className="ti ti-brand-google text-lg sm:text-xs"></i>
-                      <span>Google Books API</span>
-                    </div>
-                  </a>
-                </li>
-                <li>
+                </div>
+                <div className="flex items-center space-x-2 md:ml-[2rem]">
                   <a
                     href="https://developers.google.com/custom-search/v1/introduction"
                     target="_blank"
@@ -122,11 +108,59 @@ const Footer: FC = () => (
                   >
                     <div className="space-x-1">
                       <i className="ti ti-world-search text-lg sm:text-xs"></i>
-                      <span>Google Custom Search JSON API</span>
+                      <span>Search API</span>
                     </div>
                   </a>
-                </li>
-              </ul>
+                </div>
+                <div className="flex items-center space-x-2 md:ml-[2rem]">
+                  <a
+                    href="https://developers.google.com/books"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <div className="space-x-1">
+                      <i className="ti ti-brand-google text-lg sm:text-xs"></i>
+                      <span>Books API</span>
+                    </div>
+                  </a>
+                </div>
+                <div className="flex items-center space-x-2 md:ml-[2rem]">
+                  <a
+                    href="https://www.goodreads.com"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <div className="space-x-1">
+                      <i className="ti ti-book text-lg sm:text-xs"></i>
+                      <span>Goodreads</span>
+                    </div>
+                  </a>
+                </div>
+                <div className="flex items-center space-x-2 md:ml-[2rem]">
+                  <a
+                    href="https://developers.google.com/youtube/v3"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <div className="space-x-1">
+                      <i className="ti ti-brand-youtube text-lg sm:text-xs"></i>
+                      <span>YouTube API</span>
+                    </div>
+                  </a>
+                </div>
+                <div className="flex items-center space-x-2 md:ml-[2rem]">
+                  <a
+                    href="https://developer.spotify.com/documentation/web-api"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <div className="space-x-1">
+                      <i className="ti ti-brand-spotify text-lg sm:text-xs"></i>
+                      <span>Spotify API</span>
+                    </div>
+                  </a>
+                </div>
+              </div>
             </div>
 
             <div className="footer-column">

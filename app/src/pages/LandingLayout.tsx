@@ -5,6 +5,9 @@ import { storeLanding } from "../redux/store";
 import Landingswitcher from "../components/common/switcher/landingswitcher";
 import Footer from "@/components/common/footer/footer";
 
+import gradientDark from "../assets/images/menu-bg-images/layered-peaks-haikei-dark.svg";
+import gradientLight from "../assets/images/menu-bg-images/layered-peaks-haikei-light.svg";
+
 function Landinglayout() {
   useEffect(() => {
     import("preline");
@@ -31,6 +34,17 @@ function Landinglayout() {
           </div>
           <Footer />
         </div>
+        {/* Gradient Background */}
+        <img
+          src={gradientLight}
+          alt="Gradient Background Light"
+          className="absolute bottom-0 left-0 w-full h-auto dark:hidden z-[-1]"
+        />
+        <img
+          src={gradientDark}
+          alt="Gradient Background Dark"
+          className="absolute bottom-0 left-0 w-full h-auto hidden dark:block z-[-1]"
+        />
       </Provider>
     </Fragment>
   );
