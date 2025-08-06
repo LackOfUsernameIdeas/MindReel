@@ -72,11 +72,11 @@ export const musicStandardPreferencesPrompt = (
   } = userPreferences;
 
   return {
-    model: "gpt-4o-2024-08-06",
+    model: "gpt-4.1-2025-04-14",
     messages: [
       {
         role: "system",
-        content: `You are an AI that recommends music based on user preferences. Provide a list of songs, that match the user's taste and preferences, formatted in Bulgarian, with detailed justifications. Return the result in JSON format as instructed.`
+        content: `You are an AI that recommends music based on user preferences. Only suggest REAL, existing songs and artists. Do not invent songs. Ensure all songs can be found on YouTube or Spotify. Return a valid JSON response formatted in Bulgarian, with justifications.`
       },
       {
         role: "user",
@@ -89,10 +89,9 @@ export const musicStandardPreferencesPrompt = (
               Теми, които ме интересуват в музиката: ${interests}.
               Песните могат да бъдат от следните страни: ${countries}.
               Темпото на песните предпочитам да бъде: ${pacing}.
-              Предпочитам песните да са: ${depth}.
+              Предпочитам нивото на задълбочаване на песните да е: ${depth}.
               Целевата група е: ${targetGroup}.
               Дай информация за всяка песен поотделно защо тя е подходяща за мен.
-              Не препоръчвай песни с нецензурно съдържание или неподходящи теми.
               Форматирай своя response във валиден JSON формат по този начин:
               {
                 'Официално име на песента на английски, както е прието да бъде': {
