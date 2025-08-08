@@ -185,12 +185,12 @@ const fetchSpotifyTrackData = async (
  * @async
  * @function fetchMostPopularYouTubeVideoID
  * @param {string} query - query на песента, за която се търси видеоклип.
- * @param {number} maxResults - максимален брой резултати за проверка (по подразбиране 10).
+ * @param {number} maxResults - максимален брой резултати за проверка (по подразбиране 5).
  * @returns {Promise<{videoId: string, stats: Object}|null>} - Връща обект с videoId и статистики или null.
  */
 const fetchMostPopularYouTubeVideoID = async (
   query: string,
-  maxResults: number = 10
+  maxResults: number = 5
 ): Promise<{
   videoId: string;
   stats: {
