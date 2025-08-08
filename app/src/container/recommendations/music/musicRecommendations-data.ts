@@ -81,7 +81,7 @@ export const musicStandardPreferencesPrompt = (
       {
         role: "user",
         content: `Препоръчай ми 5 песни за слушане, които ЗАДЪЛЖИТЕЛНО да съвпадат с моите вкусове и предпочитания, а именно:
-              Любими жанрове: ${genres.map((genre) => genre.bg).join(", ")}.
+              Любими жанрове: ${genres.map((genre) => genre.en).join(", ")}.
               Емоционално състояние в този момент: ${moods}.
               Възрастта на песните задължително да бъде: ${age}.
               Любими изпълнители: ${artists}.

@@ -309,7 +309,9 @@ export const generateMusicRecommendations = async (
       .replace(/^```JSON([\s\S]*?)```$/, "$1")
       .replace(/^```([\s\S]*?)```$/, "$1")
       .replace(/^'|'$/g, "")
+      .replace(/\\'/g, "'")
       .trim();
+
     console.log("unescapedData: ", unescapedData);
     const recommendations = JSON.parse(unescapedData);
     console.log("recommendations: ", recommendations);

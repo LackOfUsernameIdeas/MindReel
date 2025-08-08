@@ -102,7 +102,7 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
       isInput: true,
       value: producers,
       setter: setProducers,
-      placeholder: "Пример: Max Martin, Quincy Jones, Даниел Ганев"
+      placeholder: "Пример: Max Martin, Quincy Jones, Dr. Dre"
     },
     {
       question: "От кои страни предпочитате да е музиката?",
