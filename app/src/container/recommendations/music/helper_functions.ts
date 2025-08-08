@@ -180,34 +180,92 @@ const fetchSpotifyTrackData = async (
 };
 
 /**
- * Извлича YouTube ID за видео на дадена песен.
+ * Извлича YouTube ID за видео на дадена песен с най-много гледания.
  *
  * @async
- * @function fetchYouTubeVideoID
+ * @function fetchMostPopularYouTubeVideoID
  * @param {string} query - query на песента, за която се търси видеоклип.
- * @returns {Promise<string|null>} - Връща пълния YouTube ID или null, ако няма резултат.
+ * @param {number} maxResults - максимален брой резултати за проверка (по подразбиране 10).
+ * @returns {Promise<{videoId: string, stats: Object}|null>} - Връща обект с videoId и статистики или null.
  */
-const fetchYouTubeVideoID = async (query: string): Promise<string | null> => {
+const fetchMostPopularYouTubeVideoID = async (
+  query: string,
+  maxResults: number = 10
+): Promise<{
+  videoId: string;
+  stats: {
+    viewCount: string;
+    likeCount?: string;
+    commentCount?: string;
+  };
+} | null> => {
   const apiKey = import.meta.env.VITE_YOUTUBE_API_KEY;
 
   try {
-    const response = await fetch(
-      `https://www.googleapis.com/youtube/v3/search?&maxResults=1&q=${encodeURIComponent(
+    // Първо извличаме няколко резултата
+    const searchResponse = await fetch(
+      `https://www.googleapis.com/youtube/v3/search?type=video&maxResults=${maxResults}&q=${encodeURIComponent(
         query
       )}&key=${apiKey}`
     );
 
-    if (!response.ok) {
-      console.warn(`YouTube API failed for "${query}": ${response.status}`);
+    if (!searchResponse.ok) {
+      console.warn(
+        `YouTube search failed for "${query}": ${searchResponse.status}`
+      );
       return null;
     }
 
-    const data = await response.json();
-    const videoId = data.items?.[0]?.id?.videoId;
+    const searchData = await searchResponse.json();
+    const videoIds = searchData.items
+      ?.map((item: any) => item.id?.videoId)
+      .filter(Boolean);
 
-    return videoId || null;
+    if (!videoIds || videoIds.length === 0) {
+      console.warn(`No videos found for query: "${query}"`);
+      return null;
+    }
+
+    const videoStats = await fetchYouTubeVideoStats(videoIds.join(","));
+
+    if (!videoStats || videoStats.length === 0) {
+      console.warn(`No statistics found for any videos for query: "${query}"`);
+      return null;
+    }
+
+    // Намираме видеото с най-много гледания
+    let mostPopularVideo = null;
+    let maxViews = 0;
+
+    for (const video of videoStats) {
+      const viewCount = parseInt(video.viewCount || "0");
+
+      if (viewCount > maxViews) {
+        maxViews = viewCount;
+        mostPopularVideo = video;
+      }
+    }
+
+    if (!mostPopularVideo) {
+      console.warn(
+        `No valid video with view count found for query: "${query}"`
+      );
+      return null;
+    }
+
+    return {
+      videoId: mostPopularVideo.videoId,
+      stats: {
+        viewCount: mostPopularVideo.viewCount,
+        likeCount: mostPopularVideo.likeCount,
+        commentCount: mostPopularVideo.commentCount
+      }
+    };
   } catch (error) {
-    console.error(`Error fetching YouTube trailer for "${query}":`, error);
+    console.error(
+      `Error fetching most popular YouTube video for "${query}":`,
+      error
+    );
     return null;
   }
 };
@@ -217,45 +275,52 @@ const fetchYouTubeVideoID = async (query: string): Promise<string | null> => {
  *
  * @async
  * @function fetchYouTubeVideoStats
- * @param {string} videoId - ID на YouTube видеото.
- * @returns {Promise<Object|null>} - Връща обект с статистики (viewCount, likeCount, commentCount) или null при грешка.
+ * @param {string} videoIds - ID на YouTube видеото или comma-separated IDs за няколко видеа.
+ * @returns {Promise<Object[]|null>} - Връща масив от обекти със статистики или null при грешка.
  */
 const fetchYouTubeVideoStats = async (
-  videoId: string
-): Promise<{
-  viewCount: string;
-  likeCount?: string;
-  commentCount?: string;
-} | null> => {
+  videoIds: string
+): Promise<
+  | {
+      videoId: string;
+      viewCount: string;
+      likeCount?: string;
+      commentCount?: string;
+    }[]
+  | null
+> => {
   const apiKey = import.meta.env.VITE_YOUTUBE_API_KEY;
 
   try {
     const response = await fetch(
-      `https://www.googleapis.com/youtube/v3/videos?part=statistics&id=${videoId}&key=${apiKey}`
+      `https://www.googleapis.com/youtube/v3/videos?part=statistics&id=${videoIds}&key=${apiKey}`
     );
 
     if (!response.ok) {
       console.warn(
-        `YouTube statistics fetch failed for "${videoId}": ${response.status}`
+        `YouTube statistics fetch failed for "${videoIds}": ${response.status}`
       );
       return null;
     }
 
     const data = await response.json();
-    const stats = data.items?.[0]?.statistics;
 
-    if (!stats) {
-      console.warn(`No statistics found for video ID: ${videoId}`);
+    if (!data.items || data.items.length === 0) {
+      console.warn(`No statistics found for video ID(s): ${videoIds}`);
       return null;
     }
 
-    return {
-      viewCount: stats.viewCount,
-      likeCount: stats.likeCount,
-      commentCount: stats.commentCount
-    };
+    return data.items.map((item: any) => ({
+      videoId: item.id,
+      viewCount: item.statistics.viewCount,
+      likeCount: item.statistics.likeCount,
+      commentCount: item.statistics.commentCount
+    }));
   } catch (error) {
-    console.error(`Error fetching YouTube statistics for "${videoId}":`, error);
+    console.error(
+      `Error fetching YouTube statistics for "${videoIds}":`,
+      error
+    );
     return null;
   }
 };
@@ -337,17 +402,19 @@ export const generateMusicRecommendations = async (
         continue;
       }
 
-      const youtubeMusicVideoID = await fetchYouTubeVideoID(
+      const youtubeMusicVideoData = await fetchMostPopularYouTubeVideoID(
         `${songTitle} - ${artistName}`
       );
 
-      const youtubeMusicVideoUrl = youtubeMusicVideoID
+      const youtubeMusicVideoID = youtubeMusicVideoData
+        ? youtubeMusicVideoData.videoId
+        : null;
+
+      const youtubeMusicVideoUrl = youtubeMusicVideoData
         ? `https://www.youtube.com/embed/${youtubeMusicVideoID}`
         : null;
 
-      const youtubeMusicVideoStats =
-        youtubeMusicVideoID &&
-        (await fetchYouTubeVideoStats(youtubeMusicVideoID));
+      const youtubeMusicVideoStats = youtubeMusicVideoData?.stats || null;
 
       const recommendationData = {
         title: musicData.name, // Official title from Spotify
