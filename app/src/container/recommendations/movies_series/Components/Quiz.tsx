@@ -9,6 +9,7 @@ import {
   RecommendationsAnalysis
 } from "../moviesSeriesRecommendations-types";
 import RecommendationsAnalysesWidgets from "@/components/common/recommendationsAnalyses/recommendationsAnalyses";
+import { VRRecommendationsList } from "./VRRecommendationsList";
 
 export const Quiz: FC<QuizProps> = ({
   setBookmarkedMovies,
@@ -131,9 +132,15 @@ export const Quiz: FC<QuizProps> = ({
 
           {/* Conditional rendering based on renderVrScene */}
           {renderVrScene ? (
-            <h1 className="text-3xl font-bold text-center text-white">
-              VR Scene Experience Complete
-            </h1>
+            <VRRecommendationsList
+              recommendationList={recommendationList}
+              setCurrentBookmarkStatus={setCurrentBookmarkStatus}
+              currentIndex={currentIndex}
+              setCurrentIndex={setCurrentIndex}
+              setAlertVisible={setAlertVisible}
+              setBookmarkedMovies={setBookmarkedMovies}
+              bookmarkedMovies={bookmarkedMovies}
+            />
           ) : (
             <>
               <RecommendationsList
