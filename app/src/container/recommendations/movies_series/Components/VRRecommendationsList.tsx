@@ -103,7 +103,10 @@ export const VRRecommendationsList: FC<RecommendationsProps> = ({
         onExited={() => setInTransition(false)}
         unmountOnExit
       >
-        <VRRecommendationCard
+        <h1 className="text-3xl font-bold text-center text-white">
+          VR Scene Experience Complete
+        </h1>
+        {/* <VRRecommendationCard
           recommendationList={recommendationList}
           currentIndex={currentIndex}
           isExpanded={isExpanded}
@@ -112,7 +115,7 @@ export const VRRecommendationsList: FC<RecommendationsProps> = ({
           setAlertVisible={setAlertVisible}
           setBookmarkedMovies={setBookmarkedMovies}
           bookmarkedMovies={bookmarkedMovies}
-        />
+        /> */}
       </CSSTransition>
 
       <CSSTransition
