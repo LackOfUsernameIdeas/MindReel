@@ -36,6 +36,7 @@
     "aframe-extras": "^7.6.0",
     "aframe-physics-system": "^4.0.2",
     "aframe-react": "^4.4.0",
+    "aframe-websurfaces": "^1.4.0",
     "apexcharts": "^3.45.2",
     "chroma-js": "^3.1.2",
     "class-variance-authority": "^0.7.1",
