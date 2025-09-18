@@ -1,7 +1,7 @@
 import { FC, useState } from "react";
 import { CSSTransition } from "react-transition-group";
 import { RecommendationsProps } from "../moviesSeriesRecommendations-types";
-import RecommendationCard from "./RecommendationCard";
+import VRRecommendationCard from "./VRRecommendationCard";
 import { PlotModal } from "./PlotModal";
 import ErrorCard from "../../../../components/common/error/error";
 
@@ -103,10 +103,7 @@ export const VRRecommendationsList: FC<RecommendationsProps> = ({
         onExited={() => setInTransition(false)}
         unmountOnExit
       >
-        <h1 className="text-3xl font-bold text-center text-white">
-          VR Scene Experience Complete
-        </h1>
-        {/* <RecommendationCard
+        <VRRecommendationCard
           recommendationList={recommendationList}
           currentIndex={currentIndex}
           isExpanded={isExpanded}
@@ -115,7 +112,7 @@ export const VRRecommendationsList: FC<RecommendationsProps> = ({
           setAlertVisible={setAlertVisible}
           setBookmarkedMovies={setBookmarkedMovies}
           bookmarkedMovies={bookmarkedMovies}
-        /> */}
+        />
       </CSSTransition>
 
       <CSSTransition
