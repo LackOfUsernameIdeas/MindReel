@@ -13,6 +13,7 @@ const TestVr = () => {
   const [popupOpacity, setPopupOpacity] = useState(0);
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [showTrailerModal, setShowTrailerModal] = useState(false);
+  const [isTrailerPlaying, setIsTrailerPlaying] = useState(false);
   const [detailModalType, setDetailModalType] = useState<
     "description" | "plot" | null
   >(null);
@@ -175,6 +176,8 @@ const TestVr = () => {
 
       <TrailerModal
         isVisible={showTrailerModal}
+        isTrailerPlaying={isTrailerPlaying}
+        setIsTrailerPlaying={setIsTrailerPlaying}
         title="БЪЧ КАСИДИ И СЪНДЪНС КИД"
         trailerUrl="https://www.youtube.com/embed/dQw4w9WgXcQ"
         onClose={handleCloseTrailerModal}

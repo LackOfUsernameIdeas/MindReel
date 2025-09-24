@@ -3,6 +3,8 @@ import "aframe-websurfaces";
 
 interface TrailerModalProps {
   isVisible: boolean;
+  isTrailerPlaying: boolean;
+  setIsTrailerPlaying: React.Dispatch<React.SetStateAction<boolean>>;
   title: string;
   trailerUrl?: string;
   onClose: () => void;
@@ -11,13 +13,14 @@ interface TrailerModalProps {
 
 const TrailerModal = ({
   isVisible,
+  isTrailerPlaying,
+  setIsTrailerPlaying,
   title,
   trailerUrl = "https://www.youtube.com/embed/dQw4w9WgXcQ",
   onClose,
   position = "0 3.5 -4"
 }: TrailerModalProps) => {
   const [modalOpacity, setModalOpacity] = useState(0);
-  const [isPlaying, setIsPlaying] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
@@ -25,7 +28,7 @@ const TrailerModal = ({
       setModalOpacity(1);
     } else {
       setModalOpacity(0);
-      setIsPlaying(false);
+      setIsTrailerPlaying(false);
     }
   }, [isVisible]);
 
@@ -37,10 +40,10 @@ const TrailerModal = ({
         "autoplay *; encrypted-media; fullscreen; picture-in-picture; xr-spatial-tracking"
       );
     }
-  }, [isPlaying]);
+  }, [isTrailerPlaying]);
 
   const handlePlayClick = () => {
-    setIsPlaying(true);
+    setIsTrailerPlaying(true);
   };
 
   if (!isVisible) return null;
@@ -99,7 +102,7 @@ const TrailerModal = ({
           font="https://cdn.aframe.io/fonts/Exo2Bold.fnt"
         ></a-text>
 
-        {isPlaying ? (
+        {isTrailerPlaying ? (
           <>
             <a-entity
               id="yt-surface"
@@ -116,7 +119,7 @@ const TrailerModal = ({
                 material={`shader: flat; opacity: ${modalOpacity}`}
                 position="0 0 0"
                 class="clickable"
-                onClick={() => setIsPlaying(false)}
+                onClick={() => setIsTrailerPlaying(false)}
               ></a-plane>
               <a-text
                 value="СТОП"
@@ -127,7 +130,7 @@ const TrailerModal = ({
                 material={`opacity: ${modalOpacity}`}
                 font="https://cdn.aframe.io/fonts/Exo2Bold.fnt"
                 class="clickable"
-                onClick={() => setIsPlaying(false)}
+                onClick={() => setIsTrailerPlaying(false)}
               ></a-text>
             </a-entity>
           </>
