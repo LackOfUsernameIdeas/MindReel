@@ -1,3 +1,5 @@
+import { useState, useEffect } from "react";
+
 interface Recommendation {
   imdbID: string;
   poster: string;
@@ -98,8 +100,6 @@ function getMetascoreColor(metascore: string): string {
   if (score >= 40) return "#FFCC33"; // Yellow
   return "#FF0000"; // Red
 }
-
-import { useState, useEffect } from "react";
 
 const MovieCardVR = ({
   position = "0 6 -4",

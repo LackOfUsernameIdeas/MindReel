@@ -18,7 +18,7 @@ const TrailerModal = ({
   title,
   trailerUrl = "https://www.youtube.com/embed/dQw4w9WgXcQ",
   onClose,
-  position = "0 3.5 -4",
+  position = "0 3.5 -4"
 }: TrailerModalProps) => {
   const [modalOpacity, setModalOpacity] = useState(0);
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -54,7 +54,7 @@ const TrailerModal = ({
     if (isTrailerPlaying) {
       const v = videoRef.current;
       if (v) {
-        v.muted = true; // browser autoplay requirement
+        v.muted = false;
         v.play().catch((err) => console.warn("Autoplay blocked:", err));
       }
     }
