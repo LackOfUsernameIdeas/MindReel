@@ -27,7 +27,7 @@ const TestVr = () => {
         this.el.addEventListener("raycaster-intersected-cleared", () => {
           this.el.setAttribute("material", "color", "#F44336");
         });
-      }
+      },
     });
 
     const scene = document.querySelector("a-scene");
@@ -181,7 +181,7 @@ const TestVr = () => {
         title="БЪЧ КАСИДИ И СЪНДЪНС КИД"
         trailerUrl="https://www.youtube.com/embed/dQw4w9WgXcQ"
         onClose={handleCloseTrailerModal}
-        position="0 3.5 -2"
+        position="0 5 -8"
       />
 
       <a-plane
@@ -204,13 +204,15 @@ const TestVr = () => {
       ></a-plane>
 
       {/* to do: make these 5 in a ring, also make them controllable*/}
-      <MovieCard
-        position="0 2.5 -8"
-        handleBookmarkClick={handleBookmarkClick}
-        isBookmarked={isBookmarked}
-        onShowDetail={handleShowDetail}
-        onShowTrailer={handleShowTrailer}
-      />
+      {!showTrailerModal && (
+        <MovieCard
+          position="0 2.5 -8"
+          handleBookmarkClick={handleBookmarkClick}
+          isBookmarked={isBookmarked}
+          onShowDetail={handleShowDetail}
+          onShowTrailer={handleShowTrailer}
+        />
+      )}
 
       <a-plane
         position="0 3 -12"
@@ -413,29 +415,29 @@ const TestVr = () => {
         type="point"
         position="-6 0.2 2"
         color="#ff6b35"
-        intensity="0.5"
-        distance="3"
+        intensity="1"
+        distance="30"
       ></a-light>
       <a-light
         type="point"
         position="6 0.2 2"
         color="#ff6b35"
-        intensity="0.5"
-        distance="3"
+        intensity="1"
+        distance="30"
       ></a-light>
       <a-light
         type="point"
         position="-6 0.2 6"
         color="#ff6b35"
-        intensity="0.5"
-        distance="3"
+        intensity="1"
+        distance="30"
       ></a-light>
       <a-light
         type="point"
         position="6 0.2 6"
         color="#ff6b35"
-        intensity="0.5"
-        distance="3"
+        intensity="1"
+        distance="30"
       ></a-light>
 
       {/* deco elements (barely sucessful currently lul)*/}
