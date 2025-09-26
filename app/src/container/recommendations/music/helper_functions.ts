@@ -106,8 +106,8 @@ const getSpotifyAccessToken = async (): Promise<string> => {
     },
     body: new URLSearchParams({
       grant_type: "client_credentials",
-      client_id: "7206d684074d4300b1b47e41a499fafe",
-      client_secret: "fe60c3f4312148bd805649c7b7aa947b"
+      client_id: import.meta.env.VITE_SPOTIFY_CLIENT_ID,
+      client_secret: import.meta.env.VITE_SPOTIFY_CLIENT_SECRET
     })
   });
 
