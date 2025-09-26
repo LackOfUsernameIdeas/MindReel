@@ -217,7 +217,7 @@ const Landing: FC<LandingProps> = () => {
             <div className="justify-center text-center mb-12">
               <div className="xl:col-span-6 col-span-12">
                 <h3 className="font-semibold opsilion !text-4xl mb-2">
-                  Как работи MindReel?
+                  Как работи Лента на ума (MindReel)?
                 </h3>
                 <span className="text-[#8c9097] dark:text-white/50 text-[0.9375rem] font-normal block">
                   Открийте най-добрите препоръки, с помощта на Изкуствен
@@ -225,13 +225,16 @@ const Landing: FC<LandingProps> = () => {
                   Вашето състояние ще бъде анализирано чрез биоелектрическата
                   активност на вашия мозък, свързана с различни емоционални и
                   физически състояния, за да получите максимално персонализирани
-                  препоръки. Всичко това в три лесни стъпки – регистрирайте се,
-                  следвайте внимателно инструкциите и вижте вашите резултати!
+                  препоръки. Потопете се във VR изкуството, което Ви дава
+                  възможност да изпитате истинско кино изживяване, гледайки
+                  трейлърите на любимите Ви заглавия. Всичко това в три лесни
+                  стъпки – регистрирайте се, следвайте внимателно инструкциите и
+                  вижте вашите резултати!
                 </span>
               </div>
             </div>
             <div className="grid grid-cols-12 gap-6 text-start">
-              <div className="md:col-span-4 col-span-12">
+              <div className="md:col-span-3 col-span-12">
                 <div className="box bg-light border dark:border-defaultborder/10 flex flex-col h-full">
                   <div className="box-body rounded flex flex-col flex-grow">
                     <div className="mb-4 ms-1">
@@ -286,7 +289,53 @@ const Landing: FC<LandingProps> = () => {
                   </div>
                 </div>
               </div>
-              <div className="md:col-span-4 col-span-12">
+              <div className="md:col-span-3 col-span-12">
+                <div className="box bg-light border dark:border-defaultborder/10 flex flex-col h-full">
+                  <div className="box-body rounded flex flex-col flex-grow">
+                    <div className="mb-4 ms-1">
+                      <div className="icon-style">
+                        <span className="avatar avatar-lg avatar-rounded bg-primary svg-white">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="24"
+                            height="24"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            className="lucide lucide-projector-icon lucide-projector"
+                          >
+                            <path d="M5 7 3 5" />
+                            <path d="M9 6V3" />
+                            <path d="m13 7 2-2" />
+                            <circle cx="9" cy="13" r="3" />
+                            <path d="M11.83 12H20a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h2.17" />
+                            <path d="M16 16h2" />
+                          </svg>
+                        </span>
+                      </div>
+                    </div>
+                    <h5 className="font-semibold opsilion text-[1.5rem] mb-4">
+                      VR кино изживяване
+                    </h5>
+                    <p className="opacity-[0.8] mb-4">
+                      Влезте във VR сцена, която пресъздава истинска кино зала и
+                      Ви позволява да гледате трейлъри като част от
+                      изживяването.
+                    </p>
+                    <Link
+                      className="mx-1 text-primary font-semibold leading-[1] mt-auto"
+                      to={`${import.meta.env.BASE_URL}signin`}
+                    >
+                      Започнете вашето VR изживяване
+                      <i className="ri-arrow-right-s-line align-middle rtl:rotate-180"></i>
+                    </Link>
+                  </div>
+                </div>
+              </div>
+              <div className="md:col-span-3 col-span-12">
                 <div className="box bg-light border dark:border-defaultborder/10 flex flex-col h-full">
                   <div className="box-body rounded flex flex-col flex-grow">
                     <div className="mb-4 ms-1">
@@ -331,7 +380,7 @@ const Landing: FC<LandingProps> = () => {
                   </div>
                 </div>
               </div>
-              <div className="md:col-span-4 col-span-12">
+              <div className="md:col-span-3 col-span-12">
                 <div className="box bg-light border dark:border-defaultborder/10 flex flex-col h-full">
                   <div className="box-body rounded flex flex-col flex-grow">
                     <div className="mb-4 ms-1">
