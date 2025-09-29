@@ -4525,6 +4525,71 @@ const countBookAdaptations = (callback) => {
 };
 
 /**
+ * Изчислява средната стойност на Spotify популярността за всички песни.
+ *
+ * @param {function} callback - Функция за обратна връзка, която връща средната стойност.
+ */
+const getAverageSpotifyPopularity = (callback) => {
+  const query =
+    "SELECT AVG(spotifyPopularity) AS avgPopularity FROM music_recommendations";
+
+  db.query(query, (error, results) => {
+    if (error) return callback(error, null);
+
+    const avgPopularity = Number(results[0]?.avgPopularity).toFixed(2) || 0;
+
+    callback(null, avgPopularity);
+  });
+};
+
+/**
+ * Изчислява средната стойност на харесванията в YouTube за всички песни.
+ *
+ * @param {function} callback - Функция за обратна връзка, която връща средната стойност.
+ */
+const getAverageYoutubeLikes = (callback) => {
+  const query =
+    "SELECT AVG(youtubeMusicVideoLikes) AS avgLikes FROM music_recommendations";
+
+  db.query(query, (error, results) => {
+    if (error) return callback(error, null);
+
+    const avgLikes = Math.round(Number(results[0]?.avgLikes)) || 0;
+    callback(null, avgLikes);
+  });
+};
+
+/**
+ * Изчислява средната стойност на гледанията в YouTube.
+ */
+const getAverageYoutubeViews = (callback) => {
+  const query =
+    "SELECT AVG(youtubeMusicVideoViews) AS avgViews FROM music_recommendations";
+
+  db.query(query, (error, results) => {
+    if (error) return callback(error, null);
+
+    const avgViews = Math.round(Number(results[0]?.avgViews)) || 0;
+    callback(null, avgViews);
+  });
+};
+
+/**
+ * Изчислява средната стойност на коментарите в YouTube.
+ */
+const getAverageYoutubeComments = (callback) => {
+  const query =
+    "SELECT AVG(youtubeMusicVideoComments) AS avgComments FROM music_recommendations";
+
+  db.query(query, (error, results) => {
+    if (error) return callback(error, null);
+
+    const avgComments = Math.round(Number(results[0]?.avgComments)) || 0;
+    callback(null, avgComments);
+  });
+};
+
+/**
  * Запазва данни от устройството в базата данни.
  * @param {number} userId - Идентификатор на потребителя.
  * @param {Object} data - Данни от устройството.
@@ -4652,6 +4717,10 @@ module.exports = {
   getHistoricalAverageMetrics,
   getHistoricalAverageMetricsForUser,
   countBookAdaptations,
+  getAverageSpotifyPopularity,
+  getAverageYoutubeLikes,
+  getAverageYoutubeViews,
+  getAverageYoutubeComments,
   saveMoviesSeriesBrainAnalysis,
   saveBooksBrainAnalysis
 };

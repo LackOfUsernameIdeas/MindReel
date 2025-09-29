@@ -2089,6 +2089,51 @@ app.get("/stats/platform/adaptations", (req, res) => {
   });
 });
 
+// Извличане на средната стойност на Spotify популярността на песните в платформата
+app.get("/stats/platform/spotify-popularity", (req, res) => {
+  db.getAverageSpotifyPopularity((err, result) => {
+    if (err) {
+      return res
+        .status(500)
+        .json({ error: "Error fetching Spotify popularity stats" });
+    }
+
+    // Връщане на резултата като JSON
+    res.json(result);
+  });
+});
+
+// Извличане на средната стойност на харесванията, гледанията и коментарите в YouTube
+app.get("/stats/platform/youtube-stats", (req, res) => {
+  db.getAverageYoutubeLikes((err, youtubeLikes) => {
+    if (err)
+      return res
+        .status(500)
+        .json({ error: "Error fetching YouTube likes stats" });
+
+    db.getAverageYoutubeViews((err, youtubeViews) => {
+      if (err)
+        return res
+          .status(500)
+          .json({ error: "Error fetching YouTube views stats" });
+
+      db.getAverageYoutubeComments((err, youtubeComments) => {
+        if (err)
+          return res
+            .status(500)
+            .json({ error: "Error fetching YouTube comments stats" });
+
+        // Връщане на резултата като JSON
+        res.json({
+          averageYoutubeLikes: youtubeLikes,
+          averageYoutubeViews: youtubeViews,
+          averageYoutubeComments: youtubeComments
+        });
+      });
+    });
+  });
+});
+
 // Запазване на данни за мозъчния анализ, свързани с филми, сериали и книги.
 app.post("/save-brain-analysis", (req, res) => {
   const { token, analysisType, data, date } = req.body;
