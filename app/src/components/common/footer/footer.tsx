@@ -1,4 +1,4 @@
-import { FC, Fragment } from "react";
+import { type FC, Fragment } from "react";
 
 import { Link } from "react-router-dom";
 
@@ -10,15 +10,10 @@ const Footer: FC = () => (
         <div className="container mx-auto px-8">
           <div className="footer-content grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
             <div className="footer-column">
-              <div className="brand-name">
-                <span className="footer-brand-name-art dark:text-[#AD0C48] text-[#9A110A]">
-                  АРТ
-                </span>
-                <span className="footer-brand-name-compass">КОМПАС</span>
-              </div>
+              <h3 className="footer-title !text-[1.25rem] !max-sm:text-[1.1rem]">
+                За Нас
+              </h3>
               <ul className="footer-links">
-                <li>НЕТИТ "Джон Атанасов" 2025</li>
-                <li>Разпределени приложения</li>
                 <li>Калоян Костадинов</li>
                 <li>Ивайло Здравков</li>
                 <li>
@@ -30,6 +25,8 @@ const Footer: FC = () => (
                     ПГИ Перник
                   </a>
                 </li>
+                <li>НЕТИТ „Джон Атанасов“ 2025</li>
+                <li>Разпределени приложения</li>
               </ul>
             </div>
 

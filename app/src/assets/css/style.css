@@ -614,20 +614,6 @@ Background Image
   justify-content: center;
 }
 
-.footer-brand-name-art {
-  font-family: "Opsilon", sans-serif;
-  font-weight: bold;
-  font-size: 2rem;
-}
-
-.footer-brand-name-compass {
-  font-family: "Equilibrist", sans-serif;
-  font-weight: bold;
-  font-size: 1.8rem;
-  color: #c67512;
-  margin-left: 0.5rem;
-}
-
 .footer-text .bi-heart-fill {
   color: red;
 }
