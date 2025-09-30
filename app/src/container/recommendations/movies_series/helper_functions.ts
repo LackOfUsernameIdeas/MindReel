@@ -737,7 +737,6 @@ export const handleSubmit = async (
  * Прикрепя състоянията на компонентите като параметри, за да актуализира състоянието.
  *
  * @param {object} movie - Филмът, който ще бъде добавен или премахнат.
- * @param {string} movie.imdbID - Уникален идентификатор на филма (IMDb ID).
  * @param {Function} setBookmarkedMovies - Функция за актуализиране на състоянието на отметките.
  * @param {Function} setCurrentBookmarkStatus - Функция за актуализиране на текущия статус на отметката.
  * @param {Function} setAlertVisible - Функция за показване на алармата.

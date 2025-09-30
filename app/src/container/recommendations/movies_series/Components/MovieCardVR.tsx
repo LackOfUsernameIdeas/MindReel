@@ -1,93 +1,32 @@
-interface Recommendation {
-  imdbID: string;
-  poster: string;
-  title_bg: string; // Main title
-  title_en: string; // English title
-  genre_en: string;
-  genre_bg: string;
-  runtimeGoogle?: string;
-  runtime: string;
-  type: "movie" | "series";
-  totalSeasons?: string | null;
-  year: string;
-  rated: string;
-  imdbRating: string;
-  imdbVotes: string;
-  metascore: string;
-  ratings?: { Source: string; Value: string }[];
-  reason?: string;
-  description: string;
-  plot: string;
-  director: string;
-  writer: string;
-  actors: string;
-  production?: string;
-  released: string;
-  language: string;
-  country: string;
-  awards: string;
-  boxOffice?: string;
-  DVD?: string;
-  website?: string;
-  youtubeTrailerUrl?: string;
-}
+import { useState, useEffect } from "react";
+import { Recommendation } from "../moviesSeriesRecommendations-types";
 
-// Chinatown movie data to match the reference image
-const defaultRecommendation: Recommendation = {
-  imdbID: "tt0071315",
-  title_en: "Chinatown",
-  title_bg: "Chinatown",
-  genre_en: "Drama, Mystery, Thriller",
-  genre_bg: "Drama, Mystery, Thriller",
-  reason:
-    "Directed by Roman Polanski, starring Jack Nicholson and Faye Dunaway, with an exciting mysterious plot, this film perfectly matches your interests and movie preferences.",
-  description:
-    "A film about a private detective who uncovers a complex intrigue of fraud and corruption in Los Angeles.",
-  plot: "In 1937 Los Angeles, private detective Jake 'J.J.' Gittes is hired in a case of adultery. The current situation leads him to Hollis Mulwray, head...",
-  year: "1974",
-  rated: "R",
-  released: "20 Jun 1974",
-  runtime: "2h 10m",
-  director: "Roman Polanski",
-  writer: "Robert Towne, Roman Polanski",
-  actors: "Jack Nicholson, Faye Dunaway, John Huston",
-  production: "N/A",
-  language: "English, Cantonese, Spanish",
-  country: "United States",
-  awards: "Won 1 Oscar. 21 wins & 24 nominations total",
-  poster:
-    "https://m.media-amazon.com/images/M/MV5BNmRmZTE0NmUtZjhiZi00MzQ3LTk3ZjctN2Q3ODYzY2U3MDk3XkEyXkFqcGc@._V1_SX300.jpg",
-  ratings: [
-    {
-      Source: "Internet Movie Database",
-      Value: "8.1/10"
-    },
-    {
-      Source: "Rotten Tomatoes",
-      Value: "98%"
-    },
-    {
-      Source: "Metacritic",
-      Value: "92/100"
+declare global {
+  namespace JSX {
+    interface IntrinsicElements {
+      "a-image": React.DetailedHTMLProps<
+        React.HTMLAttributes<HTMLElement>,
+        HTMLElement
+      > & {
+        src?: string;
+        width?: number | string;
+        height?: number | string;
+        material?: string;
+        position?: string;
+        class?: string;
+        onClick?: (event: any) => void;
+      };
     }
-  ],
-  metascore: "92",
-  imdbRating: "8.1",
-  imdbVotes: "368,033",
-  type: "movie",
-  DVD: "N/A",
-  boxOffice: "$29,200,000",
-  website: "N/A",
-  totalSeasons: null
-};
+  }
+}
 
 interface MovieCardVRProps {
   position?: string;
-  recommendation?: Recommendation;
+  recommendation: Recommendation;
   handleBookmarkClick?: () => void;
   isBookmarked?: boolean;
   onShowDetail?: (type: "description" | "plot") => void;
-  onShowTrailer?: () => void; // Added trailer callback
+  onShowTrailer?: () => void;
 }
 
 // Helper function to determine Metascore color based on value
@@ -99,15 +38,13 @@ function getMetascoreColor(metascore: string): string {
   return "#FF0000"; // Red
 }
 
-import { useState, useEffect } from "react";
-
 const MovieCardVR = ({
   position = "0 6 -4",
-  recommendation = defaultRecommendation,
+  recommendation,
   handleBookmarkClick,
   isBookmarked: externalIsBookmarked,
   onShowDetail,
-  onShowTrailer // Added trailer prop
+  onShowTrailer
 }: MovieCardVRProps) => {
   const [internalIsBookmarked, setInternalIsBookmarked] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
@@ -221,8 +158,8 @@ const MovieCardVR = ({
       class="clickable"
       color-changer
       dynamic-body="mass: 0"
-      grabbable
-      stretchable
+      data-grabbable=""
+      data-stretchable=""
       draggable
     >
       {showPopup && (
@@ -353,7 +290,7 @@ const MovieCardVR = ({
       {/* Text Content Group - Right side with improved spacing */}
       <a-entity position={`${textX} 0 0.02`}>
         <a-text
-          value={recommendation.title_en}
+          value={recommendation.title}
           position={`0 ${textStartY} 0`}
           align="left"
           color="#FFFFFF"
@@ -363,7 +300,7 @@ const MovieCardVR = ({
         ></a-text>
 
         <a-text
-          value={recommendation.title_en}
+          value={recommendation.title}
           position={`0 ${textStartY - 0.4} 0`}
           align="left"
           color="#BBBBBB"
@@ -373,7 +310,7 @@ const MovieCardVR = ({
         ></a-text>
 
         <a-text
-          value={`${recommendation.genre_en} | ${runtime} | ${recommendation.year} | Rating: ${recommendation.rated}`}
+          value={`${recommendation.genre} | ${runtime} | ${recommendation.year} | Rating: ${recommendation.rated}`}
           position={`0 ${textStartY - 0.7} 0`}
           align="left"
           color="#AAAAAA"
@@ -456,7 +393,7 @@ const MovieCardVR = ({
         {recommendation.reason && (
           <a-entity position={`0 ${textStartY - 1.9} 0`}>
             <a-text
-              value={`Why we recommend ${recommendation.title_en}?`}
+              value={`Why we recommend ${recommendation.title}?`}
               position="0 0.2 0"
               align="left"
               color="#FFFFFF"
