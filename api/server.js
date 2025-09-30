@@ -2200,8 +2200,10 @@ io.on("connection", (socket) => {
   console.log("Клиент се свърза");
   socket.emit("connectSignal");
 
-  socket.on("hardwareData", (data) => {
-    console.log("Получени хардуерни данни:", data);
+  socket.on("hardwareData", (rawData) => {
+    console.log("Получени хардуерни данни:", rawData);
+
+    const data = JSON.parse(rawData);
 
     const useFileMode = data.useFileMode === true; // дали искаме да симулираме от файл
 
