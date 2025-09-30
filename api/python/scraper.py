@@ -10,239 +10,175 @@ import sys
 import json
 import requests
 import re
+import html2text
 from bs4 import BeautifulSoup
 from datetime import datetime, timezone
 
-# Проверка дали е подаден URL като аргумент
+# Check if URL is provided as an argument
 if len(sys.argv) < 2:
-    print("Error: URL is required.")
+    print(json.dumps({"error": "URL is required."}))
     sys.exit(1)
 
-# Захваняне на URL от аргумента на командния ред
+# Get URL from command-line argument
 URL = sys.argv[1]
 
-# Функция за скрипване на данни
-def scrape_contributor():
-    # Изпращане на GET заявка за получаване на съдържанието на страницата
-    response = requests.get(URL)
-    
-    # Проверка дали заявката е успешна
-    if response.status_code != 200:
-        print(f"Error: Failed to fetch the page. Status code: {response.status_code}")
+# Function to scrape book data
+def scrape_book_data():
+    # Set headers to mimic a browser
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+    }
+
+    # Send GET request to fetch the page
+    try:
+        response = requests.get(URL, headers=headers)
+        if response.status_code != 200:
+            print(json.dumps({"error": f"Failed to fetch the page. Status code: {response.status_code}"}))
+            sys.exit(1)
+    except requests.RequestException as e:
+        print(json.dumps({"error": f"Request failed: {str(e)}"}))
         sys.exit(1)
 
-    # Парсиране на съдържанието с BeautifulSoup
+    # Parse the page content with BeautifulSoup
     soup = BeautifulSoup(response.content, 'html.parser')
 
-    # Намиране на заглавието на книгата
-    title_section = soup.find('div', class_='BookPageTitleSection__title')
-    book_title = "N/A"
-    if title_section:
-        title_element = title_section.find('h1', {'data-testid': 'bookTitle'})
-        if title_element:
-            book_title = title_element.get_text(strip=True)
+    # Find the __NEXT_DATA__ script
+    script = soup.find('script', id='__NEXT_DATA__')
+    if not script:
+        print(json.dumps({"error": "Could not find __NEXT_DATA__ JSON on the page."}))
+        sys.exit(1)
 
-    # Намиране на списъка с контрибутори
-    contributor_list = soup.find('div', class_='ContributorLinksList')
+    try:
+        json_data = json.loads(script.string)
+    except json.JSONDecodeError:
+        print(json.dumps({"error": "Failed to parse __NEXT_DATA__ JSON."}))
+        sys.exit(1)
 
-    if not contributor_list:
-        print({"contributors": ["N/A"]})
-        sys.exit(0)
+    # Extract apolloState from JSON
+    page_props = json_data.get('props', {}).get('pageProps', {})
+    apollo_state = page_props.get('apolloState', {})
 
-    # Извличане на имената и ролите на контрибуторите
-    contributors = []
-    for contributor_link in contributor_list.find_all('a', class_='ContributorLink'):
-        name = contributor_link.find('span', class_='ContributorLink__name')
-        role = contributor_link.find('span', class_='ContributorLink__role')
+    # Find book details by matching book ID in the URL
+    book_id = "N/A"
+    match = re.search(r'book/show/(\d+)', URL)
+    if match:
+        book_id = match.group(1)
 
-        if name:
-            contributor_info = {"name": name.get_text(strip=True)}
-            if role:
-                contributor_info["role"] = role.get_text(strip=True)
-            contributors.append(contributor_info)
-
-    # Форматиране на списъка с контрибутори
-    formatted_contributors = ", ".join(
-        f"{contributor['name']} {contributor['role']}" if "role" in contributor else contributor["name"]
-        for contributor in contributors
+    book_details_key = next(
+        (key for key, value in apollo_state.items() if value.get('webUrl', '').find(book_id) != -1 and value.get('__typename') == 'Book'),
+        None
+    )
+    work_details_key = next(
+        (key for key, value in apollo_state.items() if value.get('__typename') == 'Work'),
+        None
+    )
+    series_details_key = next(
+        (key for key, value in apollo_state.items() if value.get('__typename') == 'Series'),
+        None
     )
 
-    # Търсим div елемента с клас 'RatingStatistics__rating', който съдържа оценката
-    rating_div = soup.find('div', class_='RatingStatistics__rating')
-    rating = "N/A"  # Задаваме начална стойност "N/A" в случай, че не открием елемента
-    if rating_div:  # Проверяваме дали елементът е намерен
-        # Преобразуваме текста на елемента в число с плаваща запетая
-        rating = float(rating_div.get_text(strip=True))
+    # Initialize data containers
+    book_property = apollo_state.get(book_details_key, {}) if book_details_key else {}
+    book_details = book_property.get('details', {})
+    work_property = apollo_state.get(work_details_key, {}) if work_details_key else {}
+    work_details = work_property.get('details', {})
+    series_property = apollo_state.get(series_details_key, {}) if series_details_key else {}
 
-    # Извличане на броя на оценки и ревюта от секцията с метаинформация
-    ratings_count = "N/A"  # Начална стойност за броя на оценки
-    reviews_count = "N/A"  # Начална стойност за броя на ревюта
-    # Търсим div елемента с клас 'RatingStatistics__meta', който съдържа допълнителна информация
-    rating_stats_div = soup.find('div', class_='RatingStatistics__meta')
-
-    if rating_stats_div:  # Ако елементът е намерен, обработваме го
-        # Намираме елемента за броя на оценки с data-testid='ratingsCount'
-        ratings_count_elem = rating_stats_div.find('span', {'data-testid': 'ratingsCount'})
-        if ratings_count_elem:  # Ако елементът съществува, обработваме стойността му
-            ratings_count = ratings_count_elem.get_text(strip=True)  # Извличаме текста
-            # Премахваме запетайки и ненужни символи, след което преобразуваме в float
-            ratings_count = float(ratings_count.replace(',', '').replace('ratings', '').strip())
-
-        # Намираме елемента за броя на ревюта с data-testid='reviewsCount'
-        reviews_count_elem = rating_stats_div.find('span', {'data-testid': 'reviewsCount'})
-        if reviews_count_elem:  # Ако елементът съществува, обработваме стойността му
-            reviews_count = reviews_count_elem.get_text(strip=True)  # Извличаме текста
-            # Премахваме запетайки и ненужни символи, след което преобразуваме в float
-            reviews_count = float(reviews_count.replace(',', '').replace('reviews', '').strip())
-
-    # Извличане на описанието на книгата
-    # Търсим div елемента с атрибут data-testid='description', който съдържа описанието
-    description_div = soup.find('div', {'data-testid': 'description'})
-    description = "N/A"  # Начална стойност за описанието
-    if description_div:  # Ако елементът съществува, обработваме стойността му
-        description_text = description_div.get_text(strip=True)  # Извличаме текста
-        description = description_text  # Запазваме описанието
-
-    # Извличане на информация за броя страници и формата на книгата
-    # Търсим p елемента с атрибут data-testid='pagesFormat'
-    pages_format_div = soup.find('p', {'data-testid': 'pagesFormat'})
-    pages_count = "N/A"  # Начална стойност за броя страници
-    book_format = "N/A"  # Начална стойност за формата на книгата
-
-    if pages_format_div:  # Ако елементът е намерен
-        pages_text = pages_format_div.get_text(strip=True)  # Извличаме текста
-        # Използваме регулярни изрази, за да извлечем числовия брой страници и формата
-        match = re.match(r"(\d+)\s+pages,\s+(.+)", pages_text)
-        if match:  # Ако съвпадение е намерено
-            pages_count = float(match.group(1))  # Извличаме броя страници (числово значение)
-            book_format = match.group(2)  # Извличаме формата на книгата (напр. твърда корица)
-
-    # Извличане на информация за първата публикация на книгата
-    # Търсим p елемента с атрибут data-testid='publicationInfo'
-    first_publication_info_div = soup.find('p', {'data-testid': 'publicationInfo'})
-    first_publication_info = "N/A"  # Начална стойност за информацията за публикацията
-
-    if first_publication_info_div:  # Ако елементът е намерен
-        full_text = first_publication_info_div.get_text(strip=True)  # Извличаме пълния текст
-        # Премахваме префикса "First published" и изчистваме текста
-        first_publication_info = full_text.replace("First published", "").strip()
-
-    # Търсим JSON данни в скриптовия таг с id='__NEXT_DATA__'
-    match = re.search(r'<script id="__NEXT_DATA__" type="application/json">(.+?)</script>', response.text, re.DOTALL)
-    book_property = {}  # Празен речник за данните на книгата
-    book_details = {}  # Празен речник за детайлите на книгата
-    work_property = {}  # Празен речник за работни данни
-    work_details = {}  # Празен речник за детайли за произведението
-    series_property = {}  # Празен речник за данни за поредицата
-
-    if match:  # Ако JSON данните са намерени
-        # Парсираме JSON съдържанието от скриптовия таг
-        json_data = json.loads(match.group(1))
-        props = json_data.get('props', None)  # Извличаме свойствата от JSON
-        page_props = props.get('pageProps', {})  # Извличаме pageProps от свойствата
-        apollo_state = page_props.get('apolloState', {})  # Извличаме Apollo State
-
-        # --- Динамично търсене на ключове за детайлите ---
-        book_id = "N/A"  # Начална стойност за ID на книгата
-        match = re.search(r'book/show/(\d+)', URL)  # Търсим ID на книгата в URL адреса
-        if match:  # Ако ID е намерено
-            book_id = match.group(1)  # Запазваме ID-то
-
-        # Намираме ключа за детайлите на книгата
-        book_details_key = next(
-            (key for key, value in apollo_state.items() if value.get('webUrl', '').find(book_id) != -1 and value.get('__typename') == 'Book'),
-            None
-        )
-
-        # Намираме ключа за детайлите на произведението
-        work_details_key = next(
-            (key for key, value in apollo_state.items() if value.get('__typename') == 'Work'),
-            None
-        )
-
-        # Намираме ключа за детайлите на поредицата
-        series_details_key = next(
-            (key for key, value in apollo_state.items() if value.get('__typename') == 'Series'),
-            None
-        )
-
-        # Извличаме данните за книгата, произведението и поредицата
-        book_property = apollo_state.get(book_details_key, {})
-        book_details = book_property.get('details', {})
-        work_property = apollo_state.get(work_details_key, {})
-        work_details = work_property.get('details', {})
-        series_property = apollo_state.get(series_details_key, {})
-
-        # --- Тестване на изходните данни ---
-        # print(json.dumps({"book_details_key": book_details_key}))  
-        # print(json.dumps(apollo_state, indent=2))
+    # Extract book details
+    title = book_property.get('title', 'N/A')
+    original_title = work_details.get('originalTitle', 'N/A')
+    
+    # Extract first publication details
+    first_publication_info = work_details.get('publicationTime', None)
+    if first_publication_info and first_publication_info > 0:
+        first_publication_info = datetime.fromtimestamp(first_publication_info / 1000, tz=timezone.utc).strftime('%B %d, %Y')
     else:
-        print(json.dumps({"error": "Не успяхме да намерим __NEXT_DATA__ JSON данни на страницата."}))
+        first_publication_info = 'N/A'
 
-    # Извличане на времето на публикация (в милисекунди) от 'book_details'
+    image_url = book_property.get('imageUrl', 'N/A')
+    series_title = series_property.get('title', 'N/A') if series_property else 'N/A'
+
+    # Extract description (prefer stripped version, fall back to HTML-stripped version)
+    description = book_property.get('description({\"stripped\":true})', None)
+    if description is None:
+        # Fall back to regular description and remove HTML tags
+        description = book_property.get('description', 'N/A')
+        if description != 'N/A':
+            h = html2text.HTML2Text()
+            h.ignore_links = True
+            h.ignore_images = True
+            description = h.handle(description).strip()
+    else:
+        # Use stripped description directly
+        description = description.strip() if description else 'N/A'
+
+    # Extract contributors
+    primary_contributor_edge = book_property.get('primaryContributorEdge', {})
+    primary_contributor_ref = primary_contributor_edge.get('node', {}).get('__ref', None)
+    primary_contributor = apollo_state.get(primary_contributor_ref, {}).get('name', 'N/A') if primary_contributor_ref else 'N/A'
+
+    secondary_contributors = []
+    for edge in book_property.get('secondaryContributorEdges', []):
+        contributor_ref = edge.get('node', {}).get('__ref', None)
+        if contributor_ref:
+            contributor_name = apollo_state.get(contributor_ref, {}).get('name', 'N/A')
+            if contributor_name != 'N/A':
+                secondary_contributors.append(contributor_name)
+
+    # Format contributors with comma separation, without roles
+    formatted_contributors = ", ".join(
+        [primary_contributor] + secondary_contributors
+    ) if primary_contributor != 'N/A' else 'N/A'
+
+    # Extract genres
+    genres = ", ".join(
+        genre_info['genre']['name']
+        for genre_info in book_property.get('bookGenres', [])
+    ) or 'N/A'
+
+    # Extract publication details
     publication_time = book_details.get('publicationTime', None)
+    if publication_time and publication_time > 0:
+        publication_time = datetime.fromtimestamp(publication_time / 1000, tz=timezone.utc).strftime('%B %d, %Y')
+    else:
+        publication_time = 'N/A'
 
-    # Ако времето на публикация е дефинирано, конвертираме от милисекунди в секунди
-    # и го форматираме като четлива дата (пример: 'January 01, 2000')
-    if publication_time is not None and publication_time > 0:
-        timestamp_sec = publication_time / 1000  # Преобразуване в секунди
-        # Конвертиране на времевия маркер в UTC дата и форматиране на датата
-        publication_time = datetime.fromtimestamp(timestamp_sec, tz=timezone.utc).strftime('%B %d, %Y')
+    publisher = book_details.get('publisher', 'N/A')
+    isbn13 = book_details.get('isbn13', 'N/A')
+    isbn10 = book_details.get('isbn', 'N/A')
+    asin = book_details.get('asin', 'N/A')
+    language = book_details.get('language', {}).get('name', 'N/A')
+    pages_count = book_details.get('numPages', 'N/A')
+    book_format = book_details.get('format', 'N/A')
 
-    # Извличане на информация за издателя на книгата, ако е налична
-    publisher = book_details.get('publisher', None)
+    # Extract work stats
+    stats = work_property.get('stats', {})
+    rating = stats.get('averageRating', 'N/A')
+    ratings_count = stats.get('ratingsCount', 'N/A')
+    reviews_count = stats.get('textReviewsCount', 'N/A')
 
-    # Извличане на ISBN-13, ISBN-10 и ASIN, ако са налични
-    isbn13 = book_details.get('isbn13', None)  # ISBN-13 (международен стандарт за книги)
-    isbn10 = book_details.get('isbn', None)  # ISBN-10 (по-стара версия на стандарта)
-    asin = book_details.get('asin', None)  # ASIN (Amazon идентификатор)
-
-    # Извличане на езика на книгата от 'book_details'
-    # Вложен обект 'language', от който вземаме 'name'
-    language = book_details.get('language', {}).get('name', None)
-
-    # Извличане на списъка с жанрове на книгата от 'book_property'
-    genresList = book_property.get('bookGenres', [])
-    # Конвертиране на списъка с жанрове в низ от жанрове, разделени със запетаи
-    genres = ", ".join([genre_info['genre']['name'] for genre_info in genresList])
-
-    # Извличане на наградите, спечелени от книгата, от 'work_details'
-    literary_awards = work_details.get('awardsWon', [])
-    # Форматиране на наградите като низ с име и година (пример: "Награда (2020)")
-    formatted_awards = ", ".join([
+    # Extract awards, places, and characters
+    literary_awards = ", ".join(
         (
             f"{award['name']} ({datetime.fromtimestamp(award['awardedAt'] / 1000, tz=timezone.utc).strftime('%Y')})"
-            if award.get('awardedAt') is not None and award['awardedAt'] > 0 else f"{award['name']}"
+            if award.get('awardedAt') and award['awardedAt'] > 0 else award['name']
         )
-        for award in literary_awards
-    ])
+        for award in work_details.get('awardsWon', [])
+    ) or 'N/A'
 
-    # Извличане на оригиналното заглавие на книгата от 'work_details'
-    original_title = work_details.get('originalTitle', None)
+    places = ", ".join(
+        f"{place['name']} ({', '.join(filter(None, [place.get('countryName'), str(place.get('year'))]))})"
+        if place.get('countryName') or place.get('year') else place['name']
+        for place in work_details.get('places', [])
+    ) or 'N/A'
 
-    # Извличане на местата, свързани с книгата, от 'work_details'
-    places = work_details.get('places', [])
-    # Форматиране на списъка с места като низ с име и допълнителна информация (пример: "Лондон (Великобритания, 1888)")
-    formatted_places = ", ".join([
-        f"{place['name']} ({', '.join(filter(None, [place['countryName'], str(place['year'])]))})"
-        if place['countryName'] or place['year'] else place['name']
-        for place in places
-    ])
+    characters = ", ".join(
+        character['name'] for character in work_details.get('characters', [])
+    ) or 'N/A'
 
-    # Извличане на списъка с герои от 'work_details'
-    characters = work_details.get('characters', [])
-    # Форматиране на списъка с герои като низ с имената им, разделени със запетаи
-    formatted_characters = ", ".join([character['name'] for character in characters])
-
-    # Извличане на URL адреса на изображението на книгата от 'book_property'
-    image_url = book_property.get('imageUrl', None)
-
-    # Извличане на заглавието на поредицата (ако книгата е част от поредица) от 'series_property'
-    series_title = series_property.get('title', None)
-
-    # Принтиране на резултата
+    # Format the result
     result = {
-        "title": book_title,
+        "title": title,
         "original_title": original_title,
         "contributors": formatted_contributors,
         "rating": rating,
@@ -255,18 +191,19 @@ def scrape_contributor():
         "first_publication_info": first_publication_info,
         "publisher": publisher,
         "publication_time": publication_time,
-        "literary_awards": formatted_awards,
-        "setting": formatted_places,
-        "characters": formatted_characters,
+        "literary_awards": literary_awards,
+        "setting": places,
+        "characters": characters,
         "image_url": image_url,
         "series": series_title,
         "isbn13": isbn13,
         "isbn10": isbn10,
         "asin": asin,
-        "language": language,
+        "language": language
     }
-    print(json.dumps(result))
 
-# Ако този скрипт е изпълнен директно (не е импортиран), ще се извика scrape_contributor
+    # Print the result as JSON
+    print(json.dumps(result, indent=2, ensure_ascii=False))
+
 if __name__ == "__main__":
-    scrape_contributor()
+    scrape_book_data()
