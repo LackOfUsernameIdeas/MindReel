@@ -17,10 +17,9 @@ import { getAverageMetrics } from "../helper_functions_common";
 import logo from "../../assets/images/brand-logos/logo_large_head.png";
 import logoPink from "../../assets/images/brand-logos/logo_large_head_pink.png";
 import BookAdaptations from "./components/BookAdaptations";
+import MusicStats from "./components/MusicStats";
 
-interface LandingProps {}
-
-const Landing: FC<LandingProps> = () => {
+const Landing: FC<{}> = () => {
   // Състояние за задържане на извлечени данни
   const [data, setData] = useState<DataType>({
     usersCount: [], // Броя на потребителите
@@ -31,7 +30,11 @@ const Landing: FC<LandingProps> = () => {
     averagePrecisionLastRoundPercentage: "", // Средна прецизност за последния кръг в проценти
     averageRecallPercentage: "", // Среден Recall в проценти
     averageF1ScorePercentage: "", // Среден F1 резултат в проценти
-    booksAdaptationsCount: { movies: 0, series: 0, all: 0 } // Брой адаптации на книги (филми и сериали)
+    booksAdaptationsCount: { movies: 0, series: 0, all: 0 }, // Брой адаптации на книги (филми и сериали)
+    averageSpotifyPopularity: 0, // Средна популярност в Spotify
+    averageYoutubeLikes: 0, // Среден брой харесвания в YouTube
+    averageYoutubeViews: 0, // Среден брой гледания в YouTube
+    averageYoutubeComments: 0 // Среден брой коментари в YouTube
   });
 
   // useEffect за извличане на данни, когато компонентът се зареди за първи път
@@ -460,6 +463,32 @@ const Landing: FC<LandingProps> = () => {
             </div>
             <BookAdaptations
               booksAdaptationsCount={data.booksAdaptationsCount}
+            />
+          </div>
+        </section>
+        <section
+          className="section text-defaultsize text-defaulttextcolor"
+          id="musicStats"
+        >
+          <div className="container">
+            <div className="justify-center text-center mb-12">
+              <div className="xl:col-span-6 col-span-12">
+                <h3 className="font-semibold  opsilion !text-4xl mb-2">
+                  Музикални статистики
+                </h3>
+                <span className="text-[#8c9097] dark:text-white/50 text-[0.9375rem] font-normal block">
+                  Средна стойност на различни показатели на препоръчаните песни
+                  в платформата
+                </span>
+              </div>
+            </div>
+            <MusicStats
+              musicStatsData={{
+                spotifyPopularity: data.averageSpotifyPopularity,
+                youtubeViews: data.averageYoutubeViews,
+                youtubeLikes: data.averageYoutubeLikes,
+                youtubeComments: data.averageYoutubeComments
+              }}
             />
           </div>
         </section>

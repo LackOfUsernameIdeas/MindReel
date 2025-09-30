@@ -37,7 +37,23 @@ export const fetchData = async (
         key: "averageBoxOfficeAndScores",
         endpoint: "/stats/platform/average-scores"
       },
-      { key: "booksAdaptationsCount", endpoint: "/stats/platform/adaptations" }
+      { key: "booksAdaptationsCount", endpoint: "/stats/platform/adaptations" },
+      {
+        key: "averageSpotifyPopularity",
+        endpoint: "/stats/platform/average-spotify-popularity"
+      },
+      {
+        key: "averageYoutubeLikes",
+        endpoint: "/stats/platform/average-youtube-likes"
+      },
+      {
+        key: "averageYoutubeViews",
+        endpoint: "/stats/platform/average-youtube-views"
+      },
+      {
+        key: "averageYoutubeComments",
+        endpoint: "/stats/platform/average-youtube-comments"
+      }
     ];
 
     // Loop over each endpoint, fetch data, and update state independently
@@ -61,4 +77,28 @@ export const fetchData = async (
     console.error("Error in fetchData:", error);
     throw error;
   }
+};
+
+/**
+ * Форматира число в съкратен вид със символи K, M, B.
+ * Примери:
+ *  - 950 -> "950"
+ *  - 1 200 -> "1.2K"
+ *  - 4 500 000 -> "4.5M"
+ *  - 2 000 000 000 -> "2B"
+ *
+ * @param {number} num - Числото, което ще бъде форматирано.
+ * @returns {string} - Форматиран низ със съкратено представяне.
+ */
+export const formatNumber = (num: number): string => {
+  if (num >= 1_000_000_000) {
+    return (num / 1_000_000_000).toFixed(1).replace(/\.0$/, "") + "B";
+  }
+  if (num >= 1_000_000) {
+    return (num / 1_000_000).toFixed(1).replace(/\.0$/, "") + "M";
+  }
+  if (num >= 1_000) {
+    return (num / 1_000).toFixed(1).replace(/\.0$/, "") + "K";
+  }
+  return num.toString();
 };

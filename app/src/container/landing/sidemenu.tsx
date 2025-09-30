@@ -82,6 +82,16 @@ const Navbar2 = () => {
           </a>
         </li>
         <li className="slide">
+          <a href="#bookAdaptations" className="side-menu__item">
+            <span className="side-menu__label">Адаптации</span>
+          </a>
+        </li>
+        <li className="slide">
+          <a href="#musicStats" className="side-menu__item">
+            <span className="side-menu__label">Песни</span>
+          </a>
+        </li>
+        <li className="slide">
           <a href="#accordion" className="side-menu__item">
             <span className="side-menu__label">Разяснения</span>
           </a>

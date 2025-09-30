@@ -21,6 +21,10 @@ export type DataType = {
   averageRecallPercentage: string; // Среден Recall в проценти
   averageF1ScorePercentage: string; // Среден F1 резултат в проценти
   booksAdaptationsCount: Adaptations; // Брой адаптации на книги (филми и сериали)
+  averageSpotifyPopularity: number; // Средна популярност в Spotify
+  averageYoutubeLikes: number; // Среден брой харесвания в YouTube
+  averageYoutubeViews: number; // Среден брой гледания в YouTube
+  averageYoutubeComments: number; // Среден брой коментари в YouTube
 };
 
 export interface UserData {

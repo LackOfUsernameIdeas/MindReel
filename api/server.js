@@ -2090,7 +2090,7 @@ app.get("/stats/platform/adaptations", (req, res) => {
 });
 
 // Извличане на средната стойност на Spotify популярността на песните в платформата
-app.get("/stats/platform/spotify-popularity", (req, res) => {
+app.get("/stats/platform/average-spotify-popularity", (req, res) => {
   db.getAverageSpotifyPopularity((err, result) => {
     if (err) {
       return res
@@ -2103,34 +2103,39 @@ app.get("/stats/platform/spotify-popularity", (req, res) => {
   });
 });
 
-// Извличане на средната стойност на харесванията, гледанията и коментарите в YouTube
-app.get("/stats/platform/youtube-stats", (req, res) => {
+// Извличане на средната стойност на харесванията в YouTube
+app.get("/stats/platform/average-youtube-likes", (req, res) => {
   db.getAverageYoutubeLikes((err, youtubeLikes) => {
     if (err)
       return res
         .status(500)
         .json({ error: "Error fetching YouTube likes stats" });
 
-    db.getAverageYoutubeViews((err, youtubeViews) => {
-      if (err)
-        return res
-          .status(500)
-          .json({ error: "Error fetching YouTube views stats" });
+    res.json(youtubeLikes);
+  });
+});
 
-      db.getAverageYoutubeComments((err, youtubeComments) => {
-        if (err)
-          return res
-            .status(500)
-            .json({ error: "Error fetching YouTube comments stats" });
+// Извличане на средната стойност на гледанията в YouTube
+app.get("/stats/platform/average-youtube-views", (req, res) => {
+  db.getAverageYoutubeViews((err, youtubeViews) => {
+    if (err)
+      return res
+        .status(500)
+        .json({ error: "Error fetching YouTube views stats" });
 
-        // Връщане на резултата като JSON
-        res.json({
-          averageYoutubeLikes: youtubeLikes,
-          averageYoutubeViews: youtubeViews,
-          averageYoutubeComments: youtubeComments
-        });
-      });
-    });
+    res.json(youtubeViews);
+  });
+});
+
+// Извличане на средната стойност на коментарите в YouTube
+app.get("/stats/platform/average-youtube-comments", (req, res) => {
+  db.getAverageYoutubeComments((err, youtubeComments) => {
+    if (err)
+      return res
+        .status(500)
+        .json({ error: "Error fetching YouTube comments stats" });
+
+    res.json(youtubeComments);
   });
 });
 
