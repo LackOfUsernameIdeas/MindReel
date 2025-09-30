@@ -11,6 +11,7 @@ import json
 import requests
 import re
 import html2text
+import io
 from bs4 import BeautifulSoup
 from datetime import datetime, timezone
 
@@ -23,7 +24,7 @@ if len(sys.argv) < 2:
 URL = sys.argv[1]
 
 # Настройка на изходния поток за правилно изобразяване на UTF-8 символи
-sys.stdout.reconfigure(encoding='utf-8')
+sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 
 # Функция за извличане на данни за книгата
 def scrape_book_data():
