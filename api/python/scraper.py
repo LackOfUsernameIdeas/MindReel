@@ -24,14 +24,9 @@ URL = sys.argv[1]
 
 # Функция за извличане на данни за книгата
 def scrape_book_data():
-    # Задаване на headers за имитация на браузър
-    headers = {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
-    }
-
     # Изпращане на GET заявка за зареждане на страницата
     try:
-        response = requests.get(URL, headers=headers)
+        response = requests.get(URL)
         if response.status_code != 200:
             print(json.dumps({"error": f"Failed to fetch the page. Status code: {response.status_code}"}))
             sys.exit(1)
