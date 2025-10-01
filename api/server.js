@@ -2203,7 +2203,7 @@ io.on("connection", (socket) => {
   socket.on("hardwareData", (rawData) => {
     console.log("Получени хардуерни данни:", rawData);
 
-    const data = JSON.parse(rawData);
+    const data = typeof rawData === "string" ? JSON.parse(rawData) : rawData;
 
     const useFileMode = data.useFileMode === true; // дали искаме да симулираме от файл
 
