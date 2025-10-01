@@ -118,8 +118,7 @@ declare global {
 // }) => {
 export const VRRecommendationsList: FC<{
   recommendationList: any;
-  setCurrentIndex: any;
-}> = ({ recommendationList, setCurrentIndex }) => {
+}> = ({ recommendationList }) => {
   const [inTransition, setInTransition] = useState(false);
   const [direction, setDirection] = useState<"left" | "right">("right");
   const animationDuration = 500;
