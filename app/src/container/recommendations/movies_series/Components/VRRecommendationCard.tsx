@@ -166,7 +166,7 @@ const VRRecommendationCard: FC<RecommendationCardProps> = ({
 
   return (
     <>
-      <MovieCardVR
+      {/* <MovieCardVR
         position="0 2.5 -8"
         recommendation={vrRecommendation}
         handleBookmarkClick={handleBookmark}
@@ -193,7 +193,7 @@ const VRRecommendationCard: FC<RecommendationCardProps> = ({
         }
         onClose={handleCloseTrailerModal}
         position="0 3.5 -2"
-      />
+      /> */}
     </>
   );
 };

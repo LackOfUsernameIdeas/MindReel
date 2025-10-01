@@ -132,15 +132,16 @@ export const Quiz: FC<QuizProps> = ({
 
           {/* Conditional rendering based on renderVrScene */}
           {renderVrScene ? (
-            <VRRecommendationsList
-              recommendationList={recommendationList}
-              setCurrentBookmarkStatus={setCurrentBookmarkStatus}
-              currentIndex={currentIndex}
-              setCurrentIndex={setCurrentIndex}
-              setAlertVisible={setAlertVisible}
-              setBookmarkedMovies={setBookmarkedMovies}
-              bookmarkedMovies={bookmarkedMovies}
-            />
+            // <VRRecommendationsList
+            //   recommendationList={recommendationList}
+            //   setCurrentBookmarkStatus={setCurrentBookmarkStatus}
+            //   currentIndex={currentIndex}
+            //   setCurrentIndex={setCurrentIndex}
+            //   setAlertVisible={setAlertVisible}
+            //   setBookmarkedMovies={setBookmarkedMovies}
+            //   bookmarkedMovies={bookmarkedMovies}
+            // />
+            <></>
           ) : (
             <>
               <RecommendationsList
