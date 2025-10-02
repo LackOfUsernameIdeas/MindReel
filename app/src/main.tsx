@@ -17,12 +17,6 @@ import Watchlist from "./container/saveLists/movies_series/Watchlist.tsx";
 import Readlist from "./container/saveLists/books/Readlist.tsx";
 import Contact from "./container/contact/Contact.tsx";
 import ChooseRecommendations from "./container/recommendations/choose/ChooseRecommendations.tsx";
-import MoviesByProsperityBubbleChart from "./container/platformStats/MoviesByProsperity/MoviesByProsperity.tsx";
-import ActorsDirectorsWritersTable from "./container/platformStats/ActorsDirectorsWritersTable/ActorsDirectorsWritersTable.tsx";
-import GenrePopularityOverTime from "./container/platformStats/GenrePopularityOverTime/GenrePopularityOverTime.tsx";
-import TopRecommendations from "./container/platformStats/TopRecommendations/TopRecommendations.tsx";
-import MoviesAndSeriesByRatings from "./container/platformStats/MoviesAndSeriesByRatings/MoviesAndSeriesByRatings.tsx";
-import TopCountries from "./container/platformStats/TopCountries/TopCountries.tsx";
 import AIAnalysator from "./container/aiAnalysator/AIAnalysator.tsx";
 import Landing from "./container/landing/Landing.tsx";
 import LandingLayout from "./pages/LandingLayout.tsx";
@@ -57,36 +51,6 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
             <Route
               path="recommendations/music"
               element={<MusicRecommendations />}
-            />
-            <Route
-              index
-              path="platformStats/moviesByProsperityBubbleChart"
-              element={<MoviesByProsperityBubbleChart />}
-            />
-            <Route
-              index
-              path="platformStats/actorsDirectorsWritersTable"
-              element={<ActorsDirectorsWritersTable />}
-            />
-            <Route
-              index
-              path="platformStats/genrePopularityOverTime"
-              element={<GenrePopularityOverTime />}
-            />
-            <Route
-              index
-              path="platformStats/topRecommendations"
-              element={<TopRecommendations />}
-            />
-            <Route
-              index
-              path="platformStats/moviesAndSeriesByRatings"
-              element={<MoviesAndSeriesByRatings />}
-            />
-            <Route
-              index
-              path="platformStats/topCountries"
-              element={<TopCountries />}
             />
             <Route index path="aiAnalysator" element={<AIAnalysator />} />
             <Route
