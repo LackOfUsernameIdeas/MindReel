@@ -206,7 +206,7 @@ const MoviesAndSeriesTable: FC<MoviesAndSeriesTableProps> = ({
           <div className="box-header justify-between flex flex-col sm:flex-row items-center space-y-3 sm:space-y-0">
             <div className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto">
               <p className="box-title goodTiming !text-xl text-center sm:text-left">
-                Списък За Гледане
+                Списък за гледане
               </p>
               <div className="flex items-center gap-4 w-full sm:w-auto">
                 <input

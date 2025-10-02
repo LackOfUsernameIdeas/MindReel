@@ -16,10 +16,9 @@ const MainMetricsWidget: FC<{
       {icon}
       <h3 className="ml-2 text-base goodTiming font-semibold">{title}</h3>
     </div>
-    <div className="flex-grow">
-      <p className="text-2xl font-bold">{value}</p>
-    </div>
-    <p className="text-xs text-muted-foreground mt-auto">{description}</p>{" "}
+    <div className="flex-grow"></div>
+    <p className="text-2xl font-bold mb-2">{value}</p>
+    <p className="text-xs text-muted-foreground">{description}</p>
     {progress && (
       <div className="mt-2">
         <Progress value={progress} />

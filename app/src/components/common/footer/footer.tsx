@@ -61,16 +61,15 @@ const Footer: FC = () => (
                 Източници
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-2 auto-rows-min footer-links">
-                <div className="flex items-center space-x-2 md:ml-[2rem]">
+                <div className="flex items-center space-x-2 md:ml-[2rem] whitespace-nowrap">
                   <a
                     href="https://platform.openai.com/docs/overview"
                     target="_blank"
                     rel="noopener noreferrer"
+                    className="flex items-center space-x-1"
                   >
-                    <div className="space-x-1">
-                      <i className="ti ti-brand-openai text-lg sm:text-xs"></i>
-                      <span>OpenAI API</span>
-                    </div>
+                    <i className="ti ti-brand-openai text-lg sm:text-xs"></i>
+                    <span>OpenAI API</span>
                   </a>
                 </div>
                 <div className="flex items-center space-x-2 md:ml-[2rem]">
@@ -78,11 +77,10 @@ const Footer: FC = () => (
                     href="https://ai.google.dev/gemini-api/docs"
                     target="_blank"
                     rel="noopener noreferrer"
+                    className="flex items-center space-x-1"
                   >
-                    <div className="space-x-1">
-                      <i className="ti ti-api text-lg sm:text-xs"></i>
-                      <span>Gemini API</span>
-                    </div>
+                    <i className="ti ti-api text-lg sm:text-xs"></i>
+                    <span>Gemini API</span>
                   </a>
                 </div>
                 <div className="flex items-center space-x-[0.40rem] md:ml-[2rem]">
@@ -90,11 +88,10 @@ const Footer: FC = () => (
                     href="https://www.omdbapi.com/#top"
                     target="_blank"
                     rel="noopener noreferrer"
+                    className="flex items-center space-x-1"
                   >
-                    <div className="space-x-1">
-                      <i className="ti ti-api text-lg sm:text-xs"></i>
-                      <span>OMDb API</span>
-                    </div>
+                    <i className="ti ti-api text-lg sm:text-xs"></i>
+                    <span>OMDb API</span>
                   </a>
                 </div>
                 <div className="flex items-center space-x-2 md:ml-[2rem]">
@@ -102,11 +99,10 @@ const Footer: FC = () => (
                     href="https://developers.google.com/custom-search/v1/introduction"
                     target="_blank"
                     rel="noopener noreferrer"
+                    className="flex items-center space-x-1"
                   >
-                    <div className="space-x-1">
-                      <i className="ti ti-world-search text-lg sm:text-xs"></i>
-                      <span>Search API</span>
-                    </div>
+                    <i className="ti ti-world-search text-lg sm:text-xs"></i>
+                    <span>Search API</span>
                   </a>
                 </div>
                 <div className="flex items-center space-x-2 md:ml-[2rem]">
@@ -114,11 +110,10 @@ const Footer: FC = () => (
                     href="https://developers.google.com/books"
                     target="_blank"
                     rel="noopener noreferrer"
+                    className="flex items-center space-x-1"
                   >
-                    <div className="space-x-1">
-                      <i className="ti ti-brand-google text-lg sm:text-xs"></i>
-                      <span>Books API</span>
-                    </div>
+                    <i className="ti ti-brand-google text-lg sm:text-xs"></i>
+                    <span>Books API</span>
                   </a>
                 </div>
                 <div className="flex items-center space-x-2 md:ml-[2rem]">
@@ -126,11 +121,10 @@ const Footer: FC = () => (
                     href="https://www.goodreads.com"
                     target="_blank"
                     rel="noopener noreferrer"
+                    className="flex items-center space-x-1"
                   >
-                    <div className="space-x-1">
-                      <i className="ti ti-book text-lg sm:text-xs"></i>
-                      <span>Goodreads</span>
-                    </div>
+                    <i className="ti ti-book text-lg sm:text-xs"></i>
+                    <span>Goodreads</span>
                   </a>
                 </div>
                 <div className="flex items-center space-x-2 md:ml-[2rem]">
@@ -138,11 +132,10 @@ const Footer: FC = () => (
                     href="https://developers.google.com/youtube/v3"
                     target="_blank"
                     rel="noopener noreferrer"
+                    className="flex items-center space-x-1"
                   >
-                    <div className="space-x-1">
-                      <i className="ti ti-brand-youtube text-lg sm:text-xs"></i>
-                      <span>YouTube API</span>
-                    </div>
+                    <i className="ti ti-brand-youtube text-lg sm:text-xs"></i>
+                    <span>YouTube API</span>
                   </a>
                 </div>
                 <div className="flex items-center space-x-2 md:ml-[2rem]">
@@ -150,11 +143,10 @@ const Footer: FC = () => (
                     href="https://developer.spotify.com/documentation/web-api"
                     target="_blank"
                     rel="noopener noreferrer"
+                    className="flex items-center space-x-1"
                   >
-                    <div className="space-x-1">
-                      <i className="ti ti-brand-spotify text-lg sm:text-xs"></i>
-                      <span>Spotify API</span>
-                    </div>
+                    <i className="ti ti-brand-spotify text-lg sm:text-xs"></i>
+                    <span>Spotify API</span>
                   </a>
                 </div>
               </div>

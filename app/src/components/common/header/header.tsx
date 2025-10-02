@@ -107,7 +107,7 @@ const Header: FC<HeaderProps> = ({ local_varaiable, ThemeChanger }: any) => {
                   to="#"
                   data-hs-theme-click-value="dark"
                 >
-                  <i className="bx bx-moon header-link-icon text-defaulttextcolor dark:text-white/80 font-semibold"></i>
+                  <i className="bx bx-moon header-link-icon text-defaulttextcolor dark:text-white/80"></i>
                 </Link>
                 <Link
                   aria-label="anchor"
@@ -115,25 +115,25 @@ const Header: FC<HeaderProps> = ({ local_varaiable, ThemeChanger }: any) => {
                   to="#"
                   data-hs-theme-click-value="light"
                 >
-                  <i className="bx bx-sun header-link-icon text-defaulttextcolor dark:text-white/80 font-semibold"></i>
+                  <i className="bx bx-sun header-link-icon text-defaulttextcolor dark:text-white/80"></i>
                 </Link>
               </div>
 
               <div
                 className="header-element md:!px-[0.65rem] px-2 hs-dropdown !items-center ti-dropdown [--placement:bottom-left]"
                 style={{
-                  transform: isLogOutHovered ? "scale(1.1)" : "scale(0.9)", // Increase size on hover
+                  transform: isLogOutHovered ? "scale(1.1)" : "scale(0.9)",
                   transformOrigin: "center",
-                  transition: "transform 0.3s ease" // Smooth transition
+                  transition: "transform 0.3s ease"
                 }}
                 onMouseEnter={() => setIsLogOutHovered(true)}
                 onMouseLeave={() => setIsLogOutHovered(false)}
               >
                 <button
-                  className="w-full goodTiming ti-dropdown-item !text-base !p-[0.65rem] !inline-flex items-center opacity-[0.8]"
+                  className="w-full goodTiming ti-dropdown-item !text-base !p-[0.65rem] flex items-center opacity-[0.8]" // changed inline-flex → flex
                   onClick={handleLogout}
                 >
-                  <i className="ti ti-logout text-defaulttextcolor dark:text-white/80 font-semibold me-2"></i>
+                  <i className="ti ti-logout text-defaulttextcolor dark:text-white/80 mr-2 leading-none"></i>
                   Излизане
                 </button>
               </div>

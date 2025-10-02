@@ -80,7 +80,7 @@ export const MENUITEMS = [
     Name: "",
     active: false,
     selected: false,
-    title: "Индивидуални Статистики",
+    title: "Индивидуални",
     class:
       "badge !bg-warning/10 !text-warning !py-[0.25rem] !px-[0.45rem] !text-[0.75em] ms-2"
   },

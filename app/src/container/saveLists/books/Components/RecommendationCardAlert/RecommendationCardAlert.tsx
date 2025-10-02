@@ -216,7 +216,7 @@ const RecommendationCardAlert: FC<RecommendationCardProps> = ({
 
   return (
     <div
-      className={`fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm z-50 transition-opacity duration-300 ${
+      className={`fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm z-50 transition-opacity duration-300 p-4 ${
         visible ? "opacity-100" : "opacity-0"
       }`}
     >
@@ -229,24 +229,26 @@ const RecommendationCardAlert: FC<RecommendationCardProps> = ({
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
-        className={`m-2 sm:m-0 p-6 rounded-lg shadow-lg bg-[rgb(var(--body-bg))] glow-effect border-2 dark:border-white border-secondary text-center max-w-full transform transition-transform duration-300 ${
+        className={`relative p-4 sm:p-6 rounded-lg shadow-lg bg-[rgb(var(--body-bg))] glow-effect border-2 dark:border-white border-secondary max-h-[90vh] overflow-y-auto transition-transform duration-300 ${
           visible ? "scale-100" : "scale-75"
-        } w-full sm:w-[90%] md:w-[75%] lg:w-[85%] xl:w-[70%] 2xl:w-[50%]`}
+        } w-full max-w-[95vw] sm:max-w-[90vw] md:max-w-[85vw] lg:max-w-[80vw] xl:max-w-[70vw] 2xl:max-w-[60vw]`}
       >
         <div className="recommendation-card">
-          <div className="flex w-full items-center sm:items-start flex-col md:flex-row">
-            <div className="relative flex-shrink-0 mb-4 md:mb-0 md:mr-8 flex flex-col items-center">
+          <div className="flex w-full items-start flex-col md:flex-row gap-4 md:gap-6">
+            <div className="relative flex-shrink-0 w-full md:w-auto flex flex-col items-center gap-4">
               {/* Постер */}
-              {!posterError && selectedItem.imageLink ? (
-                <img
-                  src={selectedItem.imageLink}
-                  alt=""
-                  onError={() => setPosterError(true)}
-                  className="rounded-lg w-[15rem] h-auto"
-                />
-              ) : (
-                <div className="rounded-lg w-[15rem] aspect-[2.8/4] mb-4 bg-white/70 dark:bg-bodybg2" />
-              )}
+              <div className="w-full max-w-[200px] sm:max-w-[240px] md:max-w-none md:w-60">
+                {!posterError && selectedItem.imageLink ? (
+                  <img
+                    src={selectedItem.imageLink}
+                    alt=""
+                    onError={() => setPosterError(true)}
+                    className="rounded-lg w-full h-auto"
+                  />
+                ) : (
+                  <div className="rounded-lg w-full aspect-[2.8/4] bg-white/70 dark:bg-bodybg2" />
+                )}
+              </div>
               {/* Бутон за добавяне/премахване от readlist */}
               <button
                 onClick={() =>
@@ -257,12 +259,13 @@ const RecommendationCardAlert: FC<RecommendationCardProps> = ({
                     setAlertVisible
                   )
                 }
-                className="absolute top-4 left-4 p-2 text-[#FFCC33] bg-black/50 bg-opacity-60 rounded-full transition-all duration-300 transform hover:scale-110"
+                className="absolute top-2 left-2 sm:top-4 sm:left-4 p-2 text-[#FFCC33] bg-black/50 bg-opacity-60 rounded-full transition-all duration-300 transform hover:scale-110"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  width="35"
-                  height="35"
+                  width="28"
+                  height="28"
+                  className="sm:w-[35px] sm:h-[35px]"
                   viewBox="0 0 24 24"
                   fill="currentColor"
                 >
@@ -280,44 +283,46 @@ const RecommendationCardAlert: FC<RecommendationCardProps> = ({
               </button>
               {/* Герои */}
               {isGoodreads && (
-                <div>
-                  <strong className="text-xl text-defaulttextcolor/85 block text-center">
+                <div className="w-full">
+                  <strong className="text-lg sm:text-xl text-defaulttextcolor/85 block text-center">
                     Герои:
                   </strong>
-                  <div className="mt-5">
+                  <div className="mt-3">
                     {selectedItem.characters ? (
                       <ul className="list-disc list-inside">
                         {selectedItem.characters
                           .split(", ")
                           .map((character, index) => (
                             <li key={index}>
-                              <span className="text-sm font-semibold text-defaulttextcolor/70">
+                              <span className="text-xs sm:text-sm font-semibold text-defaulttextcolor/70">
                                 {character}
                               </span>
                             </li>
                           ))}
                       </ul>
                     ) : (
-                      <p className="text-center">Няма информация за героите</p>
+                      <p className="text-center text-sm">
+                        Няма информация за героите
+                      </p>
                     )}
                   </div>
                 </div>
               )}
             </div>
 
-            <div className="flex-grow w-full md:w-2/3 text-left ml-8">
+            <div className="flex-grow w-full md:flex-1 text-left">
               <div className="flex-grow flex flex-col justify-between">
-                <div className="grid grid-cols-2 gap-8">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-8">
                   {/* Заглавия и важна информация */}
                   <div className="mb-2">
-                    <p className="block text-xl sm:text-3xl font-bold overflow-hidden mb-2 sm:mb-0">
+                    <p className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold mb-1 sm:mb-2">
                       {selectedItem.title_bg || "Заглавие не е налично"}
                     </p>
-                    <p className="block text-md sm:text-lg font-semibold text-opacity-60 italic mb-2">
+                    <p className="text-sm sm:text-md md:text-lg font-semibold text-opacity-60 italic mb-2">
                       {selectedItem.title_en ||
                         "Заглавие на английски не е налично"}
                     </p>
-                    <p className="text-sm italic text-defaulttextcolor/70">
+                    <p className="text-xs sm:text-sm italic text-defaulttextcolor/70">
                       {author || "Неизвестен автор"},{" "}
                       {selectedItem.page_count || "Неизвестен брой"} страници
                     </p>
@@ -325,19 +330,19 @@ const RecommendationCardAlert: FC<RecommendationCardProps> = ({
                   {/* Поредица и адаптации */}
                   <div className="mb-4">
                     {isGoodreads && (
-                      <div>
-                        <strong className="text-xl text-defaulttextcolor/85">
+                      <div className="mb-2">
+                        <strong className="text-base sm:text-lg md:text-xl text-defaulttextcolor/85">
                           Част от поредица:
                         </strong>
-                        <p className="text-base italic text-defaulttextcolor/70 mb-2">
+                        <p className="text-sm sm:text-base italic text-defaulttextcolor/70">
                           {selectedItem.series || "Не"}
                         </p>
                       </div>
                     )}
-                    <strong className="text-xl text-defaulttextcolor/85">
+                    <strong className="text-base sm:text-lg md:text-xl text-defaulttextcolor/85">
                       Адаптации:
                     </strong>
-                    <p className="text-base italic text-defaulttextcolor/70">
+                    <p className="text-sm sm:text-base italic text-defaulttextcolor/70">
                       {selectedItem.adaptations ||
                         "Няма налична информация за адаптации :("}
                     </p>
@@ -347,16 +352,16 @@ const RecommendationCardAlert: FC<RecommendationCardProps> = ({
               {/* Жанрове */}
               <Genres genres={genres} source={source} />
               {/* Рейтинг */}
-              <div className="flex items-center space-x-8">
+              <div className="flex items-center gap-4 sm:gap-6 md:gap-8 flex-wrap">
                 <div
-                  className="flex dark:text-[#FFCC33] text-[#bf9413] items-center space-x-2"
+                  className="flex dark:text-[#FFCC33] text-[#bf9413] items-center gap-2"
                   title="Goodreads рейтинг: Базиран на отзиви и оценки от потребители."
                 >
-                  <span className="font-bold text-lg">
+                  <span className="font-bold text-sm sm:text-base md:text-lg">
                     Рейтинг в Goodreads:
                   </span>
-                  <FaStar className="w-6 h-6" />
-                  <span className="font-bold text-lg">
+                  <FaStar className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6" />
+                  <span className="font-bold text-sm sm:text-base md:text-lg">
                     {selectedItem.goodreads_rating || "N/A"}{" "}
                     {isGoodreads &&
                       `/ ${selectedItem.goodreads_ratings_count.toLocaleString(
@@ -366,7 +371,7 @@ const RecommendationCardAlert: FC<RecommendationCardProps> = ({
                 </div>
               </div>
               {/* Ревюта */}
-              <span className="italic text-sm mb-4 dark:text-[#FFCC33]/70 text-[#bf9413]">
+              <span className="italic text-xs sm:text-sm mb-4 dark:text-[#FFCC33]/70 text-[#bf9413] block">
                 {isGoodreads &&
                   `Общо ${selectedItem.goodreads_reviews_count.toLocaleString(
                     "bg-BG"
@@ -375,20 +380,22 @@ const RecommendationCardAlert: FC<RecommendationCardProps> = ({
               {/* Причина за препоръчване */}
               {selectedItem.reason && (
                 <div className="mb-4">
-                  <h3 className="text-lg font-semibold mb-2">
+                  <h3 className="text-base sm:text-lg font-semibold mb-2">
                     Защо препоръчваме{" "}
                     {selectedItem.title_bg || "Заглавие не е налично"}?
                   </h3>
-                  <p className="text-opacity-80 italic">
+                  <p className="text-sm sm:text-base text-opacity-80 italic">
                     {selectedItem.reason}
                   </p>
                 </div>
               )}
               {/* Описание */}
-              <div>
-                <h3 className="text-lg font-semibold mb-2">Описание</h3>
+              <div className="mb-4">
+                <h3 className="text-base sm:text-lg font-semibold mb-2">
+                  Описание
+                </h3>
                 <div className="overflow-hidden transition-all duration-500 ease-in-out max-h-[3rem] opacity-70">
-                  <p className="text-opacity-80 italic">
+                  <p className="text-sm sm:text-base text-opacity-80 italic">
                     {description && description.length > plotPreviewLength
                       ? `${description.substring(0, plotPreviewLength)}...`
                       : description}
@@ -398,7 +405,7 @@ const RecommendationCardAlert: FC<RecommendationCardProps> = ({
                 {description && description.length > plotPreviewLength && (
                   <button
                     onClick={handleOpenPlotModal}
-                    className="mt-2 underline hover:scale-105 transition"
+                    className="mt-2 text-sm sm:text-base underline hover:scale-105 transition"
                   >
                     Пълно описание
                   </button>
@@ -408,10 +415,10 @@ const RecommendationCardAlert: FC<RecommendationCardProps> = ({
               {isGoodreads && <AwardsSection recommendation={selectedItem} />}
               {/* Допълнителна информация */}
               <div className="mt-2">
-                <h3 className="text-lg font-semibold mb-2">
+                <h3 className="text-base sm:text-lg font-semibold mb-2">
                   Допълнителна информация:
                 </h3>
-                <ul className="flex flex-wrap gap-x-4 text-opacity-80">
+                <ul className="flex flex-wrap gap-x-4 gap-y-1 text-sm sm:text-base text-opacity-80">
                   <li>
                     <strong className="text-primary">Произход:</strong>{" "}
                     {selectedItem.origin || "Неизвестен"}
@@ -469,14 +476,15 @@ const RecommendationCardAlert: FC<RecommendationCardProps> = ({
         {/* Х */}
         <button
           onClick={handleClose}
-          className="absolute top-4 right-4 p-2 text-[#FFCC33] bg-opacity-60 rounded-full transition-transform duration-300 transform hover:scale-110 z-10"
+          className="absolute top-2 right-2 sm:top-4 sm:right-4 p-1 sm:p-2 text-[#FFCC33] bg-opacity-60 rounded-full transition-transform duration-300 transform hover:scale-110 z-10"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             x="0px"
             y="0px"
-            width="50"
-            height="50"
+            width="40"
+            height="40"
+            className="sm:w-[50px] sm:h-[50px]"
             viewBox="0 0 48 48"
           >
             <linearGradient
@@ -487,9 +495,9 @@ const RecommendationCardAlert: FC<RecommendationCardProps> = ({
               y2="27.557"
               gradientUnits="userSpaceOnUse"
             >
-              <stop offset="0" stop-color="#f44f5a"></stop>
-              <stop offset=".443" stop-color="#ee3d4a"></stop>
-              <stop offset="1" stop-color="#e52030"></stop>
+              <stop offset="0" stopColor="#f44f5a"></stop>
+              <stop offset=".443" stopColor="#ee3d4a"></stop>
+              <stop offset="1" stopColor="#e52030"></stop>
             </linearGradient>
             <path
               fill="url(#hbE9Evnj3wAjjA2RX0We2a_OZuepOQd0omj_gr1)"
@@ -503,9 +511,9 @@ const RecommendationCardAlert: FC<RecommendationCardProps> = ({
               y2="40.507"
               gradientUnits="userSpaceOnUse"
             >
-              <stop offset="0" stop-color="#a8142e"></stop>
-              <stop offset=".179" stop-color="#ba1632"></stop>
-              <stop offset=".243" stop-color="#c21734"></stop>
+              <stop offset="0" stopColor="#a8142e"></stop>
+              <stop offset=".179" stopColor="#ba1632"></stop>
+              <stop offset=".243" stopColor="#c21734"></stop>
             </linearGradient>
             <path
               fill="url(#hbE9Evnj3wAjjA2RX0We2b_OZuepOQd0omj_gr2)"
