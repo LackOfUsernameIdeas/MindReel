@@ -253,7 +253,7 @@ const MoviesAndSeriesRecommendationsTable: FC<
                     <th>Заглавие</th>
                     <th>Тип</th>
                     {type === "recommendations" && <th>Брой Препоръки</th>}
-                    <th>Просперитет</th>
+                    <th>Просперитетен рейтинг</th>
                     <th>Боксофис</th>
                     <th>Оскар Победи</th>
                     <th>Оскар Номинации</th>

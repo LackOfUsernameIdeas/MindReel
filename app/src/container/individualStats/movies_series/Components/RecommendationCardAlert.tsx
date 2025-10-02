@@ -222,18 +222,18 @@ const RecommendationCardAlert: FC<RecommendationCardAlertProps> = ({
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
-        className={`m-2 sm:m-0 p-6 rounded-lg shadow-lg bg-[rgb(var(--body-bg))] glow-effect border-2 dark:border-white border-secondary text-center max-w-full transform transition-transform duration-300 ${
+        className={`m-2 sm:m-4 p-4 sm:p-6 rounded-lg shadow-lg bg-[rgb(var(--body-bg))] glow-effect border-2 dark:border-white border-secondary text-center max-w-full transform transition-transform duration-300 ${
           visible ? "scale-100" : "scale-75"
-        } w-full sm:w-[90%] md:w-[75%] lg:w-[85%] xl:w-[70%] 2xl:w-[50%]`}
+        } w-full sm:w-[90%] md:w-[75%] lg:w-[85%] xl:w-[70%] 2xl:w-[50%] max-h-[95vh] overflow-y-auto`}
       >
         <div className="recommendation-card">
           <div className="flex w-full items-center sm:items-start flex-col md:flex-row">
-            <div className="relative flex-shrink-0 mb-4 md:mb-0 md:mr-8 flex flex-col items-center">
+            <div className="relative flex-shrink-0 mb-4 md:mb-0 md:mr-8 flex flex-col items-center w-full md:w-auto">
               {/* Постер */}
               <img
                 src={selectedItem.poster}
                 alt={`${selectedItem.title_bg || "Movie"} Poster`}
-                className="rounded-lg w-96 h-auto"
+                className="rounded-lg w-full max-w-[300px] sm:max-w-[350px] md:max-w-[400px] h-auto"
               />
               {/* Бутон за добавяне/премахване от watchlist */}
               <button
@@ -245,12 +245,13 @@ const RecommendationCardAlert: FC<RecommendationCardAlertProps> = ({
                     setAlertVisible
                   )
                 }
-                className="absolute top-4 left-4 p-2 text-[#FFCC33] bg-black/50 bg-opacity-60 rounded-full transition-all duration-300 transform hover:scale-110"
+                className="absolute top-2 left-2 sm:top-4 sm:left-4 p-1.5 sm:p-2 text-[#FFCC33] bg-black/50 bg-opacity-60 rounded-full transition-all duration-300 transform hover:scale-110"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  width="35"
-                  height="35"
+                  width="28"
+                  height="28"
+                  className="sm:w-[35px] sm:h-[35px]"
                   viewBox="0 0 24 24"
                   fill="currentColor"
                 >
@@ -266,17 +267,17 @@ const RecommendationCardAlert: FC<RecommendationCardAlertProps> = ({
               </button>
             </div>
 
-            <div className="flex-grow w-full md:w-2/3 text-left ml-8">
+            <div className="flex-grow w-full md:w-2/3 text-left md:ml-8">
               {/* Главна информация */}
               <div className="top-0 z-10">
-                <p className="block text-xl sm:text-3xl font-bold overflow-hidden mb-2 sm:mb-1">
+                <p className="block text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold overflow-hidden mb-2 sm:mb-1">
                   {selectedItem.title_bg || "Заглавие не е налично"}
                 </p>
-                <p className="block text-md sm:text-lg font-semibold text-opacity-60 italic mb-2">
+                <p className="block text-sm sm:text-md md:text-lg font-semibold text-opacity-60 italic mb-2">
                   {selectedItem.title_en ||
                     "Заглавие на английски не е налично"}
                 </p>
-                <p className="flex gap-1 recommendation-small-details text-sm italic text-defaulttextcolor/70">
+                <p className="flex flex-wrap gap-1 recommendation-small-details text-xs sm:text-sm italic text-defaulttextcolor/70">
                   {translatedGenres || "Жанр неизвестен"} |{" "}
                   {!isMovie &&
                     `Брой сезони: ${
@@ -284,22 +285,24 @@ const RecommendationCardAlert: FC<RecommendationCardAlertProps> = ({
                     } | `}
                   {selectedItem.runtime || "Неизвестно времетраене"}{" "}
                   {!isMovie && (
-                    <p title="Средно аритметично времетраене на един епизод">
+                    <span title="Средно аритметично времетраене на един епизод">
                       (Ср. за 1 епизод)
-                    </p>
+                    </span>
                   )}
                   | {selectedItem.year || "Година неизвестна"} | Рейтинг:{" "}
                   {selectedItem.rated || "N/A"}
                 </p>
                 {/* Рейтинги */}
-                <div className="flex flex-col sm:flex-row sm:items-center space-y-4 sm:space-y-0 sm:space-x-8 py-2">
+                <div className="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-4 md:space-x-8 py-2">
                   <div
                     className="flex items-center space-x-2 dark:text-[#FFCC33] text-[#bf9413]"
                     title="IMDb рейтинг: Базиран на отзиви и оценки от потребители."
                   >
-                    <span className="font-bold text-lg">IMDb: </span>
-                    <FaStar className="w-8 h-8" />
-                    <span className="font-bold text-lg">
+                    <span className="font-bold text-sm sm:text-base lg:text-lg">
+                      IMDb:{" "}
+                    </span>
+                    <FaStar className="w-5 h-5 sm:w-6 sm:h-6 md:w-8 md:h-8" />
+                    <span className="font-bold text-sm sm:text-base lg:text-lg">
                       {selectedItem.imdbRating || "N/A"} /{" "}
                       {selectedItem.imdbVotes || "N/A"} гласа
                     </span>
@@ -317,20 +320,20 @@ const RecommendationCardAlert: FC<RecommendationCardAlertProps> = ({
                             ? "bg-[#FFCC33]"
                             : "bg-[#FF0000]"
                         }`}
-                        style={{ width: "2.2rem", height: "2.2rem" }}
+                        style={{ width: "1.8rem", height: "1.8rem" }}
                       >
                         <span
                           className={`${
                             selectedItem.metascore === "N/A" ||
                             !selectedItem.metascore
-                              ? "text-sm"
-                              : "text-xl"
+                              ? "text-xs"
+                              : "text-base sm:text-lg"
                           }`}
                         >
                           {selectedItem.metascore || "N/A"}
                         </span>
                       </div>
-                      <span className="font-semibold text-md sm:text-sm md:text-lg">
+                      <span className="font-semibold text-sm sm:text-base lg:text-lg">
                         Метаскор
                       </span>
                     </div>
@@ -340,8 +343,8 @@ const RecommendationCardAlert: FC<RecommendationCardAlertProps> = ({
                       className="flex items-center space-x-2"
                       title="Rotten Tomatoes рейтинг: Процент положителни рецензии от професионални критици."
                     >
-                      <SiRottentomatoes className="text-[#FF0000] w-8 h-8" />
-                      <span className="text-red-400 font-semibold text-md sm:text-sm md:text-lg">
+                      <SiRottentomatoes className="text-[#FF0000] w-5 h-5 sm:w-6 sm:h-6 md:w-8 md:h-8" />
+                      <span className="text-red-400 font-semibold text-sm sm:text-base lg:text-lg">
                         {rottenTomatoesRating}
                       </span>
                     </div>
@@ -351,20 +354,22 @@ const RecommendationCardAlert: FC<RecommendationCardAlertProps> = ({
               {/* Причина за препоръчване */}
               {selectedItem.reason && (
                 <div className="mb-4">
-                  <h3 className="text-lg font-semibold mb-2">
+                  <h3 className="text-base sm:text-lg font-semibold mb-2">
                     Защо препоръчваме{" "}
                     {selectedItem.title_bg || "Заглавие не е налично"}?
                   </h3>
-                  <p className="text-opacity-80 italic">
+                  <p className="text-sm sm:text-base text-opacity-80 italic">
                     {selectedItem.reason}
                   </p>
                 </div>
               )}
               {/* Описание */}
               <div className="mb-4">
-                <h3 className="text-lg font-semibold mb-2">Описание</h3>
+                <h3 className="text-base sm:text-lg font-semibold mb-2">
+                  Описание
+                </h3>
                 <div className="overflow-hidden transition-all duration-500 ease-in-out max-h-[3rem] opacity-70">
-                  <p className="text-opacity-80 italic">
+                  <p className="text-sm sm:text-base text-opacity-80 italic">
                     {selectedItem.description.length > previewLength
                       ? `${selectedItem.description.substring(
                           0,
@@ -378,7 +383,7 @@ const RecommendationCardAlert: FC<RecommendationCardAlertProps> = ({
                   selectedItem.description.length > previewLength && (
                     <button
                       onClick={() => openModal("description")}
-                      className="mt-2 underline hover:scale-105 transition"
+                      className="mt-2 text-sm sm:text-base underline hover:scale-105 transition"
                     >
                       Пълно описание
                     </button>
@@ -386,9 +391,11 @@ const RecommendationCardAlert: FC<RecommendationCardAlertProps> = ({
               </div>
               {/* Сюжет */}
               <div className="mb-4">
-                <h3 className="text-lg font-semibold mb-2">Сюжет</h3>
+                <h3 className="text-base sm:text-lg font-semibold mb-2">
+                  Сюжет
+                </h3>
                 <div className="overflow-hidden transition-all duration-500 ease-in-out max-h-[3rem] opacity-70">
-                  <p className="text-opacity-80 italic">
+                  <p className="text-sm sm:text-base text-opacity-80 italic">
                     {translatedPlot.length > previewLength
                       ? `${translatedPlot.substring(0, previewLength)}...`
                       : translatedPlot}
@@ -398,7 +405,7 @@ const RecommendationCardAlert: FC<RecommendationCardAlertProps> = ({
                 {translatedPlot && translatedPlot.length > previewLength && (
                   <button
                     onClick={() => openModal("plot")}
-                    className="mt-2 underline hover:scale-105 transition"
+                    className="mt-2 text-sm sm:text-base underline hover:scale-105 transition"
                   >
                     Пълен сюжет
                   </button>
@@ -406,10 +413,10 @@ const RecommendationCardAlert: FC<RecommendationCardAlertProps> = ({
               </div>
               {/* Допълнителна информация */}
               <div className="mb-4">
-                <h3 className="text-lg font-semibold mb-2">
+                <h3 className="text-base sm:text-lg font-semibold mb-2">
                   Допълнителна информация:
                 </h3>
-                <ul className="flex flex-wrap gap-x-4 text-opacity-80">
+                <ul className="flex flex-wrap gap-x-4 gap-y-1 text-sm sm:text-base text-opacity-80">
                   <li>
                     <strong className="text-primary">Режисьор:</strong>{" "}
                     {translatedDirectors && translatedDirectors !== "N/A"
@@ -484,14 +491,15 @@ const RecommendationCardAlert: FC<RecommendationCardAlertProps> = ({
         {/* Х */}
         <button
           onClick={handleClose}
-          className="absolute top-4 right-4 p-2 text-[#FFCC33] bg-opacity-60 rounded-full transition-transform duration-300 transform hover:scale-110 z-10"
+          className="absolute top-2 right-2 sm:top-4 sm:right-4 p-1 sm:p-2 text-[#FFCC33] bg-opacity-60 rounded-full transition-transform duration-300 transform hover:scale-110 z-10"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             x="0px"
             y="0px"
-            width="50"
-            height="50"
+            width="35"
+            height="35"
+            className="sm:w-[50px] sm:h-[50px]"
             viewBox="0 0 48 48"
           >
             <linearGradient
@@ -502,9 +510,9 @@ const RecommendationCardAlert: FC<RecommendationCardAlertProps> = ({
               y2="27.557"
               gradientUnits="userSpaceOnUse"
             >
-              <stop offset="0" stop-color="#f44f5a"></stop>
-              <stop offset=".443" stop-color="#ee3d4a"></stop>
-              <stop offset="1" stop-color="#e52030"></stop>
+              <stop offset="0" stopColor="#f44f5a"></stop>
+              <stop offset=".443" stopColor="#ee3d4a"></stop>
+              <stop offset="1" stopColor="#e52030"></stop>
             </linearGradient>
             <path
               fill="url(#hbE9Evnj3wAjjA2RX0We2a_OZuepOQd0omj_gr1)"
@@ -518,9 +526,9 @@ const RecommendationCardAlert: FC<RecommendationCardAlertProps> = ({
               y2="40.507"
               gradientUnits="userSpaceOnUse"
             >
-              <stop offset="0" stop-color="#a8142e"></stop>
-              <stop offset=".179" stop-color="#ba1632"></stop>
-              <stop offset=".243" stop-color="#c21734"></stop>
+              <stop offset="0" stopColor="#a8142e"></stop>
+              <stop offset=".179" stopColor="#ba1632"></stop>
+              <stop offset=".243" stopColor="#c21734"></stop>
             </linearGradient>
             <path
               fill="url(#hbE9Evnj3wAjjA2RX0We2b_OZuepOQd0omj_gr2)"
