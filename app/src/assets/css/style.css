@@ -19892,11 +19892,11 @@ option.selectionList {
 }
 
 .question {
-  @apply flex flex-col rounded-md border-2 border-secondary dark:border-primary text-primary dark:text-defaulttextcolor/70 text-[0.813rem] relative bg-[rgb(var(--body-bg))];
+  @apply flex flex-col rounded-md border-2 border-secondary dark:border-primary text-primary dark:text-defaulttextcolor/70 text-[1rem] relative bg-[rgb(var(--body-bg))];
 }
 
 .input-field {
-  @apply flex border-2 border-secondary dark:border-primary glow-effect flex-col rounded-md text-defaulttextcolor dark:text-defaulttextcolor/70 text-[0.813rem] relative dark:bg-bodybg focus-within:ring-4 focus-within:ring-[#d94545] focus-within:border-[#d94545];
+  @apply flex border-2 border-secondary dark:border-primary glow-effect flex-col rounded-md text-defaulttextcolor dark:text-defaulttextcolor/70 text-[1rem] relative dark:bg-bodybg focus-within:ring-4 focus-within:ring-[#d94545] focus-within:border-[#d94545];
 }
 
 .input-field input:focus {
@@ -19904,7 +19904,7 @@ option.selectionList {
 }
 
 .selected-answer {
-  @apply flex flex-col rounded-md text-white dark:text-defaulttextcolor/70 bg-secondary text-[0.813rem] relative;
+  @apply flex flex-col rounded-md text-white dark:text-defaulttextcolor/70 bg-secondary text-[1rem] relative;
 }
 
 .checkbox {
@@ -19912,7 +19912,7 @@ option.selectionList {
 }
 
 .next {
-  @apply flex flex-col rounded-md bg-primary text-[0.813rem] relative;
+  @apply flex flex-col rounded-md bg-primary text-[1rem] relative;
 }
 
 .slide-right-enter {
