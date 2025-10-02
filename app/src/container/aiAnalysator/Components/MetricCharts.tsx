@@ -29,7 +29,7 @@ const MetricCharts: FC<MetricChartsProps> = ({
       <div className="bg-bodybg p-6 rounded-xl shadow-lg space-y-4 my-4">
         {/* Title Card */}
         <Card className="flex flex-col items-center text-center gap-4 bg-white dark:bg-bodybg2 dark:border-black/10 dark:text-defaulttextcolor/70 font-semibold text-xl p-4 rounded-md shadow-lg dark:shadow-xl mx-auto">
-          <h2 className="text-2xl sm:text-3xl opsilion text-defaulttextcolor dark:text-white/80">
+          <h2 className="text-2xl sm:text-3xl goodTiming text-defaulttextcolor dark:text-white/80">
             Средни стойности на precision, recall и f1 score през времето
           </h2>
         </Card>
@@ -38,7 +38,7 @@ const MetricCharts: FC<MetricChartsProps> = ({
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {/* Title 1 */}
           <Card className="flex flex-col items-center text-center gap-4 bg-white dark:bg-bodybg2 dark:border-black/10 dark:text-defaulttextcolor/70 font-semibold text-xl p-4 rounded-md shadow-lg dark:shadow-xl mx-auto w-full sm:row-start-1 sm:col-start-1">
-            <h2 className="text-xl sm:text-2xl opsilion text-defaulttextcolor dark:text-white/80">
+            <h2 className="text-xl sm:text-2xl goodTiming text-defaulttextcolor dark:text-white/80">
               За всички потребители:
             </h2>
           </Card>
@@ -53,7 +53,7 @@ const MetricCharts: FC<MetricChartsProps> = ({
 
           {/* Title 2 */}
           <Card className="flex flex-col items-center text-center gap-4 bg-white dark:bg-bodybg2 dark:border-black/10 dark:text-defaulttextcolor/70 font-semibold text-xl p-4 rounded-md shadow-lg dark:shadow-xl mx-auto w-full sm:row-start-1 sm:col-start-2">
-            <h2 className="text-xl sm:text-2xl opsilion text-defaulttextcolor dark:text-white/80">
+            <h2 className="text-xl sm:text-2xl goodTiming text-defaulttextcolor dark:text-white/80">
               За Вас индивидуално:
             </h2>
           </Card>
@@ -100,7 +100,7 @@ const MetricCharts: FC<MetricChartsProps> = ({
             <Accordion type="single" collapsible className="space-y-4">
               {/* Platform Precision */}
               <AccordionItem value="precision-platform">
-                <AccordionTrigger className="opsilion">
+                <AccordionTrigger className="goodTiming">
                   ✅ Общ Precision
                 </AccordionTrigger>
                 <AccordionContent>
@@ -134,7 +134,7 @@ const MetricCharts: FC<MetricChartsProps> = ({
               </AccordionItem>
               {/* Recall */}
               <AccordionItem value="recall">
-                <AccordionTrigger className="opsilion">
+                <AccordionTrigger className="goodTiming">
                   🔍 Recall
                 </AccordionTrigger>
                 <AccordionContent>
@@ -170,7 +170,7 @@ const MetricCharts: FC<MetricChartsProps> = ({
               </AccordionItem>
               {/* F1 Score */}
               <AccordionItem value="f1-score">
-                <AccordionTrigger className="opsilion">
+                <AccordionTrigger className="goodTiming">
                   ⚖️ F1 Score
                 </AccordionTrigger>
                 <AccordionContent>
@@ -246,7 +246,7 @@ const MetricCharts: FC<MetricChartsProps> = ({
             <Accordion type="single" collapsible className="space-y-4">
               {/* Platform Precision */}
               <AccordionItem value="precision-platform">
-                <AccordionTrigger className="opsilion">
+                <AccordionTrigger className="goodTiming">
                   ✅ Общ Precision
                 </AccordionTrigger>
                 <AccordionContent>
@@ -279,7 +279,7 @@ const MetricCharts: FC<MetricChartsProps> = ({
               </AccordionItem>
               {/* Recall */}
               <AccordionItem value="recall">
-                <AccordionTrigger className="opsilion">
+                <AccordionTrigger className="goodTiming">
                   🔍 Recall
                 </AccordionTrigger>
                 <AccordionContent>
@@ -314,7 +314,7 @@ const MetricCharts: FC<MetricChartsProps> = ({
 
               {/* F1 Score */}
               <AccordionItem value="f1-score">
-                <AccordionTrigger className="opsilion">
+                <AccordionTrigger className="goodTiming">
                   ⚖️ F1 Score
                 </AccordionTrigger>
                 <AccordionContent>

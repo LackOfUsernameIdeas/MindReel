@@ -159,8 +159,8 @@ export class AverageMetricsTrend extends Component<
           const value = w.config.series[seriesIndex].data[dataPointIndex].y;
           return `
             <div style="padding: 1rem;">
-              <div class="opsilion" style="font-weight: bold;">${seriesName}</div>
-              <div class="font-Equilibrist" style="font-family: 'Equilibrist', sans-serif;">${value}%</div>
+              <div class="goodTiming" style="font-weight: bold;">${seriesName}</div>
+              <div class="font-GoodTiming" style="font-family: 'GoodTiming', sans-serif;">${value}%</div>
             </div>
           `;
         }
@@ -203,13 +203,13 @@ export class AverageMetricsTrend extends Component<
         {showPagination && (
           <div className="mt-4 pt-2 border-t border-gray-400 dark:border-gray-500 flex-shrink-0">
             <div className="flex items-center justify-between text-xs">
-              <div className="flex items-center gap-1 text-sm text-defaulttextcolor dark:text-white/80 font-opsilion">
+              <div className="flex items-center gap-1 text-sm text-defaulttextcolor dark:text-white/80 font-goodTiming">
                 <b>{currentPage * itemsPerPage + 1}</b> -
                 <b>{Math.min((currentPage + 1) * itemsPerPage, totalItems)}</b>{" "}
                 от <b>{totalItems}</b>
               </div>
 
-              <div className="flex items-center gap-1 text-defaulttextcolor dark:text-white/80 font-opsilion">
+              <div className="flex items-center gap-1 text-defaulttextcolor dark:text-white/80 font-goodTiming">
                 <button
                   onClick={this.handlePrevPage}
                   disabled={currentPage === 0}
@@ -231,7 +231,7 @@ export class AverageMetricsTrend extends Component<
                   </svg>
                 </button>
 
-                <span className="text-sm font-semibold font-opsilion px-2">
+                <span className="text-sm font-semibold font-goodTiming px-2">
                   {currentPage + 1}/{totalPages}
                 </span>
 

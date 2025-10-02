@@ -180,7 +180,7 @@ const Signincover: FC<SignincoverProps> = () => {
             <div className="box">
               <div className="box-body !px-[3rem] !py-[2rem]">
                 {/* Заглавие */}
-                <p className="h5 font-semibold opsilion mb-2 text-center">
+                <p className="h5 font-semibold goodTiming mb-2 text-center">
                   Имате профил?
                 </p>
                 {/* Подзаглавие */}
@@ -228,7 +228,7 @@ const Signincover: FC<SignincoverProps> = () => {
                     <div className="xl:col-span-12 col-span-12">
                       <label
                         htmlFor="signin-email"
-                        className="form-label text-default opsilion"
+                        className="form-label text-default goodTiming"
                       >
                         Имейл
                       </label>
@@ -248,13 +248,13 @@ const Signincover: FC<SignincoverProps> = () => {
                     <div className="xl:col-span-12 col-span-12">
                       <label
                         htmlFor="signin-password"
-                        className="form-label text-default block opsilion"
+                        className="form-label text-default block goodTiming"
                       >
                         Парола
                         {/* Линк за забравена парола */}
                         <Link
                           to={`${import.meta.env.BASE_URL}resetpassword`}
-                          className="ltr:float-right rtl:float-left text-danger font-Equilibrist"
+                          className="ltr:float-right rtl:float-left text-danger font-GoodTiming"
                         >
                           Забравена парола
                         </Link>
@@ -310,7 +310,7 @@ const Signincover: FC<SignincoverProps> = () => {
                     <div className="xl:col-span-12 col-span-12 grid">
                       <button
                         type="submit"
-                        className="ti-btn ti-btn-lg bg-primary text-white !text-lg opsilion !font-medium dark:border-defaultborder/10"
+                        className="ti-btn ti-btn-lg bg-primary text-white !text-lg goodTiming !font-medium dark:border-defaultborder/10"
                       >
                         Влезте
                       </button>

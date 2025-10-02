@@ -183,7 +183,7 @@ const IndividualStats: FC<IndividualStatsProps> = () => {
                   id="hs-basic-with-title-and-arrow-stretched-heading-one"
                 >
                   <button
-                    className="hs-accordion-toggle accordion-button hs-accordion-active:text-primary hs-accordion-active:pb-3 group py-0 inline-flex items-center justify-between gap-x-3 w-full font-semibold opsilion text-start transition hover:text-secondary dark:hs-accordion-active:text-primary dark:hover:text-secondary"
+                    className="hs-accordion-toggle accordion-button hs-accordion-active:text-primary hs-accordion-active:pb-3 group py-0 inline-flex items-center justify-between gap-x-3 w-full font-semibold goodTiming text-start transition hover:text-secondary dark:hs-accordion-active:text-primary dark:hover:text-secondary"
                     aria-controls="hs-basic-with-title-and-arrow-stretched-collapse-one"
                     type="button"
                   >
@@ -304,7 +304,7 @@ const IndividualStats: FC<IndividualStatsProps> = () => {
                     id="hs-basic-with-title-and-arrow-stretched-heading-two"
                   >
                     <button
-                      className="hs-accordion-toggle accordion-button hs-accordion-active:text-primary hs-accordion-active:pb-3 group py-0 inline-flex items-center justify-between gap-x-3 w-full font-semibold opsilion text-start transition hover:text-secondary dark:hs-accordion-active:text-primary dark:hover:text-secondary"
+                      className="hs-accordion-toggle accordion-button hs-accordion-active:text-primary hs-accordion-active:pb-3 group py-0 inline-flex items-center justify-between gap-x-3 w-full font-semibold goodTiming text-start transition hover:text-secondary dark:hs-accordion-active:text-primary dark:hover:text-secondary"
                       aria-controls="hs-basic-with-title-and-arrow-stretched-collapse-two"
                       type="button"
                     >

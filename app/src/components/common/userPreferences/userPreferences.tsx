@@ -95,10 +95,10 @@ export default function UserPreferences({
     <Card className="w-full mx-auto my-4 bg-bodybg dark:border-black/10 shadow-lg dark:shadow-xl">
       <CardHeader className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-2 sm:space-y-0 py-3">
         <div>
-          <CardTitle className="text-3xl font-bold opsilion text-defaulttextcolor dark:text-white/80">
+          <CardTitle className="text-3xl font-bold goodTiming text-defaulttextcolor dark:text-white/80">
             Последно регистрирани предпочитания
           </CardTitle>
-          <div className="flex flex-wrap text-sm opsilion text-muted-foreground gap-x-1 gap-y-1 sm:hidden">
+          <div className="flex flex-wrap text-sm goodTiming text-muted-foreground gap-x-1 gap-y-1 sm:hidden">
             <div className="flex items-center gap-1">
               <Calendar className="w-3" />
               <span>
@@ -113,7 +113,7 @@ export default function UserPreferences({
             </div>
           </div>
         </div>
-        <div className="hidden sm:flex flex-wrap text-sm opsilion text-muted-foreground gap-x-1 gap-y-1">
+        <div className="hidden sm:flex flex-wrap text-sm goodTiming text-muted-foreground gap-x-1 gap-y-1">
           <div className="flex items-center gap-1">
             <Calendar className="w-3" />
             <span>
@@ -136,7 +136,7 @@ export default function UserPreferences({
               key={index}
               className="bg-white outline outline-transparent hover:outline-1 dark:hover:outline-primary hover:outline-black/25 dark:bg-bodybg2 p-3 rounded-md flex items-center justify-between transition-all duration-300"
             >
-              <div className="flex items-center opsilion w-2/3 sm:w-1/3 max-w-[65%] pr-2 min-w-[100px]">
+              <div className="flex items-center goodTiming w-2/3 sm:w-1/3 max-w-[65%] pr-2 min-w-[100px]">
                 {item.icon}
                 <span className="ml-2 font-semibold text-sm">{item.label}</span>
               </div>

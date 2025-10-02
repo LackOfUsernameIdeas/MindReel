@@ -101,23 +101,10 @@ Background Image
 
 /*-- Declare Local Fonts --*/
 
-/* Equilibrist  */
+/* GoodTiming  */
 @font-face {
-  font-family: "Equilibrist";
-  src: url("../../assets/fonts/EquilibristRegular.ttf");
-}
-
-/* Opsilon */
-@font-face {
-  font-family: "Opsilon";
-  src: url("../../assets/fonts/Opsilon.ttf");
-}
-
-/* SerifBold */
-@font-face {
-  font-family: "SerifBold";
-  src: local("EquilibristBold"),
-    url("./fonts/EquilibristBold.ttf") format("truetype");
+  font-family: "GoodTiming";
+  src: url("../../assets/fonts/GoodTiming.ttf");
 }
 
 :root {
@@ -838,7 +825,7 @@ Background Image
 
 .apexcharts-legend-text {
   @apply text-defaulttextcolor ps-[0.9375rem] -ms-[0.625rem] !important;
-  font-family: Equilibrist !important;
+  font-family: GoodTiming !important;
 }
 
 .apexcharts-text.apexcharts-yaxis-label tspan,
@@ -4692,7 +4679,7 @@ label {
 }
 
 .app-sidebar {
-  @apply w-[15rem] h-full bg-[#111c43] dark:bg-bodybg border-e border-e-white/10 fixed top-0 start-0 font-Opsilon z-[49] transition-all ease-linear duration-[0.05s];
+  @apply w-[15rem] h-full bg-[#111c43] dark:bg-bodybg border-e border-e-white/10 fixed top-0 start-0 font-GoodTiming z-[49] transition-all ease-linear duration-[0.05s];
 }
 .app-sidebar .main-sidebar-header {
   @apply h-[3.75rem] w-[15rem] fixed flex dark:bg-bodybg z-[9] items-center justify-center py-[0.813rem] px-5 border-b border-b-white/10 border-e border-e-white/10 transition-all ease-linear duration-[0.05s];
@@ -14138,7 +14125,7 @@ span.flatpickr-weekday {
 
 .apexcharts-text.apexcharts-yaxis-label tspan,
 .apexcharts-text.apexcharts-xaxis-label tspan {
-  @apply fill-textmuted font-Opsilon tracking-[0.07em];
+  @apply fill-textmuted font-GoodTiming tracking-[0.07em];
 }
 
 .custom-chart .apexcharts-text.apexcharts-yaxis-label tspan {
@@ -16533,7 +16520,7 @@ pre {
 }
 
 html {
-  @apply font-Equilibrist scroll-smooth text-start;
+  @apply font-GoodTiming scroll-smooth text-start;
 }
 
 html[dir="rtl"] {
@@ -16541,7 +16528,7 @@ html[dir="rtl"] {
 }
 
 body {
-  @apply scroll-smooth bg-bodybg h-full text-defaulttextcolor dark:text-white m-0 font-Equilibrist font-normal text-[0.813rem] relative text-start rtl:dir-rtl;
+  @apply scroll-smooth bg-bodybg h-full text-defaulttextcolor dark:text-white m-0 font-GoodTiming font-normal text-[0.813rem] relative text-start rtl:dir-rtl;
 }
 
 .page {
@@ -20003,8 +19990,8 @@ option.selectionList {
   @apply flex flex-col rounded-md text-defaulttextcolor dark:text-defaulttextcolor/70 text-[0.813rem] relative bg-bodybg dark:bg-bodybg p-6 shadow-lg w-full max-w-lg space-y-4 z-50;
 }
 
-.opsilion {
-  @apply !font-Opsilon !font-light !tracking-wide;
+.GoodTiming {
+  @apply !font-GoodTiming !font-light;
 }
 
 .spinner {

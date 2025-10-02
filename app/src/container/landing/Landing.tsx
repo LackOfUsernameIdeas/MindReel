@@ -121,7 +121,7 @@ const Landing: FC<{}> = () => {
 
           <div className="header-content-right">
             <div className="header-element !items-center">
-              <div className="lg:hidden block opsilion">
+              <div className="lg:hidden block goodTiming">
                 <Link
                   to={`${import.meta.env.BASE_URL}signin`}
                   className="ti-btn ti-btn-primary-full !m-1"
@@ -171,16 +171,16 @@ const Landing: FC<{}> = () => {
                   <path d="M10.707 17.707 16.414 12l-5.707-5.707-1.414 1.414L13.586 12l-4.293 4.293z"></path>{" "}
                 </svg>
               </div>
-              <div className="lg:flex hidden space-x-2 rtl:space-x-reverse">
+              <div className="hidden lg:flex space-x-2 rtl:space-x-reverse whitespace-nowrap antialiased">
                 <Link
                   to={`${import.meta.env.BASE_URL}signin/`}
-                  className="ti-btn w-[10rem] ti-btn-primary-full m-0 p-2"
+                  className="ti-btn ti-btn-primary-full m-0 px-6 py-2"
                 >
                   Влезте в профила си
                 </Link>
                 <Link
                   to={`${import.meta.env.BASE_URL}signup/`}
-                  className="ti-btn w-[10rem] ti-btn-secondary-full m-0 p-2"
+                  className="ti-btn ti-btn-secondary-full m-0 px-6 py-2"
                 >
                   Създаване на профил
                 </Link>
@@ -219,7 +219,7 @@ const Landing: FC<{}> = () => {
           <div className="container text-center">
             <div className="justify-center text-center mb-12">
               <div className="xl:col-span-6 col-span-12">
-                <h3 className="font-semibold opsilion !text-4xl mb-2">
+                <h3 className="font-semibold goodTiming !text-4xl mb-2">
                   Как работи Лента на ума (MindReel)?
                 </h3>
                 <span className="text-[#8c9097] dark:text-white/50 text-[0.9375rem] font-normal block">
@@ -272,7 +272,7 @@ const Landing: FC<{}> = () => {
                         </span>
                       </div>
                     </div>
-                    <h5 className="font-semibold opsilion text-[1.5rem] mb-4">
+                    <h5 className="font-semibold goodTiming text-[1.5rem] mb-4">
                       ЕЕГ анализ на мозъка
                     </h5>
                     <p className="opacity-[0.8] mb-4">
@@ -320,7 +320,7 @@ const Landing: FC<{}> = () => {
                         </span>
                       </div>
                     </div>
-                    <h5 className="font-semibold opsilion text-[1.5rem] mb-4">
+                    <h5 className="font-semibold goodTiming text-[1.5rem] mb-4">
                       VR кино изживяване
                     </h5>
                     <p className="opacity-[0.8] mb-4">
@@ -364,7 +364,7 @@ const Landing: FC<{}> = () => {
                         </span>
                       </div>
                     </div>
-                    <h5 className="font-semibold opsilion text-[1.5rem] mb-4">
+                    <h5 className="font-semibold goodTiming text-[1.5rem] mb-4">
                       Анализ на препоръките
                     </h5>
                     <p className="opacity-[0.8] mb-4">
@@ -413,7 +413,7 @@ const Landing: FC<{}> = () => {
                         </span>
                       </div>
                     </div>
-                    <h5 className="font-semibold opsilion text-[1.5rem] mb-4">
+                    <h5 className="font-semibold goodTiming text-[1.5rem] mb-4">
                       Нови препоръки
                     </h5>
                     <p className="opacity-[0.8] mb-4">
@@ -453,7 +453,7 @@ const Landing: FC<{}> = () => {
           <div className="container">
             <div className="justify-center text-center mb-12">
               <div className="xl:col-span-6 col-span-12">
-                <h3 className="font-semibold  opsilion !text-4xl mb-2">
+                <h3 className="font-semibold  goodTiming !text-4xl mb-2">
                   Адаптации на книги
                 </h3>
                 <span className="text-[#8c9097] dark:text-white/50 text-[0.9375rem] font-normal block">
@@ -473,7 +473,7 @@ const Landing: FC<{}> = () => {
           <div className="container">
             <div className="justify-center text-center mb-12">
               <div className="xl:col-span-6 col-span-12">
-                <h3 className="font-semibold  opsilion !text-4xl mb-2">
+                <h3 className="font-semibold goodTiming !text-4xl mb-2">
                   Музикални статистики
                 </h3>
                 <span className="text-[#8c9097] dark:text-white/50 text-[0.9375rem] font-normal block">
@@ -501,7 +501,7 @@ const Landing: FC<{}> = () => {
               <Accordion type="single" collapsible className="space-y-4">
                 {/* Relevance */}
                 <AccordionItem value="relevance">
-                  <AccordionTrigger className="opsilion">
+                  <AccordionTrigger className="goodTiming">
                     🎯 Релевантност
                   </AccordionTrigger>
                   <AccordionContent>
@@ -524,7 +524,7 @@ const Landing: FC<{}> = () => {
                 </AccordionItem>
 
                 <AccordionItem value="concept">
-                  <AccordionTrigger className="opsilion">
+                  <AccordionTrigger className="goodTiming">
                     🔍 Как работи алгоритъмът?
                   </AccordionTrigger>
                   <AccordionContent>
@@ -584,7 +584,7 @@ const Landing: FC<{}> = () => {
                 </AccordionItem>
 
                 <AccordionItem value="calculation">
-                  <AccordionTrigger className="opsilion">
+                  <AccordionTrigger className="goodTiming">
                     🎯 Как се изчислява крайният резултат?
                   </AccordionTrigger>
                   <AccordionContent>
@@ -610,7 +610,7 @@ const Landing: FC<{}> = () => {
 
                 {/* Platform Precision */}
                 <AccordionItem value="precision-platform">
-                  <AccordionTrigger className="opsilion">
+                  <AccordionTrigger className="goodTiming">
                     ✅ Общ Precision
                   </AccordionTrigger>
                   <AccordionContent>
@@ -642,7 +642,7 @@ const Landing: FC<{}> = () => {
 
                 {/* User Specific Precision */}
                 <AccordionItem value="precision-user">
-                  <AccordionTrigger className="opsilion">
+                  <AccordionTrigger className="goodTiming">
                     ✅ Precision за последното генериране
                   </AccordionTrigger>
                   <AccordionContent>
@@ -675,7 +675,7 @@ const Landing: FC<{}> = () => {
 
                 {/* Recall */}
                 <AccordionItem value="recall">
-                  <AccordionTrigger className="opsilion">
+                  <AccordionTrigger className="goodTiming">
                     🔍 Recall
                   </AccordionTrigger>
                   <AccordionContent>
@@ -709,7 +709,7 @@ const Landing: FC<{}> = () => {
 
                 {/* F1 Score */}
                 <AccordionItem value="f1-score">
-                  <AccordionTrigger className="opsilion">
+                  <AccordionTrigger className="goodTiming">
                     ⚖️ F1 Score
                   </AccordionTrigger>
                   <AccordionContent>
@@ -759,7 +759,7 @@ const Landing: FC<{}> = () => {
         >
           <div className="container">
             <div className="gap-6 mb-[3rem] justify-center text-center">
-              <h3 className="font-semibold opsilion !text-4xl mb-2">
+              <h3 className="font-semibold goodTiming !text-4xl mb-2">
                 Други главни статистики:
               </h3>
             </div>

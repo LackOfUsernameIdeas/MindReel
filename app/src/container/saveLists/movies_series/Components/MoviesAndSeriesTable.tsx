@@ -205,7 +205,7 @@ const MoviesAndSeriesTable: FC<MoviesAndSeriesTableProps> = ({
         <div className="box custom-card">
           <div className="box-header justify-between flex flex-col sm:flex-row items-center space-y-3 sm:space-y-0">
             <div className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto">
-              <p className="box-title opsilion !text-xl text-center sm:text-left">
+              <p className="box-title goodTiming !text-xl text-center sm:text-left">
                 Списък За Гледане
               </p>
               <div className="flex items-center gap-4 w-full sm:w-auto">
@@ -306,29 +306,29 @@ const MoviesAndSeriesTable: FC<MoviesAndSeriesTableProps> = ({
                     className="rounded-lg w-32 h-auto !shadow-lg"
                   />
                   <div className="flex flex-col items-start">
-                    <span className="opsilion">
-                      Жанр: <p className="font-Equilibrist">{item.genre_bg}</p>
+                    <span className="goodTiming">
+                      Жанр: <p className="font-GoodTiming">{item.genre_bg}</p>
                     </span>
-                    <span className="opsilion">
+                    <span className="goodTiming">
                       {item.type === "movie"
                         ? "Продължителност"
                         : "Средна продължителност"}
-                      : <p className="font-Equilibrist">{item.runtime}</p>
+                      : <p className="font-GoodTiming">{item.runtime}</p>
                     </span>
-                    <span className="opsilion">
+                    <span className="goodTiming">
                       Вид:{" "}
-                      <p className="font-Equilibrist">
+                      <p className="font-GoodTiming">
                         {getTranslatedType(item.type)}
                       </p>
                     </span>
-                    <span className="opsilion">
+                    <span className="goodTiming">
                       Година на излизане:{" "}
-                      <p className="font-Equilibrist">{item.year}</p>
+                      <p className="font-GoodTiming">{item.year}</p>
                     </span>
                   </div>
                 </div>
                 <div className="w-full bg-white bg-bodybg/50 dark:bg-bodybg2/50 dark:border-black/10 rounded-md shadow-lg dark:shadow-xl text-center mt-4">
-                  <h5 className="opsilion text-xl text-defaulttextcolor dark:text-white/80">
+                  <h5 className="goodTiming text-xl text-defaulttextcolor dark:text-white/80">
                     {item.title_en}/{item.title_bg}
                   </h5>
                 </div>

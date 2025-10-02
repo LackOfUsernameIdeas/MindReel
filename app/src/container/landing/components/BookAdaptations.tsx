@@ -17,7 +17,7 @@ export default function BookAdaptations({
             <div className="bg-primary p-3 rounded-full mr-4">
               <Clapperboard className="h-6 w-6 text-white" />
             </div>
-            <h3 className="text-lg opsilion font-semibold text-defaulttextcolor dark:text-white">
+            <h3 className="text-lg goodTiming font-semibold text-defaulttextcolor dark:text-white">
               Филмови адаптации
             </h3>
           </div>
@@ -38,7 +38,7 @@ export default function BookAdaptations({
             <div className="bg-secondary p-3 rounded-full mr-4">
               <Tv className="h-6 w-6 text-white" />
             </div>
-            <h3 className="text-lg opsilion font-semibold text-defaulttextcolor dark:text-white">
+            <h3 className="text-lg goodTiming font-semibold text-defaulttextcolor dark:text-white">
               Сериални адаптации
             </h3>
           </div>
@@ -59,7 +59,7 @@ export default function BookAdaptations({
             <div className="bg-tertiary p-3 rounded-full mr-4">
               <Clapperboard className="h-6 w-6 text-white" />
             </div>
-            <h3 className="text-lg opsilion font-semibold text-defaulttextcolor dark:text-white">
+            <h3 className="text-lg goodTiming font-semibold text-defaulttextcolor dark:text-white">
               Всички адаптации
             </h3>
           </div>

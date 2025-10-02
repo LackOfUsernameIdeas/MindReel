@@ -205,7 +205,7 @@ const AIAnalysator: FC = () => {
           <div className="z-10 max-w-6xl w-full mx-auto font-mono text-sm">
             <div className="text-center !text-lg box p-6 flex flex-col gap-4 !rounded-xl justify-center items-center">
               <Card className="bg-white dark:bg-bodybg2 dark:border-black/10 dark:text-defaulttextcolor/70 font-semibold text-xl p-4 rounded-md shadow-lg dark:shadow-xl text-center leading-relaxed mx-auto">
-                <h2 className="text-2xl sm:text-4xl opsilion text-defaulttextcolor dark:text-white/80">
+                <h2 className="text-2xl sm:text-4xl goodTiming text-defaulttextcolor dark:text-white/80">
                   Искате ли да знаете колко добре се е справил AI-ът с
                   генерирането на препоръки специално за Вас?
                 </h2>
@@ -220,7 +220,7 @@ const AIAnalysator: FC = () => {
                 <Accordion type="single" collapsible className="space-y-4">
                   {/* Relevance */}
                   <AccordionItem value="relevance">
-                    <AccordionTrigger className="opsilion">
+                    <AccordionTrigger className="goodTiming">
                       🎯 Релевантност
                     </AccordionTrigger>
                     <AccordionContent>
@@ -245,7 +245,7 @@ const AIAnalysator: FC = () => {
 
                   {/* Platform Precision */}
                   <AccordionItem value="precision-platform">
-                    <AccordionTrigger className="opsilion">
+                    <AccordionTrigger className="goodTiming">
                       ✅ Общ Precision
                     </AccordionTrigger>
                     <AccordionContent>
@@ -280,7 +280,7 @@ const AIAnalysator: FC = () => {
 
                   {/* User Specific Precision */}
                   <AccordionItem value="precision-user">
-                    <AccordionTrigger className="opsilion text-left">
+                    <AccordionTrigger className="goodTiming text-left">
                       ✅ Precision за последното генериране
                     </AccordionTrigger>
 
@@ -316,7 +316,7 @@ const AIAnalysator: FC = () => {
 
                   {/* Recall */}
                   <AccordionItem value="recall">
-                    <AccordionTrigger className="opsilion">
+                    <AccordionTrigger className="goodTiming">
                       🔍 Recall
                     </AccordionTrigger>
                     <AccordionContent>
@@ -355,7 +355,7 @@ const AIAnalysator: FC = () => {
 
                   {/* F1 Score */}
                   <AccordionItem value="f1-score">
-                    <AccordionTrigger className="opsilion">
+                    <AccordionTrigger className="goodTiming">
                       ⚖️ F1 Score
                     </AccordionTrigger>
                     <AccordionContent>

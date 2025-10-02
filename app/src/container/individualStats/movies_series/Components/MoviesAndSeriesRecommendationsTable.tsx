@@ -152,7 +152,7 @@ const MoviesAndSeriesRecommendationsTable: FC<
         <div className="box custom-card sm:h-[27.75rem]">
           <div className="box-header justify-between">
             <div
-              className={`box-title whitespace-nowrap overflow-hidden text-ellipsis opsilion ${
+              className={`box-title whitespace-nowrap overflow-hidden text-ellipsis goodTiming ${
                 is1399 ? "max-w-full" : "max-w-[20rem]"
               }`}
               data-tooltip-id="box-title-tooltip"
@@ -175,7 +175,7 @@ const MoviesAndSeriesRecommendationsTable: FC<
               <div className="hs-dropdown ti-dropdown">
                 <Link
                   to="#"
-                  className={`flex items-center opsilion ${
+                  className={`flex items-center goodTiming ${
                     is1557
                       ? "px-2.5 py-1 text-[0.75rem]"
                       : "px-3 py-1 text-[0.85rem]"
@@ -216,7 +216,7 @@ const MoviesAndSeriesRecommendationsTable: FC<
                         }
                         className={`ti-dropdown-item ${
                           sortBy === value ? "active" : ""
-                        } opsilion`}
+                        } goodTiming`}
                         to="#"
                       >
                         {label}
@@ -248,7 +248,7 @@ const MoviesAndSeriesRecommendationsTable: FC<
             <div className="overflow-x-auto">
               <table className="table min-w-full whitespace-nowrap table-hover border table-bordered no-hover-text">
                 <thead>
-                  <tr className="border border-inherit border-solid dark:border-defaultborder/10 opsilion dark:bg-black/40 bg-gray-500/15">
+                  <tr className="border border-inherit border-solid dark:border-defaultborder/10 goodTiming dark:bg-black/40 bg-gray-500/15">
                     <th>#</th>
                     <th>Заглавие</th>
                     <th>Тип</th>
@@ -270,7 +270,7 @@ const MoviesAndSeriesRecommendationsTable: FC<
                       className="border border-inherit border-solid hover:bg-primary/70 dark:border-defaultborder/10 dark:hover:bg-primary/50 cursor-pointer hover:text-white"
                       onClick={() => handleRowClick(item)}
                     >
-                      <td className="opsilion dark:bg-black/40 bg-gray-500/15">
+                      <td className="goodTiming dark:bg-black/40 bg-gray-500/15">
                         {(currentTablePage - 1) * itemsPerTablePage + index + 1}
                       </td>
                       <td>{item.title_bg}</td>

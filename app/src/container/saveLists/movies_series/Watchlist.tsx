@@ -147,7 +147,7 @@ const Watchlist: FC = () => {
         <div className="mt-[1.5rem]">
           <div className="text-center !text-lg box p-6 flex flex-col md:flex-row gap-6 justify-center items-stretch">
             <Card className="bg-white dark:bg-bodybg2/50 dark:border-black/10 dark:text-defaulttextcolor/70 font-semibold text-xl p-4 rounded-md shadow-lg dark:shadow-xl text-center leading-relaxed md:w-1/2 mx-auto flex-grow flex items-center justify-center">
-              <h2 className="text-lg font-Equilibrist text-defaulttextcolor dark:text-white/80">
+              <h2 className="text-lg font-GoodTiming text-defaulttextcolor dark:text-white/80">
                 В тази страница можете да разгледате подробна информация за
                 добавените от вас филми и сериали в{" "}
                 <span className="font-bold text-primary">
@@ -160,7 +160,7 @@ const Watchlist: FC = () => {
               <Accordion type="single" collapsible className="space-y-4">
                 {/* Metascore */}
                 <AccordionItem value="metascore">
-                  <AccordionTrigger className="opsilion">
+                  <AccordionTrigger className="goodTiming">
                     💡Metascore рейтинг
                   </AccordionTrigger>
                   <AccordionContent className="pl-4">
@@ -179,7 +179,7 @@ const Watchlist: FC = () => {
 
                 {/* Боксофис */}
                 <AccordionItem value="boxoffice">
-                  <AccordionTrigger className="opsilion">
+                  <AccordionTrigger className="goodTiming">
                     💰 Боксофис
                   </AccordionTrigger>
                   <AccordionContent className="pl-4">
@@ -194,7 +194,7 @@ const Watchlist: FC = () => {
 
                 {/* Просперитет */}
                 <AccordionItem value="prosperity">
-                  <AccordionTrigger className="opsilion">
+                  <AccordionTrigger className="goodTiming">
                     🎉 Просперитетен рейтинг
                   </AccordionTrigger>
                   <AccordionContent className="px-5 py-3 space-y-3">

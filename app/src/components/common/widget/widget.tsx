@@ -18,7 +18,7 @@ const Widget: FC<{
       <div className="flex items-start mb-2">
         <div className="flex items-center">
           {icon}
-          <h3 className="ml-2 text-base opsilion font-semibold">
+          <h3 className="ml-2 text-base goodTiming font-semibold">
             {title.split("\n").map((line, index) => (
               <span key={index}>
                 {line}

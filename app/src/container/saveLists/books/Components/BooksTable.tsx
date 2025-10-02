@@ -166,7 +166,7 @@ const BooksTable: FC<BooksTableProps> = ({
         <div className="box custom-card">
           <div className="box-header justify-between flex flex-col sm:flex-row items-center space-y-3 sm:space-y-0">
             <div className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto">
-              <p className="box-title opsilion !text-xl text-center sm:text-left">
+              <p className="box-title goodTiming !text-xl text-center sm:text-left">
                 Списък За Четене
               </p>
               <div className="flex items-center gap-4 w-full sm:w-auto">
@@ -267,29 +267,29 @@ const BooksTable: FC<BooksTableProps> = ({
                     className="rounded-lg w-32 h-auto !shadow-lg"
                   />
                   <div className="flex flex-col items-start">
-                    <span className="opsilion">
+                    <span className="goodTiming">
                       Жанр:{" "}
-                      <p className="font-Equilibrist">
+                      <p className="font-GoodTiming">
                         {formatGenres(item.genre_bg)}
                       </p>
                     </span>
-                    <span className="opsilion">
+                    <span className="goodTiming">
                       Страници:{" "}
-                      <p className="font-Equilibrist">{item.page_count}</p>
+                      <p className="font-GoodTiming">{item.page_count}</p>
                     </span>
-                    <span className="opsilion">
-                      Автор: <p className="font-Equilibrist">{item.author}</p>
+                    <span className="goodTiming">
+                      Автор: <p className="font-GoodTiming">{item.author}</p>
                     </span>
-                    <span className="opsilion">
+                    <span className="goodTiming">
                       Година на писане:{" "}
-                      <p className="font-Equilibrist">
+                      <p className="font-GoodTiming">
                         {extractYear(item.date_of_issue)}
                       </p>
                     </span>
                   </div>
                 </div>
                 <div className="w-full bg-white bg-bodybg/50 dark:bg-bodybg2/50 dark:border-black/10 rounded-md shadow-lg dark:shadow-xl text-center mt-auto">
-                  <h5 className="opsilion text-xl text-defaulttextcolor dark:text-white/80">
+                  <h5 className="goodTiming text-xl text-defaulttextcolor dark:text-white/80">
                     {item.title_en}/{item.title_bg}
                   </h5>
                 </div>

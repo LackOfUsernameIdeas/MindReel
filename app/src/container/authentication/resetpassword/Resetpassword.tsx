@@ -150,7 +150,7 @@ const Resetcover: FC<ResetcoverProps> = () => {
             <div className="box">
               <div className="box-body !px-[3rem] !py-[2rem]">
                 {/* Заглавие */}
-                <p className="h5 font-semibold opsilion mb-2 text-center">
+                <p className="h5 font-semibold goodTiming mb-2 text-center">
                   Смяна на паролата
                 </p>
                 {/* Подзаглавие */}
@@ -195,7 +195,7 @@ const Resetcover: FC<ResetcoverProps> = () => {
                     <div className="xl:col-span-12 col-span-12">
                       <label
                         htmlFor="reset-newpassword"
-                        className="form-label text-default opsilion"
+                        className="form-label text-default goodTiming"
                       >
                         Нова парола
                       </label>
@@ -228,7 +228,7 @@ const Resetcover: FC<ResetcoverProps> = () => {
                     <div className="xl:col-span-12 col-span-12">
                       <label
                         htmlFor="reset-confirmpassword"
-                        className="form-label text-default opsilion"
+                        className="form-label text-default goodTiming"
                       >
                         Потвърждаване на паролата
                       </label>
@@ -262,7 +262,7 @@ const Resetcover: FC<ResetcoverProps> = () => {
                       <button
                         onClick={handlePasswordReset}
                         disabled={isSubmitting}
-                        className="ti-btn ti-btn-lg bg-primary text-white !text-lg opsilion !font-medium dark:border-defaultborder/10"
+                        className="ti-btn ti-btn-lg bg-primary text-white !text-lg goodTiming !font-medium dark:border-defaultborder/10"
                       >
                         {isSubmitting
                           ? "Моля, изчакайте..."

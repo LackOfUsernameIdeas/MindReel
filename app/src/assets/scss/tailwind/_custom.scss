@@ -16,7 +16,7 @@ pre {
 }
 
 html {
-  @apply font-Equilibrist scroll-smooth text-start;
+  @apply font-GoodTiming scroll-smooth text-start;
 }
 html {
   &[dir="rtl"] {
@@ -24,7 +24,7 @@ html {
   }
 }
 body {
-  @apply scroll-smooth bg-bodybg h-full text-defaulttextcolor dark:text-white m-0 font-Equilibrist font-normal text-[0.813rem] relative text-start rtl:dir-rtl;
+  @apply scroll-smooth bg-bodybg h-full text-defaulttextcolor dark:text-white m-0 font-GoodTiming font-normal text-[0.813rem] relative text-start rtl:dir-rtl;
 }
 
 .page {

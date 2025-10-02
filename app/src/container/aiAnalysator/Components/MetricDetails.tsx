@@ -18,7 +18,7 @@ const MetricDetails: FC<MetricDetailsProps> = ({
     <div className="rounded-lg p-4 bg-white dark:bg-bodybg2 shadow-md">
       <div className="flex flex-col">
         <div className="flex flex-col sm:flex-row items-center gap-2 text-center sm:text-left">
-          <Badge variant="default" className="opsilion text-white">
+          <Badge variant="default" className="goodTiming text-white">
             {activeMetric === "fpr"
               ? metricConfig.fpr.title
               : activeMetric === "fnr"
@@ -27,7 +27,7 @@ const MetricDetails: FC<MetricDetailsProps> = ({
               ? metricConfig.accuracy.title
               : metricConfig.specificity.title}
           </Badge>
-          <h3 className="opsilion text-defaulttextcolor dark:text-white/80">
+          <h3 className="goodTiming text-defaulttextcolor dark:text-white/80">
             Подробна информация
           </h3>
         </div>

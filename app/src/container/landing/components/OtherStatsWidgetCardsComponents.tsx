@@ -98,7 +98,7 @@ const WidgetCardsComponent: FC<WidgetCardsComponentProps> = ({ data }) => {
                 <p
                   className={`mb-0 text-[#8c9097] dark:text-white/50 ${
                     is1856 && "text-xs"
-                  } opsilion`}
+                  } goodTiming`}
                 >
                   Общ брой потребители {/* "Total Users" label */}
                 </p>
@@ -133,7 +133,7 @@ const WidgetCardsComponent: FC<WidgetCardsComponentProps> = ({ data }) => {
                 <p
                   className={`mb-0 text-[#8c9097] dark:text-white/50 ${
                     is1856 && "text-xs"
-                  } opsilion`}
+                  } goodTiming`}
                 >
                   Най-препоръчван жанр {/* "Top Recommended Genre" label */}
                 </p>
@@ -169,7 +169,7 @@ const WidgetCardsComponent: FC<WidgetCardsComponentProps> = ({ data }) => {
                     className={`flex items-center space-x-${is1856 ? 2 : 1}`}
                   >
                     <p
-                      className={`mb-0 text-[#8c9097] dark:text-white/50 truncate overflow-hidden max-w-[130px] whitespace-nowrap text-xs opsilion`}
+                      className={`mb-0 text-[#8c9097] dark:text-white/50 truncate overflow-hidden max-w-[130px] whitespace-nowrap text-xs goodTiming`}
                     >
                       {displayedNameAverages}
                     </p>
@@ -278,7 +278,7 @@ const WidgetCardsComponent: FC<WidgetCardsComponentProps> = ({ data }) => {
               <div className="flex-grow">
                 <div className={`flex items-center space-x-${is1966 ? 2 : 1}`}>
                   <p
-                    className={`mb-0 text-[#8c9097] dark:text-white/50 truncate overflow-hidden max-w-[130px] whitespace-nowrap text-xs text-ellipsis opsilion`}
+                    className={`mb-0 text-[#8c9097] dark:text-white/50 truncate overflow-hidden max-w-[130px] whitespace-nowrap text-xs text-ellipsis goodTiming`}
                   >
                     {displayedNameAwards}
                   </p>

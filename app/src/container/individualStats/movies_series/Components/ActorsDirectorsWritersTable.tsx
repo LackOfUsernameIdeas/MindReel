@@ -100,7 +100,7 @@ const ActorsDirectorsWritersTable: FC<ActorsDirectorsWritersTableProps> = ({
         <div className="box custom-card sm:h-[27.75rem]">
           <div className="box-header justify-between">
             <div
-              className={`box-title whitespace-nowrap overflow-hidden text-ellipsis opsilion ${
+              className={`box-title whitespace-nowrap overflow-hidden text-ellipsis goodTiming ${
                 is1399 ? "max-w-full" : is1630 ? "max-w-[15rem]" : "max-w-full"
               }`}
               data-tooltip-id="box-title-tooltip"
@@ -127,7 +127,7 @@ const ActorsDirectorsWritersTable: FC<ActorsDirectorsWritersTableProps> = ({
             <Tooltip id="box-title-tooltip" />
             <div className="flex flex-wrap gap-2">
               <div
-                className="inline-flex rounded-md shadow-sm opsilion"
+                className="inline-flex rounded-md shadow-sm goodTiming"
                 role="group"
                 aria-label="Sort By"
               >
@@ -135,7 +135,7 @@ const ActorsDirectorsWritersTable: FC<ActorsDirectorsWritersTableProps> = ({
                   <button
                     key={category}
                     type="button"
-                    className={`ti-btn-group !border-0 !text-xs !py-2 !px-3 opsilion ${
+                    className={`ti-btn-group !border-0 !text-xs !py-2 !px-3 goodTiming ${
                       category === recommendationCountSortCategory
                         ? "ti-btn-primary-full text-white"
                         : "text-primary dark:text-primary bg-secondary/40 dark:bg-secondary/20"
@@ -165,7 +165,7 @@ const ActorsDirectorsWritersTable: FC<ActorsDirectorsWritersTableProps> = ({
                 className="table min-w-full whitespace-nowrap table-hover border table-bordered"
               >
                 <thead>
-                  <tr className="border border-inherit border-solid dark:border-defaultborder/10 opsilion dark:bg-black/40 bg-gray-500/15">
+                  <tr className="border border-inherit border-solid dark:border-defaultborder/10 goodTiming dark:bg-black/40 bg-gray-500/15">
                     <th
                       scope="col"
                       className="!text-start !text-[0.85rem] w-[40px]"
@@ -215,7 +215,7 @@ const ActorsDirectorsWritersTable: FC<ActorsDirectorsWritersTableProps> = ({
                       key={index}
                       className="border border-inherit border-solid hover:bg-gray-100 dark:border-defaultborder/10 dark:hover:bg-light"
                     >
-                      <td className="opsilion dark:bg-black/40 bg-gray-500/15">
+                      <td className="goodTiming dark:bg-black/40 bg-gray-500/15">
                         {(currentTablePage - 1) * 5 + index + 1}
                       </td>
                       <td>{getCategoryName(item)}</td>

@@ -123,7 +123,7 @@ export class Categorybar extends Component<CategorybarProps, State> {
         formatter: (val: number) => `${val}`,
         offsetY: -20,
         style: {
-          fontFamily: "Equilibrist",
+          fontFamily: "GoodTiming",
           fontSize: "0.8rem",
           colors: ["#8c9097"]
         }
@@ -140,7 +140,7 @@ export class Categorybar extends Component<CategorybarProps, State> {
       tooltip: {
         theme: "dark",
         style: {
-          fontFamily: "Opsilon",
+          fontFamily: "GoodTiming",
           fontSize: "0.8rem"
         },
         y: {

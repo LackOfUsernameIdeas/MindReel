@@ -29,9 +29,7 @@ export default {
       full: "9999px"
     },
     fontFamily: {
-      Opsilon: ["Opsilon", "sans-serif"],
-      Equilibrist: ["Equilibrist", "serif"],
-      SerifBold: ["SerifBold", "serif"]
+      GoodTiming: ["GoodTiming", "sans-serif"]
     },
     fontSize: {
       defaultsize: "0.813rem",

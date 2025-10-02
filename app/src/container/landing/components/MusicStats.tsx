@@ -34,7 +34,7 @@ export default function MusicStats({ musicStatsData }: MusicStatsProps) {
                 <div className="absolute -top-1 -right-1 bg-green-500 w-3 h-3 rounded-full animate-pulse" />
               </div>
               <div>
-                <h3 className="text-lg opsilion font-semibold text-defaulttextcolor dark:text-white mb-1">
+                <h3 className="text-lg goodTiming font-semibold text-defaulttextcolor dark:text-white mb-1">
                   Spotify популярност
                 </h3>
                 <p className="text-xs text-defaulttextcolor/70 dark:text-white/70">
@@ -75,7 +75,7 @@ export default function MusicStats({ musicStatsData }: MusicStatsProps) {
                 </p>
               </div>
             </div>
-            <h4 className="text-sm opsilion font-semibold text-defaulttextcolor dark:text-white">
+            <h4 className="text-sm goodTiming font-semibold text-defaulttextcolor dark:text-white">
               YouTube гледания
             </h4>
           </CardContent>
@@ -97,7 +97,7 @@ export default function MusicStats({ musicStatsData }: MusicStatsProps) {
                 </p>
               </div>
             </div>
-            <h4 className="text-sm opsilion font-semibold text-defaulttextcolor dark:text-white">
+            <h4 className="text-sm goodTiming font-semibold text-defaulttextcolor dark:text-white">
               YouTube харесвания
             </h4>
           </CardContent>
@@ -119,7 +119,7 @@ export default function MusicStats({ musicStatsData }: MusicStatsProps) {
                 </p>
               </div>
             </div>
-            <h4 className="text-sm opsilion font-semibold text-defaulttextcolor dark:text-white">
+            <h4 className="text-sm goodTiming font-semibold text-defaulttextcolor dark:text-white">
               YouTube коментари
             </h4>
           </CardContent>

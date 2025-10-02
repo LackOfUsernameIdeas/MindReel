@@ -44,13 +44,13 @@ export const InfoboxModal: FC<InfoboxModalProps> = ({
           }}
         >
           <div className="max-h-[40rem] overflow-y-auto p-2">
-            <h2 className="text-2xl font-semibold opsilion mb-5">{title}</h2>
+            <h2 className="text-2xl font-semibold goodTiming mb-5">{title}</h2>
             <p className="text-sm">{description}</p>
           </div>
           <div className="flex justify-end p-2">
             <button
               onClick={onClick}
-              className="bg-primary hover:bg-primary/90 text-white text-sm font-medium opsilion rounded-lg px-5 py-2.5 text-center transition-all duration-200 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+              className="bg-primary hover:bg-primary/90 text-white text-sm font-medium goodTiming rounded-lg px-5 py-2.5 text-center transition-all duration-200 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
             >
               Затвори
             </button>

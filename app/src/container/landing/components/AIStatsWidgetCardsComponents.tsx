@@ -19,7 +19,7 @@ const AIStatsWidgetCardsComponent: React.FC<AIStatsWidgetCardProps> = ({
             <div className="feature-style-icon bg-primary/10">
               <i className="ti ti-percentage-60 text-3xl text-primary"></i>
             </div>
-            <h5 className="font-semibold text-default opsilion text-[1.5rem] mb-4 mt-2">
+            <h5 className="font-semibold text-default goodTiming text-[1.5rem] mb-4 mt-2">
               Среден Precision
             </h5>
             <p className="text-[#8c9097] dark:text-white/50 mb-4">
@@ -41,7 +41,7 @@ const AIStatsWidgetCardsComponent: React.FC<AIStatsWidgetCardProps> = ({
             <div className="feature-style-icon bg-primary/10">
               <i className="ti ti-percentage-60 text-3xl text-primary"></i>
             </div>
-            <h5 className=" font-semibold text-default opsilion text-[1.5rem] mb-4 mt-2">
+            <h5 className=" font-semibold text-default goodTiming text-[1.5rem] mb-4 mt-2">
               Среден Precision
             </h5>
             <p className="text-[#8c9097] dark:text-white/50 mb-4">
@@ -63,7 +63,7 @@ const AIStatsWidgetCardsComponent: React.FC<AIStatsWidgetCardProps> = ({
             <div className="feature-style-icon bg-primary/10">
               <i className="ti ti-percentage-40 text-3xl text-primary"></i>
             </div>
-            <h5 className=" font-semibold text-default opsilion text-[1.5rem] mb-4 mt-2">
+            <h5 className=" font-semibold text-default goodTiming text-[1.5rem] mb-4 mt-2">
               Среден Recall
             </h5>
             <p className="text-[#8c9097] dark:text-white/50 mb-4">
@@ -85,7 +85,7 @@ const AIStatsWidgetCardsComponent: React.FC<AIStatsWidgetCardProps> = ({
             <div className="feature-style-icon bg-primary/10">
               <i className="ti ti-percentage-70 text-3xl text-primary"></i>
             </div>
-            <h5 className=" font-semibold text-default opsilion text-[1.5rem] mb-4 mt-2">
+            <h5 className=" font-semibold text-default goodTiming text-[1.5rem] mb-4 mt-2">
               Среден F1 Score
             </h5>
             <p className="text-[#8c9097] dark:text-white/50 mb-4">

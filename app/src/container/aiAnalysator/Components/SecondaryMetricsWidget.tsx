@@ -43,7 +43,7 @@ const SecondaryMetricsWidget = ({
         <div className="flex items-center gap-2 mb-2">
           <Badge
             variant={isActive ? "default" : "outline"}
-            className={`opsilion ${
+            className={`goodTiming ${
               isActive
                 ? "text-white"
                 : "border-defaulttextcolor text-defaulttextcolor"
@@ -54,7 +54,7 @@ const SecondaryMetricsWidget = ({
           <Infobox onClick={toggle} />
         </div>
 
-        <div className="text-lg opsilion text-defaulttextcolor dark:text-white/80 mb-2 flex-grow">
+        <div className="text-lg goodTiming text-defaulttextcolor dark:text-white/80 mb-2 flex-grow">
           {description}
         </div>
 

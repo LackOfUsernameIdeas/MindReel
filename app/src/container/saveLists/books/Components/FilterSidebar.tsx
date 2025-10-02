@@ -162,12 +162,12 @@ const FilterSidebar: FC<FilterSidebarProps> = ({
       >
         <X size={24} />
       </button>
-      <h3 className="text-lg font-bold opsilion mb-4">Филтриране</h3>
+      <h3 className="text-lg font-bold goodTiming mb-4">Филтриране</h3>
       <div className="space-y-4">
         {/* Филтрация за жанр */}
         <Accordion type="single" collapsible>
           <AccordionItem value="genre">
-            <AccordionTrigger className="opsilion text-sm flex items-center justify-between w-full bg-white dark:bg-bodybg2 px-4 py-2 rounded-md shadow-md">
+            <AccordionTrigger className="goodTiming text-sm flex items-center justify-between w-full bg-white dark:bg-bodybg2 px-4 py-2 rounded-md shadow-md">
               Жанр
             </AccordionTrigger>
             <AccordionContent className="pl-4">
@@ -181,7 +181,7 @@ const FilterSidebar: FC<FilterSidebarProps> = ({
                         onChange={() => handleGenreChange(bg)}
                         className="cursor-pointer bg-white dark:bg-bodybg2 border border-gray-300 dark:border-gray-600 rounded-md"
                       />
-                      <span className="opsilion text-sm">{bg}</span>
+                      <span className="goodTiming text-sm">{bg}</span>
                     </div>
                   ))}
                 </div>
@@ -193,7 +193,7 @@ const FilterSidebar: FC<FilterSidebarProps> = ({
         {/* Филтрация за страници */}
         <Accordion type="single" collapsible>
           <AccordionItem value="pages">
-            <AccordionTrigger className="opsilion text-sm flex items-center justify-between w-full bg-white dark:bg-bodybg2 px-4 py-2 rounded-md shadow-md">
+            <AccordionTrigger className="goodTiming text-sm flex items-center justify-between w-full bg-white dark:bg-bodybg2 px-4 py-2 rounded-md shadow-md">
               Страници
             </AccordionTrigger>
             <AccordionContent className="pl-4">
@@ -213,7 +213,7 @@ const FilterSidebar: FC<FilterSidebarProps> = ({
                       onChange={() => handlePagesChange(option)}
                       className="cursor-pointer bg-white dark:bg-bodybg2 border border-gray-300 dark:border-gray-600 rounded-md"
                     />
-                    <span className="opsilion text-sm">{option}</span>
+                    <span className="goodTiming text-sm">{option}</span>
                   </div>
                 ))}
               </div>
@@ -224,7 +224,7 @@ const FilterSidebar: FC<FilterSidebarProps> = ({
         {/* Филтрация за автори */}
         <Accordion type="single" collapsible>
           <AccordionItem value="author">
-            <AccordionTrigger className="opsilion text-sm flex items-center justify-between w-full bg-white dark:bg-bodybg2 px-4 py-2 rounded-md shadow-md">
+            <AccordionTrigger className="goodTiming text-sm flex items-center justify-between w-full bg-white dark:bg-bodybg2 px-4 py-2 rounded-md shadow-md">
               Автори
             </AccordionTrigger>
             <AccordionContent className="pl-4">
@@ -237,7 +237,7 @@ const FilterSidebar: FC<FilterSidebarProps> = ({
                       onChange={() => handleAuthorChange(author)}
                       className="cursor-pointer bg-white dark:bg-bodybg2 border border-gray-300 dark:border-gray-600 rounded-md"
                     />
-                    <span className="opsilion text-sm">{author}</span>
+                    <span className="goodTiming text-sm">{author}</span>
                   </div>
                 ))}
               </div>
@@ -248,7 +248,7 @@ const FilterSidebar: FC<FilterSidebarProps> = ({
         {/* Филтрация за издатели */}
         <Accordion type="single" collapsible>
           <AccordionItem value="publisher">
-            <AccordionTrigger className="opsilion text-sm flex items-center justify-between w-full bg-white dark:bg-bodybg2 px-4 py-2 rounded-md shadow-md">
+            <AccordionTrigger className="goodTiming text-sm flex items-center justify-between w-full bg-white dark:bg-bodybg2 px-4 py-2 rounded-md shadow-md">
               Издатели
             </AccordionTrigger>
             <AccordionContent className="pl-4">
@@ -261,7 +261,7 @@ const FilterSidebar: FC<FilterSidebarProps> = ({
                       onChange={() => handlePublisherChange(publisher)}
                       className="cursor-pointer bg-white dark:bg-bodybg2 border border-gray-300 dark:border-gray-600 rounded-md"
                     />
-                    <span className="opsilion text-sm">{publisher}</span>
+                    <span className="goodTiming text-sm">{publisher}</span>
                   </div>
                 ))}
               </div>
@@ -272,7 +272,7 @@ const FilterSidebar: FC<FilterSidebarProps> = ({
         {/* Филтрация за рейтинг в Goodreads */}
         <Accordion type="single" collapsible>
           <AccordionItem value="goodreadsRating">
-            <AccordionTrigger className="opsilion text-sm flex items-center justify-between w-full bg-white dark:bg-bodybg2 px-4 py-2 rounded-md shadow-md">
+            <AccordionTrigger className="goodTiming text-sm flex items-center justify-between w-full bg-white dark:bg-bodybg2 px-4 py-2 rounded-md shadow-md">
               Рейтинг в Goodreads
             </AccordionTrigger>
             <AccordionContent className="pl-4">
@@ -291,7 +291,7 @@ const FilterSidebar: FC<FilterSidebarProps> = ({
                       onChange={() => handleGoodreadsRatingChange(option)}
                       className="cursor-pointer bg-white dark:bg-bodybg2 border border-gray-300 dark:border-gray-600 rounded-md"
                     />
-                    <span className="opsilion text-sm">{option}</span>
+                    <span className="goodTiming text-sm">{option}</span>
                   </div>
                 ))}
               </div>
@@ -302,7 +302,7 @@ const FilterSidebar: FC<FilterSidebarProps> = ({
         {/* Филтрация за година на писане */}
         <Accordion type="single" collapsible>
           <AccordionItem value="year">
-            <AccordionTrigger className="opsilion text-sm flex items-center justify-between w-full bg-white dark:bg-bodybg2 px-4 py-2 rounded-md shadow-md">
+            <AccordionTrigger className="goodTiming text-sm flex items-center justify-between w-full bg-white dark:bg-bodybg2 px-4 py-2 rounded-md shadow-md">
               Година на писане
             </AccordionTrigger>
             <AccordionContent className="pl-4">
@@ -322,7 +322,7 @@ const FilterSidebar: FC<FilterSidebarProps> = ({
                       onChange={() => handleYearChange(option)}
                       className="cursor-pointer bg-white dark:bg-bodybg2 border border-gray-300 dark:border-gray-600 rounded-md"
                     />
-                    <span className="opsilion text-sm">{option}</span>
+                    <span className="goodTiming text-sm">{option}</span>
                   </div>
                 ))}
               </div>

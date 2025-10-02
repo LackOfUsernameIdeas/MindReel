@@ -115,7 +115,7 @@ const ChooseRecommendations: FC = () => {
             <div className="w-full max-w-4xl text-center">
               {/* Текстът на въпроса */}
               <Card className="dark:border-black/10 bg-bodybg font-semibold text-xl p-4 rounded-lg shadow-lg dark:shadow-xl text-center">
-                <h2 className="text-[1.3rem] opsilion text-defaulttextcolor dark:text-white/80">
+                <h2 className="text-[1.3rem] goodTiming text-defaulttextcolor dark:text-white/80">
                   {question.question}
                 </h2>
               </Card>

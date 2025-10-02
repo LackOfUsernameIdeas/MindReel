@@ -42,7 +42,7 @@ const SecondaryMetricsDashboard: FC<SecondaryMetricsDashboardProps> = ({
     <Card className="w-full bg-bodybg dark:bg-bodybg shadow-none border-0">
       <CardHeader className="py-3">
         <div className="flex justify-between items-center">
-          <CardTitle className="text-3xl font-bold text-defaulttextcolor dark:text-white/80 flex items-center opsilion">
+          <CardTitle className="text-3xl font-bold text-defaulttextcolor dark:text-white/80 flex items-center goodTiming">
             Метрики за препоръки
           </CardTitle>
         </div>
@@ -100,7 +100,7 @@ const SecondaryMetricsDashboard: FC<SecondaryMetricsDashboardProps> = ({
           }`}
         >
           <div className="flex items-center gap-2 mb-4">
-            <p className="opsilion text-xl font-bold text-defaulttextcolor dark:text-white/80">
+            <p className="goodTiming text-xl font-bold text-defaulttextcolor dark:text-white/80">
               ВИДОВЕ ПРЕДПОЛОЖЕНИЯ НА ИЗКУСТВЕНИЯ ИНТЕЛЕКТ
             </p>
           </div>

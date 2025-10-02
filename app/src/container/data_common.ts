@@ -179,7 +179,7 @@ export const musicGenreOptions: Array<{ en: string; bg: string }> = [
   { en: "country", bg: "Кънтри" },
   { en: "world", bg: "Световна" },
   { en: "jazz", bg: "Джаз" },
-  { en: "blues", bg: "Блуз" },
+  { en: "blues", bg: "Блус" },
   { en: "gospel", bg: "Госпъл" },
   { en: "classical", bg: "Класическа" },
   { en: "instrumental", bg: "Инструментална" },

@@ -130,7 +130,7 @@ const Header: FC<HeaderProps> = ({ local_varaiable, ThemeChanger }: any) => {
                 onMouseLeave={() => setIsLogOutHovered(false)}
               >
                 <button
-                  className="w-full opsilion ti-dropdown-item !text-base !p-[0.65rem] !inline-flex items-center opacity-[0.8]"
+                  className="w-full goodTiming ti-dropdown-item !text-base !p-[0.65rem] !inline-flex items-center opacity-[0.8]"
                   onClick={handleLogout}
                 >
                   <i className="ti ti-logout text-defaulttextcolor dark:text-white/80 font-semibold me-2"></i>

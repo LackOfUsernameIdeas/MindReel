@@ -13,7 +13,7 @@ const GenresBarChart: FC<GenresBarChartProps> = ({ data, type }) => {
       <div className="xxl:col-span-12 xl:col-span-12 col-span-12">
         <div className="box custom-card h-[27.75rem]">
           <div className="box-header justify-between">
-            <div className="box-title opsilion">
+            <div className="box-title goodTiming">
               {type == "recommendations"
                 ? "Моите Топ Препоръчвани Жанрове"
                 : "Моите Топ Запазвани Жанрове"}
