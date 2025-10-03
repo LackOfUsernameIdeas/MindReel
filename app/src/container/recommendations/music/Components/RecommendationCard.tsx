@@ -144,7 +144,10 @@ const RecommendationCard: FC<RecommendationCardProps> = ({
                     {recommendation.spotifyPopularity}/100
                   </span>
                   {recommendation.spotifyUrl && (
-                    <Button asChild className="bg-green-600 hover:bg-green-700">
+                    <Button
+                      asChild
+                      className="bg-secondary/10 dark:bg-secondary/20"
+                    >
                       <a
                         href={recommendation.spotifyUrl}
                         target="_blank"
