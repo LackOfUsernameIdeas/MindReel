@@ -376,7 +376,7 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
                   {currentQuestion.question}
                 </h2>
                 {currentQuestion.description && (
-                  <p className="text-sm text-gray-500 mt-2">
+                  <p className="text-base text-gray-500 mt-2">
                     {currentQuestion.description}
                   </p>
                 )}
@@ -405,7 +405,7 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
                   {currentQuestion.setter === setInterests ? (
                     <div>
                       <textarea
-                        className="form-control bg-opacity-70 border-2 rounded-lg p-4 mb-4 text-white glow-effect transition-all duration-300 hover:text-secondary"
+                        className="form-control bg-opacity-70 border-2 rounded-lg p-4 mb-4 text-white !text-[1rem] placeholder:text-[1rem] glow-effect transition-all duration-300 hover:text-secondary"
                         placeholder={currentQuestion.placeholder}
                         value={interests}
                         onChange={(e) => {
@@ -445,9 +445,12 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
                               );
                             }}
                           />
-                          <span>Нямам предпочитания</span>
+                          <span className="ml-2 text-[1rem]">
+                            Нямам предпочитания
+                          </span>
                         </label>
-                        <div className="text-right mt-2">
+
+                        <div className="text-right text-[1rem] mt-2">
                           <small>{`${interests.length} / 200`}</small>
                         </div>
                       </div>
@@ -456,7 +459,7 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
                     <div>
                       <input
                         type="text"
-                        className="input-field form-control bg-opacity-70 border-2 rounded-lg p-4 mb-4 text-white glow-effect transition-all duration-300 hover:text-secondary"
+                        className="input-field form-control bg-opacity-70 border-2 rounded-lg p-4 mb-4 text-white placeholder:text-[1rem] glow-effect transition-all duration-300 hover:text-secondary"
                         placeholder={currentQuestion.placeholder}
                         value={currentQuestion.value}
                         onChange={(e) => {
@@ -494,7 +497,9 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
                               );
                             }}
                           />
-                          <span className="ml-2">Нямам предпочитания</span>
+                          <span className="ml-2 text-[1rem]">
+                            Нямам предпочитания
+                          </span>
                         </label>
                       </div>
                     </div>
