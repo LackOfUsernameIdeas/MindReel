@@ -371,7 +371,7 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
           {/* Ако е избрана опцията за генериране на препоръки с устройство за анализ на мозъчните импулси, визуализираме компонента BrainAnalysisSteps */}
           {renderVrScene || !renderBrainAnalysis ? (
             <>
-              <div className="question bg-opacity-70 border-2 text-white rounded-lg p-4 glow-effect transition-all duration-300">
+              <div className="question bg-opacity-70 border-2 text-white rounded-lg p-4 mt-10 glow-effect transition-all duration-300">
                 <h2 className="text-xl font-semibold break-words">
                   {currentQuestion.question}
                 </h2>
