@@ -252,10 +252,10 @@ const AIAnalysator: FC = () => {
                       <p>
                         Измерва каква част от препоръките, които сте направили,
                         са <span className="font-semibold">наистина </span>{" "}
-                        подходящи за вас (релевантни). Високата стойност на{" "}
+                        подходящи за Вас (релевантни). Високата стойност на{" "}
                         <span className="font-semibold">Precision</span>{" "}
                         означава, че когато системата препоръчва нещо, то
-                        вероятно ще бъде подходящо за вас.
+                        вероятно ще бъде подходящо за Вас.
                       </p>
                       <Card className="bg-white dark:bg-bodybg2 dark:border-black/10 dark:text-defaulttextcolor/70 font-semibold text-xl p-4 rounded-md shadow-lg dark:shadow-xl text-center leading-relaxed mx-auto mt-5">
                         <div className="flex items-center space-x-2 justify-center items-center">
@@ -291,7 +291,7 @@ const AIAnalysator: FC = () => {
                         релевантни. Високата стойност на{" "}
                         <span className="font-semibold">Precision</span>,{" "}
                         означава че когато системата препоръчва нещо, то
-                        вероятно ще бъде подходящо за вас.
+                        вероятно ще бъде подходящо за Вас.
                       </p>
                       <Card className="bg-white dark:bg-bodybg2 dark:border-black/10 dark:text-defaulttextcolor/70 font-semibold text-xl p-4 rounded-md shadow-lg dark:shadow-xl text-center leading-relaxed mx-auto mt-5">
                         <div className="flex items-center space-x-2 justify-center items-center">
@@ -437,7 +437,7 @@ const AIAnalysator: FC = () => {
         <>
           <ErrorCard
             message="🔍 За да можете да разгледате колко добре се е справил AI-ът с
-                генерирането на препоръки за вас, моля, първо генерирайте препоръки за филми и сериали, използвайки стандартното попълване."
+                генерирането на препоръки за Вас, моля, първо генерирайте препоръки за филми и сериали, използвайки стандартното попълване."
             redirectUrl={`${
               import.meta.env.BASE_URL
             }app/recommendations/movies_series`}

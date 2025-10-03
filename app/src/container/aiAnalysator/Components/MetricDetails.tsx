@@ -61,11 +61,11 @@ const MetricDetails: FC<MetricDetailsProps> = ({
                   total={data[0].irrelevant_platform_recommendations_count}
                 />
                 <MetricStat
-                  label="(FP) -> Брой нерелевантни ЗА ВАС препоръки, които са отправени към вас:"
+                  label="(FP) -> Брой нерелевантни ЗА ВАС препоръки, които са отправени към Вас:"
                   value={data[0].irrelevant_user_recommendations_count}
                 />
                 <MetricStat
-                  label="(FP + TN) -> Брой нерелевантни ЗА ВАС препоръки в платформата - отправени и неотправени към вас:"
+                  label="(FP + TN) -> Брой нерелевантни ЗА ВАС препоръки в платформата - отправени и неотправени към Вас:"
                   value={data[0].irrelevant_platform_recommendations_count}
                 />
               </>
@@ -99,11 +99,11 @@ const MetricDetails: FC<MetricDetailsProps> = ({
                   total={data[2].irrelevant_platform_recommendations_count}
                 />
                 <MetricStat
-                  label="(TN) -> Брой нерелевантни ЗА ВАС препоръки, които НЕ са отправени към вас:"
+                  label="(TN) -> Брой нерелевантни ЗА ВАС препоръки, които НЕ са отправени към Вас:"
                   value={data[2].irrelevant_non_given_recommendations_count}
                 />
                 <MetricStat
-                  label="(TN + FP) -> Брой нерелевантни ЗА ВАС препоръки в платформата - отправени и неотправени към вас:"
+                  label="(TN + FP) -> Брой нерелевантни ЗА ВАС препоръки в платформата - отправени и неотправени към Вас:"
                   value={data[2].irrelevant_platform_recommendations_count}
                 />
               </>
@@ -137,11 +137,11 @@ const MetricDetails: FC<MetricDetailsProps> = ({
                   total={data[1].relevant_platform_recommendations_count}
                 />
                 <MetricStat
-                  label="(FN) -> Брой релевантни ЗА ВАС препоръки, които НЕ са отправени към вас:"
+                  label="(FN) -> Брой релевантни ЗА ВАС препоръки, които НЕ са отправени към Вас:"
                   value={data[1].relevant_non_given_recommendations_count}
                 />
                 <MetricStat
-                  label="(FN + TP) -> Брой релевантни ЗА ВАС препоръки в платформата - отправени и неотправени към вас:"
+                  label="(FN + TP) -> Брой релевантни ЗА ВАС препоръки в платформата - отправени и неотправени към Вас:"
                   value={data[1].relevant_platform_recommendations_count}
                 />
               </>
@@ -178,11 +178,11 @@ const MetricDetails: FC<MetricDetailsProps> = ({
                   total={data[3].total_platform_recommendations_count}
                 />
                 <MetricStat
-                  label="(TP) -> Брой релевантни ЗА ВАС препоръки, които са отправени към вас:"
+                  label="(TP) -> Брой релевантни ЗА ВАС препоръки, които са отправени към Вас:"
                   value={data[3].relevant_user_recommendations_count}
                 />
                 <MetricStat
-                  label="(TN) -> Брой нерелевантни ЗА ВАС препоръки, които НЕ са отправени към вас:"
+                  label="(TN) -> Брой нерелевантни ЗА ВАС препоръки, които НЕ са отправени към Вас:"
                   value={data[3].irrelevant_non_given_recommendations_count}
                 />
                 <MetricStat

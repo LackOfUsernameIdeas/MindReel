@@ -148,7 +148,7 @@ const Readlist: FC<ReadlistProps> = () => {
             <Card className="bg-white dark:bg-bodybg2/50 dark:border-black/10 dark:text-defaulttextcolor/70 font-semibold text-xl p-4 rounded-md shadow-lg dark:shadow-xl text-center leading-relaxed md:w-1/2 mx-auto flex-grow flex items-center justify-center">
               <h2 className="text-lg font-GoodTiming text-defaulttextcolor dark:text-white/80">
                 В тази страница можете да разгледате подробна информация за
-                добавените от вас книги в{" "}
+                добавените от Вас книги в{" "}
                 <span className="font-bold text-primary">
                   списъка ви за четене
                 </span>

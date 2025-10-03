@@ -247,14 +247,14 @@ const IndividualStats: FC<IndividualStatsProps> = () => {
                         </span>{" "}
                         филми и сериали{" "}
                         <span className="font-bold text-primary">
-                          специално за вас
+                          специално за Вас
                         </span>
                         . Също така, можете да видите кои са най-често
                         препоръчваните ви жанрове и колко на{" "}
                         <span className="font-bold text-primary">
                           брой филми и сериали
                         </span>{" "}
-                        са били препоръчвани на вас някога!
+                        са били препоръчвани на Вас някога!
                       </p>
                     </div>
 

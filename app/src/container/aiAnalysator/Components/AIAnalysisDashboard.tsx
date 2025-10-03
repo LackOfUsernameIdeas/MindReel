@@ -22,7 +22,7 @@ const AIAnalysisDashboard: FC<AIAnalysisDashboardProps> = ({
           icon={<i className="ti ti-percentage-40 text-2xl"></i>}
           title="Recall (Честота на подходящи предложени препоръки - TPR)"
           value={`${recallData.recall_percentage.toFixed(2)}%`}
-          description={`${recallData.relevant_user_recommendations_count} от общо ${recallData.relevant_platform_recommendations_count} релевантни препоръки в системата са отправени към вас`}
+          description={`${recallData.relevant_user_recommendations_count} от общо ${recallData.relevant_platform_recommendations_count} релевантни препоръки в системата са отправени към Вас`}
           progress={recallData.recall_percentage}
         />
         <MainMetricsWidget
@@ -36,7 +36,7 @@ const AIAnalysisDashboard: FC<AIAnalysisDashboardProps> = ({
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mt-4">
         <Widget
           icon={<i className="ti ti-list-numbers text-3xl" />}
-          title={`Брой на генерирани от вас препоръки\n(TP + FP)`}
+          title={`Брой на генерирани от Вас препоръки\n(TP + FP)`}
           value={precisionData.total_recommendations_count}
           help
         />
@@ -54,7 +54,7 @@ const AIAnalysisDashboard: FC<AIAnalysisDashboardProps> = ({
         />
         <Widget
           icon={<i className="ti ti-checkbox text-3xl" />}
-          title={`Брой на релевантни за вас препоръки в платформата\n(TP + FN)`}
+          title={`Брой на релевантни за Вас препоръки в платформата\n(TP + FN)`}
           value={recallData.relevant_platform_recommendations_count}
           help
         />

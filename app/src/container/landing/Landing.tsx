@@ -620,7 +620,7 @@ const Landing: FC<{}> = () => {
                       релевантни. Високата стойност на{" "}
                       <span className="font-semibold">Precision</span> означава,
                       че когато системата препоръчва нещо, то вероятно ще бъде
-                      подходящо за вас.
+                      подходящо за Вас.
                     </p>
                     <Card className="bg-white dark:bg-bodybg2 dark:border-black/10 dark:text-defaulttextcolor/70 font-semibold text-xl p-4 rounded-md shadow-lg dark:shadow-xl text-center leading-relaxed mx-auto mt-5">
                       <div className="flex items-center space-x-2 justify-center items-center">
@@ -652,7 +652,7 @@ const Landing: FC<{}> = () => {
                       релевантни. Високата стойност на{" "}
                       <span className="font-semibold">Precision</span> означава,
                       че когато системата препоръчва нещо, то вероятно ще бъде
-                      подходящо за вас.
+                      подходящо за Вас.
                     </p>
                     <Card className="bg-white dark:bg-bodybg2 dark:border-black/10 dark:text-defaulttextcolor/70 font-semibold text-xl p-4 rounded-md shadow-lg dark:shadow-xl text-center leading-relaxed mx-auto mt-5">
                       <div className="flex items-center space-x-2 justify-center items-center">
