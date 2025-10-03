@@ -1,5 +1,5 @@
 import { FC, useState } from "react";
-import { CSSTransition } from "react-transition-group";
+import { CSSTransition, SwitchTransition } from "react-transition-group";
 import { RecommendationsList } from "./RecommendationsList";
 import { QuizQuestions } from "./QuizQuestions";
 import { handleRetakeQuiz } from "../helper_functions";
@@ -59,109 +59,107 @@ export const Quiz: FC<QuizProps> = ({
 
   console.log("recommendationsAnalysis: ", recommendationsAnalysis);
 
+  // Determine which view to show
+  const getViewKey = () => {
+    if (loading) return "loading";
+    if (submitted) return "results";
+    return "questions";
+  };
+
   return (
     <div className="flex items-center justify-center px-4">
-      {loading ? (
-        <Loader />
-      ) : !submitted ? (
+      <SwitchTransition mode="out-in">
         <CSSTransition
-          in={!loading && !submitted}
+          key={getViewKey()}
           timeout={500}
           classNames="fade"
           unmountOnExit
         >
-          <div className={`${!isBrainAnalysisComplete && "w-full max-w-4xl"}`}>
-            <QuizQuestions
-              setLoading={setLoading}
-              setSubmitted={setSubmitted}
-              submitted={submitted}
-              showViewRecommendations={
-                alreadyHasRecommendations &&
-                ((!renderBrainAnalysis && !renderVrScene && !submitted) ||
-                  (renderBrainAnalysis && !isBrainAnalysisComplete) ||
-                  (renderVrScene && !submitted))
-              }
-              alreadyHasRecommendations={alreadyHasRecommendations}
-              setRecommendationList={setRecommendationList}
-              setRecommendationsAnalysis={setRecommendationsAnalysis}
-              setBookmarkedMovies={setBookmarkedMovies}
-              setIsBrainAnalysisComplete={setIsBrainAnalysisComplete}
-              isBrainAnalysisComplete={isBrainAnalysisComplete}
-              renderBrainAnalysis={renderBrainAnalysis}
-              setRenderBrainAnalysis={setRenderBrainAnalysis}
-              renderVrScene={renderVrScene}
-              setRenderVrScene={setRenderVrScene}
-            />
-          </div>
-        </CSSTransition>
-      ) : (
-        <CSSTransition
-          in={!loading && submitted}
-          timeout={500}
-          classNames="fade"
-          unmountOnExit
-        >
-          <div>
-            <div className="my-6 text-center">
-              <p className="text-lg text-gray-600">
-                Искате други препоръки?{" "}
-                <button
-                  onClick={() =>
-                    handleRetakeQuiz(
-                      setLoading,
-                      setSubmitted,
-                      setIsBrainAnalysisComplete,
-                      setCurrentIndex,
-                      renderBrainAnalysis,
-                      renderVrScene,
-                      setRenderBrainAnalysis
-                    )
-                  }
-                  className="text-primary font-semibold hover:text-secondary transition-colors underline"
-                >
-                  Повторете {renderBrainAnalysis ? "анализа" : "въпросника"}
-                </button>
-              </p>
-            </div>
+          <>
+            {loading ? (
+              <div className="flex items-center justify-center">
+                <Loader />
+              </div>
+            ) : submitted ? (
+              <div>
+                <div className="my-6 text-center">
+                  <p className="text-lg text-gray-600">
+                    Искате други препоръки?{" "}
+                    <button
+                      onClick={() =>
+                        handleRetakeQuiz(
+                          setLoading,
+                          setSubmitted,
+                          setIsBrainAnalysisComplete,
+                          setCurrentIndex,
+                          renderBrainAnalysis,
+                          renderVrScene,
+                          setRenderBrainAnalysis
+                        )
+                      }
+                      className="text-primary font-semibold hover:text-secondary transition-colors underline"
+                    >
+                      Повторете {renderBrainAnalysis ? "анализа" : "въпросника"}
+                    </button>
+                  </p>
+                </div>
 
-            {/* Conditional rendering based on renderVrScene */}
-            {renderVrScene ? (
-              // <VRRecommendationsList
-              //   recommendationList={recommendationList}
-              //   setCurrentBookmarkStatus={setCurrentBookmarkStatus}
-              //   currentIndex={currentIndex}
-              //   setCurrentIndex={setCurrentIndex}
-              //   setAlertVisible={setAlertVisible}
-              //   setBookmarkedMovies={setBookmarkedMovies}
-              //   bookmarkedMovies={bookmarkedMovies}
-              // />
-              <></>
-            ) : (
-              <>
-                <RecommendationsList
-                  recommendationList={recommendationList}
-                  setCurrentBookmarkStatus={setCurrentBookmarkStatus}
-                  currentIndex={currentIndex}
-                  setCurrentIndex={setCurrentIndex}
-                  setAlertVisible={setAlertVisible}
-                  setBookmarkedMovies={setBookmarkedMovies}
-                  bookmarkedMovies={bookmarkedMovies}
-                />
-                {recommendationList.length && isAnalysisUpdated() && (
-                  <RecommendationsAnalysesWidgets
-                    recommendationsAnalysis={recommendationsAnalysis}
-                    currentIndex={currentIndex}
-                    handlePrev={handlePrev}
-                    handleNext={handleNext}
-                    isSwitching={false}
-                    newGeneration
-                  />
+                {renderVrScene ? (
+                  <></>
+                ) : (
+                  <>
+                    <RecommendationsList
+                      recommendationList={recommendationList}
+                      setCurrentBookmarkStatus={setCurrentBookmarkStatus}
+                      currentIndex={currentIndex}
+                      setCurrentIndex={setCurrentIndex}
+                      setAlertVisible={setAlertVisible}
+                      setBookmarkedMovies={setBookmarkedMovies}
+                      bookmarkedMovies={bookmarkedMovies}
+                    />
+                    {recommendationList.length && isAnalysisUpdated() && (
+                      <RecommendationsAnalysesWidgets
+                        recommendationsAnalysis={recommendationsAnalysis}
+                        currentIndex={currentIndex}
+                        handlePrev={handlePrev}
+                        handleNext={handleNext}
+                        isSwitching={false}
+                        newGeneration
+                      />
+                    )}
+                  </>
                 )}
-              </>
+              </div>
+            ) : (
+              <div
+                className={`${!isBrainAnalysisComplete && "w-full max-w-4xl"}`}
+              >
+                <QuizQuestions
+                  setLoading={setLoading}
+                  setSubmitted={setSubmitted}
+                  submitted={submitted}
+                  showViewRecommendations={
+                    alreadyHasRecommendations &&
+                    ((!renderBrainAnalysis && !renderVrScene && !submitted) ||
+                      (renderBrainAnalysis && !isBrainAnalysisComplete) ||
+                      (renderVrScene && !submitted))
+                  }
+                  alreadyHasRecommendations={alreadyHasRecommendations}
+                  setRecommendationList={setRecommendationList}
+                  setRecommendationsAnalysis={setRecommendationsAnalysis}
+                  setBookmarkedMovies={setBookmarkedMovies}
+                  setIsBrainAnalysisComplete={setIsBrainAnalysisComplete}
+                  isBrainAnalysisComplete={isBrainAnalysisComplete}
+                  renderBrainAnalysis={renderBrainAnalysis}
+                  setRenderBrainAnalysis={setRenderBrainAnalysis}
+                  renderVrScene={renderVrScene}
+                  setRenderVrScene={setRenderVrScene}
+                />
+              </div>
             )}
-          </div>
+          </>
         </CSSTransition>
-      )}
+      </SwitchTransition>
     </div>
   );
 };
