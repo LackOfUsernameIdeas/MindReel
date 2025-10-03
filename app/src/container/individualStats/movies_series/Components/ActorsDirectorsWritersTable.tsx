@@ -138,7 +138,7 @@ const ActorsDirectorsWritersTable: FC<ActorsDirectorsWritersTableProps> = ({
                     className={`ti-btn-group !border-0 !text-xs !py-2 !px-3 goodTiming ${
                       category === recommendationCountSortCategory
                         ? "ti-btn-primary-full text-white"
-                        : "text-primary dark:text-primary bg-secondary/40 dark:bg-secondary/20"
+                        : "text-primary dark:text-primary bg-secondary/20 dark:bg-secondary/20"
                     } ${
                       index === 0
                         ? "rounded-l-md"
