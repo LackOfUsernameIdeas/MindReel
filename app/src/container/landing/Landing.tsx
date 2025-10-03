@@ -332,7 +332,7 @@ const Landing: FC<{}> = () => {
                       className="mx-1 text-primary font-semibold leading-[1] mt-auto"
                       to={`${import.meta.env.BASE_URL}signin`}
                     >
-                      Започнете вашето VR изживяване
+                      Започнете VR изживяване
                       <i className="ri-arrow-right-s-line align-middle rtl:rotate-180"></i>
                     </Link>
                   </div>
