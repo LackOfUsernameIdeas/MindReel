@@ -13,14 +13,10 @@ const Loader: FC<LoaderProps> = ({
   loadingMessage = "Зареждане..."
 }) => {
   return (
-    <div
-      className={`flex flex-col justify-center items-center ${
-        !brainAnalysis ? "" : ""
-      }`}
-    >
+    <div className="flex flex-col justify-center items-center min-h-[70vh] w-full">
       {brainAnalysis ? (
         <CSSTransition in={true} appear timeout={300} unmountOnExit>
-          <div className="flex flex-col items-center justify-center space-y-4 pt-[15rem]">
+          <div className="flex flex-col items-center justify-center space-y-4">
             <img
               src={logo_loader_head}
               alt="loading"
@@ -31,7 +27,7 @@ const Loader: FC<LoaderProps> = ({
         </CSSTransition>
       ) : (
         <CSSTransition in={true} appear timeout={300} unmountOnExit>
-          <div className="flex flex-col items-center justify-center space-y-4 p-[15rem]">
+          <div className="flex flex-col items-center justify-center space-y-4">
             <img src={logo_loader} alt="loading" className="spinner" />
             <p className="text-xl">{loadingMessage}</p>
           </div>
