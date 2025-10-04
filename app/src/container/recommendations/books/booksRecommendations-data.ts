@@ -211,20 +211,15 @@ export const goodreadsBrainAnalysisPrompt = (
 ) => {
   const brainWaveString = JSON.stringify(brainWaveData, null, 2);
   return {
-    model: "gpt-4-turbo",
+    model: "gpt-5-mini-2025-08-07",
     messages: [
       {
         role: "system",
-        content: `You are an AI that recommends books based on data from the 'NeuroSky MindWave Mobile 2: EEG Sensor' and gives a well argumented reason why the book is relevant based on the provided data. 
-        The device provides insights into the user's brain activity, cognitive state and emotional levels by measuring EEG power spectrums (Delta, Theta, low and high Alpha, low and high Beta, low and high Gamma) 
-        and using data from EEG algorithms - Attention and Mediation. Relying on both the brain wave data and the eeg algorithm data, provide a list of books, formatted in Bulgarian, with detailed justifications.
-        You must recommend books that exist on Goodreads, ensuring that all titles and details correspond to real entries from Goodreads. 
-        Inventing books or providing fictional information is absolutely prohibited.
-        Return the result in JSON format as instructed.`
+        content: `You are an AI that recommends books based on data from the 'NeuroSky MindWave Mobile 2: EEG Sensor'. The device provides insights into the user's brain activity, cognitive state, and emotional levels, such as focus, relaxation, stress, and creativity. Relying on this data, provide a list of books, formatted in Bulgarian, with detailed justifications. You must recommend books that exist on Goodreads, ensuring that all titles and details correspond to real entries from Goodreads. Inventing books or providing fictional information is absolutely prohibited. Return the result in JSON format as instructed.`
       },
       {
         role: "user",
-        content: `Обърни внимание на следните данни за мозъчна активност:
+        content: `Обърни внимание на следните данни за мозъчни вълни, получени от устройството 'NeuroSky MindWave Mobile 2: EEG Sensor', а именно:
         ${brainWaveString}.`
       },
       {
