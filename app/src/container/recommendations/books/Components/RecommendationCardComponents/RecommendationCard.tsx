@@ -7,6 +7,7 @@ import {
 import Genres from "./Genres";
 import AwardsSection from "./Awards";
 import { handleBookmarkClick } from "../../helper_functions";
+import { InfoboxModal } from "@/components/common/infobox/InfoboxModal";
 
 // Кард за генерирана книга спрямо потребителските предпочитания
 const RecommendationCard: FC<RecommendationCardProps> = ({
@@ -22,14 +23,20 @@ const RecommendationCard: FC<RecommendationCardProps> = ({
   const [author, setAuthor] = useState<string | null>(null); // Автор на книгата
   const [language, setLanguage] = useState<string | null>(null); // Език на книгата
   const [genres, setGenres] = useState<string[]>([]); // Жанрове на книгата
+  const [isReasonModalOpen, setIsReasonModalOpen] = useState(false); // Състояние за отваряне на модалния прозорец за причина
 
   const [posterError, setPosterError] = useState(false); // Състояние за грешка при зареждане на изображението
 
   const plotPreviewLength = 150; // Дължина на прегледа на съдържанието (oписаниeто)
+  const reasonPreviewLength = 150; // Дължина на прегледа на причината
 
   const recommendation = recommendationList[currentIndex]; // Генерираната книга
   const source = recommendation.source; // Източник на информация за книгата
   const isGoodreads = source === "Goodreads"; // Bool източник е Goodreads или не
+
+  const handleReasonModalClick = () => {
+    setIsReasonModalOpen((prev) => !prev);
+  }; // Функция за обработка на клик - модален прозорец за причина
 
   useEffect(() => {
     // Функция за асинхронно извличане на описанието
@@ -285,7 +292,24 @@ const RecommendationCard: FC<RecommendationCardProps> = ({
                 Защо препоръчваме{" "}
                 {recommendation.title_bg || "Заглавие не е налично"}?
               </h3>
-              <p className="text-opacity-80 italic">{recommendation.reason}</p>
+              <div className="overflow-hidden transition-all duration-500 ease-in-out max-h-[3rem] opacity-70">
+                <p className="text-opacity-80 italic">
+                  {recommendation.reason.length > reasonPreviewLength
+                    ? `${recommendation.reason.substring(
+                        0,
+                        reasonPreviewLength
+                      )}...`
+                    : recommendation.reason}
+                </p>
+              </div>
+              {recommendation.reason.length > reasonPreviewLength && (
+                <button
+                  onClick={handleReasonModalClick}
+                  className="mt-2 underline hover:scale-105 transition"
+                >
+                  Пълно обяснение
+                </button>
+              )}
             </div>
           )}
           {/* Описание */}
@@ -369,6 +393,23 @@ const RecommendationCard: FC<RecommendationCardProps> = ({
           </div>
         </div>
       </div>
+
+      {/* Reason Modal */}
+      {recommendation.reason &&
+        recommendation.reason.length > reasonPreviewLength && (
+          <InfoboxModal
+            onClick={handleReasonModalClick}
+            isModalOpen={isReasonModalOpen}
+            title={`Защо препоръчваме ${recommendation.title_bg}?`}
+            description={
+              <div className="text-left">
+                <p className="text-opacity-80 italic whitespace-pre-wrap">
+                  {recommendation.reason}
+                </p>
+              </div>
+            }
+          />
+        )}
     </div>
   );
 };

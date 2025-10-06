@@ -10,6 +10,7 @@ import {
   handleMovieSeriesBookmarkClick,
   translate
 } from "../../../helper_functions_common";
+import { InfoboxModal } from "@/components/common/infobox/InfoboxModal";
 
 // Компонент за показване на избран филм/сериал като alert
 const RecommendationCardAlert: FC<RecommendationCardAlertProps> = ({
@@ -29,8 +30,9 @@ const RecommendationCardAlert: FC<RecommendationCardAlertProps> = ({
   const [translatedLanguage, setTranslatedLanguage] = useState<string>(""); // Преведеният език
   const [visible, setVisible] = useState(false); // Показване на компонента
   const [isModalOpen, setIsModalOpen] = useState(false); // Статус на модалния прозорец
+  const [isReasonModalOpen, setIsReasonModalOpen] = useState(false); // Състояние за отваряне на модалния прозорец за причина
   const [modalData, setModalData] = useState<string | undefined>(""); // Данни за съдържанието на модалния прозорец
-  const previewLength = 70; // Дължина на прегледа на съдържанието (oписаниeто и сюжета)
+  const previewLength = 150; // Дължина на прегледа на съдържанието (oписаниeто и сюжета)
   const modalRef = useRef<HTMLDivElement>(null); // Референция към модалния контейнер за директна манипулация в DOM
 
   const [position, setPosition] = useState<number>(0); // Държи текущата вертикална позиция на модала (Y)
@@ -101,6 +103,10 @@ const RecommendationCardAlert: FC<RecommendationCardAlertProps> = ({
   const handleCloseModal = () => {
     setIsModalOpen(false);
   };
+
+  const handleReasonModalClick = () => {
+    setIsReasonModalOpen((prev) => !prev);
+  }; // Функция за обработка на клик - модален прозорец за причина
 
   // useEffect за превод на името на режисьора
   useEffect(() => {
@@ -358,9 +364,24 @@ const RecommendationCardAlert: FC<RecommendationCardAlertProps> = ({
                     Защо препоръчваме{" "}
                     {selectedItem.title_bg || "Заглавие не е налично"}?
                   </h3>
-                  <p className="text-sm sm:text-base text-opacity-80 italic">
-                    {selectedItem.reason}
-                  </p>
+                  <div className="overflow-hidden transition-all duration-500 ease-in-out max-h-[3rem] opacity-70">
+                    <p className="text-sm sm:text-base text-opacity-80 italic">
+                      {selectedItem.reason.length > previewLength
+                        ? `${selectedItem.reason.substring(
+                            0,
+                            previewLength
+                          )}...`
+                        : selectedItem.reason}
+                    </p>
+                  </div>
+                  {selectedItem.reason.length > previewLength && (
+                    <button
+                      onClick={handleReasonModalClick}
+                      className="mt-2 text-sm sm:text-base underline hover:scale-105 transition"
+                    >
+                      Пълно обяснение
+                    </button>
+                  )}
                 </div>
               )}
               {/* Описание */}
@@ -543,6 +564,21 @@ const RecommendationCardAlert: FC<RecommendationCardAlertProps> = ({
         onClose={handleCloseModal}
         plot={modalData}
       />
+      {/* Reason Modal */}
+      {selectedItem.reason && selectedItem.reason.length > previewLength && (
+        <InfoboxModal
+          onClick={handleReasonModalClick}
+          isModalOpen={isReasonModalOpen}
+          title={`Защо препоръчваме ${selectedItem.title_bg}?`}
+          description={
+            <div className="text-left">
+              <p className="text-opacity-80 italic whitespace-pre-wrap">
+                {selectedItem.reason}
+              </p>
+            </div>
+          }
+        />
+      )}
     </div>
   );
 };

@@ -26,6 +26,7 @@ const RecommendationCard: FC<RecommendationCardProps> = ({
   const [translatedLanguage, setTranslatedLanguage] = useState<string>(""); // Преведеният език
 
   const [isTrailerModalOpen, setIsTrailerModalOpen] = useState(false); // Състояние за отваряне на модалния прозорец
+  const [isReasonModalOpen, setIsReasonModalOpen] = useState(false); // Състояние за отваряне на модалния прозорец за причина
 
   const [posterError, setPosterError] = useState(false); // Състояние за грешка при зареждане на изображението
 
@@ -33,7 +34,12 @@ const RecommendationCard: FC<RecommendationCardProps> = ({
     setIsTrailerModalOpen((prev) => !prev);
   }; // Функция за обработка на клик - модален прозорец
 
+  const handleReasonModalClick = () => {
+    setIsReasonModalOpen((prev) => !prev);
+  }; // Функция за обработка на клик - модален прозорец за причина
+
   const plotPreviewLength = 150; // Дължина на прегледа на съдържанието (oписаниeто и сюжета)
+  const reasonPreviewLength = 150; // Дължина на прегледа на причината
   const recommendation = recommendationList[currentIndex]; // Генерираният филм/сериал
   // Времетраене (за филм - времетраеното на филма, за сериал - средното времетраене на един епизод)
   const runtime = recommendation.runtimeGoogle || recommendation.runtime;
@@ -302,7 +308,24 @@ const RecommendationCard: FC<RecommendationCardProps> = ({
                 Защо препоръчваме{" "}
                 {recommendation.bgName || "Заглавие не е налично"}?
               </h3>
-              <p className="text-opacity-80 italic">{recommendation.reason}</p>
+              <div className="overflow-hidden transition-all duration-500 ease-in-out max-h-[3rem] opacity-70">
+                <p className="text-opacity-80 italic">
+                  {recommendation.reason.length > reasonPreviewLength
+                    ? `${recommendation.reason.substring(
+                        0,
+                        reasonPreviewLength
+                      )}...`
+                    : recommendation.reason}
+                </p>
+              </div>
+              {recommendation.reason.length > reasonPreviewLength && (
+                <button
+                  onClick={handleReasonModalClick}
+                  className="mt-2 underline hover:scale-105 transition"
+                >
+                  Пълно обяснение
+                </button>
+              )}
             </div>
           )}
           {/* Описание */}
@@ -424,6 +447,7 @@ const RecommendationCard: FC<RecommendationCardProps> = ({
           </div>
         </div>
       </div>
+      {/* Trailer Modal */}
       {recommendation.youtubeTrailerUrl && (
         <InfoboxModal
           onClick={handleTrailerModalClick}
@@ -447,6 +471,22 @@ const RecommendationCard: FC<RecommendationCardProps> = ({
           }
         />
       )}
+      {/* Reason Modal */}
+      {recommendation.reason &&
+        recommendation.reason.length > reasonPreviewLength && (
+          <InfoboxModal
+            onClick={handleReasonModalClick}
+            isModalOpen={isReasonModalOpen}
+            title={`Защо препоръчваме ${recommendation.bgName}?`}
+            description={
+              <div className="text-left">
+                <p className="text-opacity-80 italic whitespace-pre-wrap">
+                  {recommendation.reason}
+                </p>
+              </div>
+            }
+          />
+        )}
     </div>
   );
 };

@@ -13,6 +13,7 @@ import {
   handleBookBookmarkClick,
   processGenres
 } from "../../../../helper_functions_common";
+import { InfoboxModal } from "@/components/common/infobox/InfoboxModal";
 
 // Компонент за показване на избрана книга като alert
 const RecommendationCardAlert: FC<RecommendationCardProps> = ({
@@ -28,7 +29,9 @@ const RecommendationCardAlert: FC<RecommendationCardProps> = ({
   const [language, setLanguage] = useState<string | null>(null); // Език на книгата
   const [genres, setGenres] = useState<string[]>([]); // Жанрове на книгата
   const [isPlotModalOpen, setIsPlotModalOpen] = useState(false); // Статус на отворен/затворен модал за сюжет
+  const [isReasonModalOpen, setIsReasonModalOpen] = useState(false); // Състояние за отваряне на модалния прозорец за причина
   const plotPreviewLength = 150; // Дължина на прегледа на съдържанието (oписаниeто)
+  const reasonPreviewLength = 150; // Дължина на прегледа на причината
   const source = selectedItem?.source; // Източник на данните за книгата
   const isGoodreads = source === "Goodreads"; // Проверка дали източникът е Goodreads
   const [visible, setVisible] = useState(false); // Видимостта на картата
@@ -101,6 +104,10 @@ const RecommendationCardAlert: FC<RecommendationCardProps> = ({
   const handleClosePlotModal = () => {
     setIsPlotModalOpen(false); // Затваряме модала
   };
+
+  const handleReasonModalClick = () => {
+    setIsReasonModalOpen((prev) => !prev);
+  }; // Функция за обработка на клик - модален прозорец за причина
 
   // useEffect, за да получим и зададем автора на книгата
   useEffect(() => {
@@ -384,9 +391,24 @@ const RecommendationCardAlert: FC<RecommendationCardProps> = ({
                     Защо препоръчваме{" "}
                     {selectedItem.title_bg || "Заглавие не е налично"}?
                   </h3>
-                  <p className="text-sm sm:text-base text-opacity-80 italic">
-                    {selectedItem.reason}
-                  </p>
+                  <div className="overflow-hidden transition-all duration-500 ease-in-out max-h-[3rem] opacity-70">
+                    <p className="text-sm sm:text-base text-opacity-80 italic">
+                      {selectedItem.reason.length > reasonPreviewLength
+                        ? `${selectedItem.reason.substring(
+                            0,
+                            reasonPreviewLength
+                          )}...`
+                        : selectedItem.reason}
+                    </p>
+                  </div>
+                  {selectedItem.reason.length > reasonPreviewLength && (
+                    <button
+                      onClick={handleReasonModalClick}
+                      className="mt-2 text-sm sm:text-base underline hover:scale-105 transition"
+                    >
+                      Пълно обяснение
+                    </button>
+                  )}
                 </div>
               )}
               {/* Описание */}
@@ -528,6 +550,22 @@ const RecommendationCardAlert: FC<RecommendationCardProps> = ({
         onClose={handleClosePlotModal}
         plot={description}
       />
+      {/* Reason Modal */}
+      {selectedItem.reason &&
+        selectedItem.reason.length > reasonPreviewLength && (
+          <InfoboxModal
+            onClick={handleReasonModalClick}
+            isModalOpen={isReasonModalOpen}
+            title={`Защо препоръчваме ${selectedItem.title_bg}?`}
+            description={
+              <div className="text-left">
+                <p className="text-opacity-80 italic whitespace-pre-wrap">
+                  {selectedItem.reason}
+                </p>
+              </div>
+            }
+          />
+        )}
     </div>
   );
 };
