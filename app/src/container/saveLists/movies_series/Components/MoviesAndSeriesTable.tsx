@@ -15,7 +15,6 @@ import {
   getTranslatedType,
   processCategory
 } from "../helper_functions";
-import { translate } from "@/container/helper_functions_common";
 import { InfoboxModal } from "@/components/common/infobox/InfoboxModal";
 import Infobox from "@/components/common/infobox/infobox";
 import {

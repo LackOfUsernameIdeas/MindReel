@@ -2,10 +2,6 @@ import { FC, useEffect, useState } from "react";
 import { Quiz } from "./Components/Quiz";
 import { useNavigate } from "react-router-dom";
 import { validateToken } from "../../helper_functions_common";
-import {
-  removeFromReadlist,
-  saveToReadlist
-} from "../../helper_functions_common";
 import FadeInWrapper from "../../../components/common/loader/fadeinwrapper";
 import Notification from "../../../components/common/notification/Notification";
 import {

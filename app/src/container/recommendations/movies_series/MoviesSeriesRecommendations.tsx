@@ -2,16 +2,9 @@ import { FC, useEffect, useState } from "react";
 import { Quiz } from "./Components/Quiz";
 import { useNavigate } from "react-router-dom";
 import { validateToken } from "../../helper_functions_common";
-import {
-  removeFromWatchlist,
-  saveToWatchlist
-} from "../../helper_functions_common";
 import FadeInWrapper from "../../../components/common/loader/fadeinwrapper";
 import Notification from "../../../components/common/notification/Notification";
-import {
-  NotificationState,
-  Recommendation
-} from "./moviesSeriesRecommendations-types";
+import { NotificationState } from "./moviesSeriesRecommendations-types";
 import BookmarkAlert from "./Components/BookmarkAlert";
 
 interface MoviesSeriesRecommendationsProps {}

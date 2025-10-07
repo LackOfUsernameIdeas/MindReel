@@ -66,14 +66,6 @@ const MoviesAndSeriesRecommendationsTable: FC<
     }
 
     return [...filteredByTypeData].sort((a, b) => {
-      const parseNumber = (value: any) => {
-        // Extract numeric value from formatted strings (e.g., "1,000,000" -> 1000000)
-        if (typeof value === "string") {
-          return parseFloat(value.replace(/,/g, ""));
-        }
-        return value || 0; // Fallback for null or undefined
-      };
-
       const extractNumericValue = (
         value: string | number | Rating[]
       ): number => {

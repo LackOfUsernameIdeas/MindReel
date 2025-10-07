@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment } from "react";
 import { CSSTransition } from "react-transition-group"; // Import CSSTransition
 import PrecisionFormula from "../precisionFormula/precisionFormula";
 import Collapsible from "../collapsible/collapsible";

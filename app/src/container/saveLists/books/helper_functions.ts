@@ -2,7 +2,6 @@
 // Импортиране на типове и интерфейси
 // ==============================
 import { BookRecommendation } from "@/container/types_common";
-import { DataType } from "./readlist-types";
 import { SetStateAction } from "react";
 
 // ==============================

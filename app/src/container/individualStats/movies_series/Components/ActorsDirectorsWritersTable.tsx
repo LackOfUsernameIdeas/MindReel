@@ -26,7 +26,7 @@ const ActorsDirectorsWritersTable: FC<ActorsDirectorsWritersTableProps> = ({
 }) => {
   const [recommendationCountSortCategory, setRecommendationCountSortCategory] =
     useState<Category>("Directors");
-  const [sortType, setSortType] = useState<"recommendations" | "watchlist">(
+  const [sortType] = useState<"recommendations" | "watchlist">(
     type === "recommendations" ? "recommendations" : "watchlist" // Default sortType based on prop type
   );
 

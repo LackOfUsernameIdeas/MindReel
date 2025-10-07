@@ -83,7 +83,6 @@ const WidgetCardsComponent: FC<WidgetCardsComponentProps> = ({ data }) => {
 
   // Медийни заявки за отзивчив дизайн
   const is1856 = useMediaQuery({ query: "(max-width: 1856px)" });
-  const is1532 = useMediaQuery({ query: "(max-width: 1532px)" });
   const is1966 = useMediaQuery({ query: "(max-width: 1966px)" });
 
   return (
