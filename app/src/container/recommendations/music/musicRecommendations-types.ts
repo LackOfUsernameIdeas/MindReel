@@ -74,10 +74,6 @@ export interface QuizQuestionProps {
   showViewRecommendations: boolean; // Флаг за показване на препоръките
   alreadyHasRecommendations: boolean; // Флаг за проверка дали вече има препоръки
   setRecommendationList: React.Dispatch<React.SetStateAction<any[]>>; // Функция за задаване на списък с препоръки
-  setIsBrainAnalysisComplete: React.Dispatch<React.SetStateAction<boolean>>; // Функция за актуализиране състоянието на мозъчния анализ
-  isBrainAnalysisComplete: boolean; // Състоянието на мозъчния анализ
-  renderBrainAnalysis: boolean; // Флаг за управление на визуализирането на мозъчния анализ
-  setRenderBrainAnalysis: React.Dispatch<React.SetStateAction<boolean>>; // Функция за задаване на състоянието на мозъчния анализ
 }
 
 // Пропс за компонентата ViewRecommendations, която показва резултатите от препоръките.
@@ -116,7 +112,6 @@ export interface ConfirmationModalProps {
     setRecommendationList: React.Dispatch<React.SetStateAction<any[]>>,
     token: string | null,
     submitCount: number,
-    renderBrainAnalysis: boolean,
     musicUserPreferences: MusicUserPreferences
   ) => Promise<void>;
 

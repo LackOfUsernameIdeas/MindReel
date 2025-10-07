@@ -44,7 +44,6 @@ export const ConfirmationModal: FC<ConfirmationModalProps> = ({
                 setRecommendationList,
                 token,
                 submitCount,
-                false,
                 musicUserPreferences
               );
               handleCloseModal();

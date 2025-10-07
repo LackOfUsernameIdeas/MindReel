@@ -1,4 +1,3 @@
-import { FilteredBrainData } from "@/container/types_common";
 import { MusicUserPreferences } from "./musicRecommendations-types";
 
 export const moodOptions = [
@@ -107,43 +106,6 @@ export const musicStandardPreferencesPrompt = (
                 // ...още песни
               }. Не добавяй излишни думи или скоби. Избягвай вложени двойни или единични кавички (кавички от един тип едно в друго, които да дават грешки на JSON.parse функцията). 
               Увери се, че всички данни са правилно escape-нати, за да не предизвикат грешки в JSON формата. JSON форматът трябва да бъде напълно валиден за JavaScript JSON.parse() функцията.`
-      }
-    ]
-  };
-};
-
-export const musicBrainAnalysisPrompt = (
-  brainWaveData: FilteredBrainData[]
-) => {
-  const brainWaveString = JSON.stringify(brainWaveData, null, 2);
-
-  return {
-    model: "gpt-5-mini-2025-08-07",
-    messages: [
-      {
-        role: "system",
-        content: `You are an AI that recommends music based on data from the 'NeuroSky MindWave Mobile 2: EEG Sensor'. The device provides insights into the user's brain activity, cognitive state and emotional levels by measuring EEG power spectrums (Delta, Theta, low and high Alpha, low and high Beta, low and high Gamma) and using data from EEG algorithms - Attention and Mediation. Only suggest REAL, existing songs and artists. Do not invent songs. Ensure all songs can be found on YouTube or Spotify. Return a valid JSON response formatted in Bulgarian, with justifications.`
-      },
-      {
-        role: "user",
-        content: `Препоръчай ми 5 песни за слушане, които ЗАДЪЛЖИТЕЛНО да съвпадат с получените данни за мозъчни вълни, а именно:
-          ${brainWaveString}.
-          Подсигури подробна информация за всяка песен по отделно защо тя е подходяща за мен НА БАЗА ДАННИТЕ ЗА МОЗЪЧНА АКТИВНОСТ.
-          Форматирай своя response във валиден JSON формат по този начин като използваш само двойни кавички:
-          {
-            'Официално име на песента на английски, както е прието да бъде': {
-              'artist': 'Име на изпълнителя или групата, като всички участници са разделени със запетая. Не използвай "ft.", "feat.", "x", "&", "and" и др. – винаги използвай само запетая. Примери: "Bad Bunny, Jhay Cortez" или "MEDUZA, Goodboys".',
-              'description': 'Описание на песента',
-              'reason': 'Защо тази песен е подходящ за мен?'
-            },
-            'Официално име на песента на английски, както е прието да бъде': {
-              'artist': 'Име на изпълнителя или групата, като всички участници са разделени със запетая. Не използвай "ft.", "feat.", "x", "&", "and" и др. – винаги използвай само запетая. Примери: "Bad Bunny, Jhay Cortez" или "MEDUZA, Goodboys".',
-              'description': 'Описание на песента',
-              'reason': 'Защо тази песен е подходящ за мен?'
-            },
-            // ...additional recommendations
-          }. Не добавяй излишни думи или скоби. Избягвай вложени двойни или единични кавички(кавички от един тип едно в друго, които да дават грешки на JSON.parse функцията). 
-          Увери се, че всички данни са правилно 'escape-нати', за да не предизвикат грешки в JSON формата. JSON формата трябва да е валиден за JavaScript JSON.parse() функцията.`
       }
     ]
   };

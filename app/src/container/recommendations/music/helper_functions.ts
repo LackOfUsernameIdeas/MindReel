@@ -1,12 +1,6 @@
 import { Genre, MusicUserPreferences } from "./musicRecommendations-types";
+import { Question, NotificationState } from "../../types_common";
 import {
-  Question,
-  BrainData,
-  FilteredBrainData,
-  NotificationState
-} from "../../types_common";
-import {
-  musicBrainAnalysisPrompt,
   musicStandardPreferencesPrompt,
   openAIKey
 } from "./musicRecommendations-data";
@@ -336,7 +330,6 @@ const fetchYouTubeVideoStats = async (
  * @param {MusicUserPreferences} musicUserPreferences - Предпочитанията на потребителя за песни.
  * @param {React.Dispatch<React.SetStateAction<any[]>>} setRecommendationList - Функция за задаване на препоръките в компонент.
  * @param {string | null} token - Токенът на потребителя, използван за аутентификация.
- * @param {boolean} renderBrainAnalysis - параметър за генериране на препоръки, спрямо анализ на мозъчните вълни.
  * @returns {Promise<void>} - Няма връщан резултат, но актуализира препоръките.
  * @throws {Error} - Хвърля грешка, ако заявката за препоръки е неуспешна.
  */
@@ -344,17 +337,12 @@ export const generateMusicRecommendations = async (
   date: string,
   setRecommendationList: React.Dispatch<React.SetStateAction<any[]>>,
   token: string | null,
-  renderBrainAnalysis: boolean,
-  musicUserPreferences?: MusicUserPreferences,
-  brainData?: FilteredBrainData[]
+  musicUserPreferences?: MusicUserPreferences
 ) => {
   try {
-    console.log("brainData", brainData);
     const requestBody =
-      renderBrainAnalysis && brainData
-        ? musicBrainAnalysisPrompt(brainData)
-        : musicUserPreferences &&
-          musicStandardPreferencesPrompt(musicUserPreferences);
+      musicUserPreferences &&
+      musicStandardPreferencesPrompt(musicUserPreferences);
 
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
@@ -536,7 +524,6 @@ let isOnCooldown = false;
  * @param {MusicUserPreferences} musicUserPreferences - Предпочитания на потребителя за музика.
  * @param {string | null} token - Токенът за аутентификация на потребителя.
  * @param {number} submitCount - Броят на подадените заявки.
- * @param {boolean} [renderBrainAnalysis=false] - Опционален параметър за генериране на препоръки, спрямо анализ на мозъчните вълни.
  * @returns {Promise<void>} - Няма връщан резултат, но актуализира препоръките и записва данни.
  * @throws {Error} - Хвърля грешка, ако не може да се обработи заявката.
  */
@@ -550,10 +537,7 @@ export const handleSubmit = async (
   setRecommendationList: React.Dispatch<React.SetStateAction<any[]>>,
   token: string | null,
   submitCount: number,
-  renderBrainAnalysis: boolean = false,
-  musicUserPreferences?: MusicUserPreferences,
-  brainData?: BrainData[],
-  analysisType?: "movies_series" | "books"
+  musicUserPreferences?: MusicUserPreferences
 ): Promise<void> => {
   if (isOnCooldown) return;
   isOnCooldown = true;
@@ -576,14 +560,13 @@ export const handleSubmit = async (
       musicUserPreferences;
 
     if (
-      !renderBrainAnalysis &&
-      (!moods ||
-        !artists ||
-        !producers ||
-        !countries ||
-        !pacing ||
-        !depth ||
-        !targetGroup)
+      !moods ||
+      !artists ||
+      !producers ||
+      !countries ||
+      !pacing ||
+      !depth ||
+      !targetGroup
     ) {
       showNotification(
         setNotification,
@@ -595,101 +578,49 @@ export const handleSubmit = async (
   }
 
   setLoading(true);
-  if (!renderBrainAnalysis) setSubmitted(true);
+  setSubmitted(true);
 
   try {
-    if (renderBrainAnalysis && analysisType && brainData) {
-      // Ако се съставя мозъчен анализ се изпълнява следния код
-      const response = await fetch(
-        `${import.meta.env.VITE_API_BASE_URL}/handle-submit`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`
-          },
-          body: JSON.stringify({
-            type: "music"
-          })
-        }
-      );
+    // Ако НЕ се съставя мозъчен анализ се изпълнява следния код
+    const response = await fetch(
+      `${import.meta.env.VITE_API_BASE_URL}/handle-submit`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          type: "music"
+        })
+      }
+    );
 
-      const data = await response.json();
+    const data = await response.json();
 
-      const date = new Date().toISOString();
+    const date = new Date().toISOString();
 
-      if (response.status === 200) {
-        setRecommendationList([]);
-        if (
-          musicUserPreferences &&
-          Object.keys(musicUserPreferences).length > 0
-        ) {
-          // await saveMusicUserPreferences(date, musicUserPreferences, token);
-          // await saveBrainAnalysis(date, brainData, analysisType, token);
-          const filteredBrainData = brainData.map(
-            ({ blink_strength, raw_data, data_type, ...rest }) => rest
-          );
-
-          await generateMusicRecommendations(
-            date,
-            setRecommendationList,
-            token,
-            true,
-            musicUserPreferences,
-            filteredBrainData
-          );
-        }
-        setSubmitCount((prevCount) => prevCount + 1);
-      } else {
-        showNotification(
-          setNotification,
-          data.error || "Възникна проблем.",
-          "error"
+    if (response.status === 200) {
+      setRecommendationList([]);
+      if (
+        musicUserPreferences &&
+        Object.keys(musicUserPreferences).length > 0
+      ) {
+        await saveMusicUserPreferences(date, musicUserPreferences, token);
+        await generateMusicRecommendations(
+          date,
+          setRecommendationList,
+          token,
+          musicUserPreferences
         );
       }
+      setSubmitCount((prevCount) => prevCount + 1);
     } else {
-      // Ако НЕ се съставя мозъчен анализ се изпълнява следния код
-      const response = await fetch(
-        `${import.meta.env.VITE_API_BASE_URL}/handle-submit`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`
-          },
-          body: JSON.stringify({
-            type: "music"
-          })
-        }
+      showNotification(
+        setNotification,
+        data.error || "Възникна проблем.",
+        "error"
       );
-
-      const data = await response.json();
-
-      const date = new Date().toISOString();
-
-      if (response.status === 200) {
-        setRecommendationList([]);
-        if (
-          musicUserPreferences &&
-          Object.keys(musicUserPreferences).length > 0
-        ) {
-          await saveMusicUserPreferences(date, musicUserPreferences, token);
-          await generateMusicRecommendations(
-            date,
-            setRecommendationList,
-            token,
-            false,
-            musicUserPreferences
-          );
-        }
-        setSubmitCount((prevCount) => prevCount + 1);
-      } else {
-        showNotification(
-          setNotification,
-          data.error || "Възникна проблем.",
-          "error"
-        );
-      }
     }
   } catch (error) {
     console.error("Error submitting the request:", error);
@@ -703,7 +634,7 @@ export const handleSubmit = async (
       isOnCooldown = false;
     }, 500);
     setLoading(false);
-    if (renderBrainAnalysis) setSubmitted(true);
+    setSubmitted(true);
   }
 };
 
@@ -896,27 +827,18 @@ export const handleBack = (
  * @function handleRetakeQuiz
  * @param {React.Dispatch<React.SetStateAction<boolean>>} setLoading - Функцията за показване на индикатора за зареждане.
  * @param {React.Dispatch<React.SetStateAction<boolean>>} setSubmitted - Функцията за нулиране на състоянието на резултата.
- * @param {React.Dispatch<React.SetStateAction<boolean>>} setIsBrainAnalysisComplete - Функцията за нулиране на състоянието на завършен мозъчен анализ.
  * @param {React.Dispatch<React.SetStateAction<number>>} setCurrentIndex - Функцията за нулиране на текущия индекс.
- * @param {boolean} renderBrainAnalysis - Дали се използва мозъчен анализ.
  * @returns {void} - Няма връщан резултат, но актуализира състоянието на компонентите.
  */
 export const handleRetakeQuiz = (
   setLoading: React.Dispatch<React.SetStateAction<boolean>>,
   setSubmitted: React.Dispatch<React.SetStateAction<boolean>>,
-  setIsBrainAnalysisComplete?: React.Dispatch<React.SetStateAction<boolean>>,
-  setCurrentIndex?: React.Dispatch<React.SetStateAction<number>>,
-  renderBrainAnalysis?: boolean
+  setCurrentIndex?: React.Dispatch<React.SetStateAction<number>>
 ): void => {
   setLoading(true);
   setTimeout(() => {
     setSubmitted(false);
     setLoading(false);
-
-    // Reset brain analysis state if in brain analysis mode
-    if (renderBrainAnalysis && setIsBrainAnalysisComplete) {
-      setIsBrainAnalysisComplete(false);
-    }
 
     // Reset current index if provided
     if (setCurrentIndex) {

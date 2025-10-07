@@ -17,8 +17,7 @@ import {
 } from "../booksRecommendations-data";
 import {
   goodreadsGenreOptions,
-  googleBooksGenreOptions,
-  preferenceOptions
+  googleBooksGenreOptions
 } from "../../../data_common";
 import { ConfirmationModal } from "./ConfirmationModal";
 import { ViewRecommendations } from "./ViewRecommendations";
@@ -34,7 +33,6 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
   setRecommendationList,
   setBookmarkedBooks
 }) => {
-  const [preferencesType, setPreferencesType] = useState<string | null>(null);
   const [genres, setGenres] = useState<Genre[]>([]);
   const [moods, setMoods] = useState<string[]>([]);
   const [authors, setAuthors] = useState("");
@@ -45,9 +43,7 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
   const [interests, setInterests] = useState("");
 
   const [submitCount, setSubmitCount] = useState(0);
-  const [marginClass, setMarginClass] = useState("");
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [showQuestion, setShowQuestion] = useState(true);
   const [selectedAnswer, setSelectedAnswer] = useState<string[] | null>(null);
   const [notification, setNotification] = useState<{
@@ -56,12 +52,6 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
   } | null>(null);
 
   const questions = [
-    {
-      question: "Как искате да продължите?",
-      options: preferenceOptions.books,
-      value: preferencesType,
-      setter: setPreferencesType
-    },
     {
       question: "Кои жанрове Ви се четат в момента?",
       options:
