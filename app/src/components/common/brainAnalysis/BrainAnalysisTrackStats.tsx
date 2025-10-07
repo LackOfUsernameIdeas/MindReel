@@ -27,6 +27,8 @@ const BrainAnalysisTrackStats: React.FC<BrainAnalysisTrackStatsProps> = ({
 }) => {
   const termsCardRef = useRef<HTMLButtonElement>(null);
   const [flash, setFlash] = useState(false);
+  const [lastValidData, setLastValidData] = useState<BrainData | null>(null);
+  const [displayData, setDisplayData] = useState<BrainData | null>(null);
 
   // Конфигурация на мозъчните вълни с цветове
   const brainWaveConfig: Array<{
@@ -43,6 +45,34 @@ const BrainAnalysisTrackStats: React.FC<BrainAnalysisTrackStatsProps> = ({
     { key: "lowGamma", title: "Low Gamma", color: "#FFBB28" },
     { key: "highGamma", title: "High Gamma", color: "#FF8042" }
   ];
+
+  // Проверява дали данните са валидни (не всички нули)
+  const isValidData = (data: BrainData | null): boolean => {
+    if (!data) return false;
+    return (
+      data.delta !== 0 ||
+      data.theta !== 0 ||
+      data.lowAlpha !== 0 ||
+      data.highAlpha !== 0 ||
+      data.lowBeta !== 0 ||
+      data.highBeta !== 0 ||
+      data.lowGamma !== 0 ||
+      data.highGamma !== 0 ||
+      data.attention !== 0 ||
+      data.meditation !== 0
+    );
+  };
+
+  // Актуализира displayData само когато получи валидни данни
+  useEffect(() => {
+    if (chartData && isValidData(chartData)) {
+      setLastValidData(chartData);
+      setDisplayData(chartData);
+    } else if (lastValidData) {
+      // Запазва предишните валидни данни ако текущите са нули
+      setDisplayData(lastValidData);
+    }
+  }, [chartData, lastValidData]);
 
   // Обработва натискането на бутона за генериране на препоръки
   const handleSubmitClick = () => {
@@ -73,10 +103,10 @@ const BrainAnalysisTrackStats: React.FC<BrainAnalysisTrackStatsProps> = ({
   return (
     <div className="rounded-lg p-4 transition-all duration-300">
       <div className="relative mx-auto">
-        {chartData && (
+        {displayData && (
           <div className="space-y-4">
             <BrainActivityCard
-              data={chartData}
+              data={displayData}
               handleInfoButtonClick={handleInfoButtonClick}
             />
             <div className="space-y-4">

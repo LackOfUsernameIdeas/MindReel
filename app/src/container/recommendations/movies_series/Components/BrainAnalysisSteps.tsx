@@ -134,6 +134,8 @@ export const BrainAnalysisSteps: FC<{
         : filteredData;
     });
 
+    if (chartData.attention === 0 || chartData.meditation === 0) return;
+
     setAttentionMeditation((prevData) =>
       prevData.map((stat, index) => {
         const key = index === 0 ? "attention" : "meditation";
