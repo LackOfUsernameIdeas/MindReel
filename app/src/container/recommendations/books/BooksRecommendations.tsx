@@ -40,40 +40,6 @@ const BooksRecommendations: FC<BooksRecommendationsProps> = () => {
     setNotification(null);
   };
 
-  const handleBookmarkClick = (book: Recommendation) => {
-    setBookmarkedBooks((prev) => {
-      const isBookmarked = !!prev[book.google_books_id || book.goodreads_id];
-      const updatedBookmarks = { ...prev };
-      const token =
-        localStorage.getItem("authToken") ||
-        sessionStorage.getItem("authToken");
-
-      if (isBookmarked) {
-        // Remove the book from bookmarks if it's already bookmarked
-        delete updatedBookmarks[book.google_books_id || book.goodreads_id];
-
-        removeFromReadlist(
-          book.google_books_id || book.goodreads_id,
-          token,
-          book.source
-        ).catch((error) => {
-          console.error("Error removing from watchlist:", error);
-        });
-      } else {
-        // Add the book to bookmarks if it's not already bookmarked
-        updatedBookmarks[book.google_books_id || book.goodreads_id] = book;
-
-        saveToReadlist(book, token).catch((error) => {
-          console.error("Error saving to watchlist:", error);
-        });
-      }
-
-      setCurrentBookmarkStatus(!isBookmarked); // Update the current bookmark status
-      setAlertVisible(true); // Show the alert
-
-      return updatedBookmarks; // Return the updated bookmarks object
-    });
-  };
   console.log("bookmarkedBooks: ", bookmarkedBooks);
 
   const handleDismiss = () => {

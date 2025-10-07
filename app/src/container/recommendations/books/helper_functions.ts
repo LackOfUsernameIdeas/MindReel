@@ -4,16 +4,9 @@ import {
   IndustryIdentifier,
   Recommendation
 } from "./booksRecommendations-types";
+import { Question, NotificationState } from "../../types_common";
 import {
-  Question,
-  BrainData,
-  FilteredBrainData,
-  NotificationState
-} from "../../types_common";
-import {
-  goodreadsBrainAnalysisPrompt,
   goodreadsPrompt,
-  googleBooksBrainAnalysisPrompt,
   googleBooksPrompt,
   openAIKey
 } from "./booksRecommendations-data";
@@ -24,7 +17,6 @@ import {
 import {
   checkRecommendationExistsInReadlist,
   removeFromReadlist,
-  saveBrainAnalysis,
   saveToReadlist,
   showNotification,
   translate,
@@ -301,8 +293,8 @@ export const processDataWithFallback = (
  * @param {string} date - Датата на генерирането на препоръките.
  * @param {BooksUserPreferences} booksUserPreferences - Предпочитанияте на потребителя за книги.
  * @param {React.Dispatch<React.SetStateAction<any[]>>} setRecommendationList - Функция за задаване на препоръките в компонент.
+ * @param {React.Dispatch<React.SetStateAction<{ [key: string]: any }>>} setBookmarkedBooks - Функция за задаване на любими книги в компонент.
  * @param {string | null} token - Токенът на потребителя, използван за аутентификация.
- * @param {boolean} renderBrainAnalysis - параметър за генериране на препоръки, спрямо анализ на мозъчните вълни.
  * @returns {Promise<void>} - Няма връщан резултат, но актуализира препоръките.
  * @throws {Error} - Хвърля грешка, ако заявката за препоръки е неуспешна.
  */
@@ -315,17 +307,11 @@ export const generateBooksRecommendations = async (
       [key: string]: any;
     }>
   >,
-  token: string | null,
-  renderBrainAnalysis: boolean,
-  brainData?: FilteredBrainData[]
+  token: string | null
 ) => {
   try {
     const requestBody =
-      renderBrainAnalysis && brainData
-        ? import.meta.env.VITE_BOOKS_SOURCE === "GoogleBooks"
-          ? googleBooksBrainAnalysisPrompt(brainData)
-          : goodreadsBrainAnalysisPrompt(brainData)
-        : import.meta.env.VITE_BOOKS_SOURCE === "GoogleBooks"
+      import.meta.env.VITE_BOOKS_SOURCE === "GoogleBooks"
         ? googleBooksPrompt(booksUserPreferences)
         : goodreadsPrompt(booksUserPreferences);
 
@@ -342,12 +328,6 @@ export const generateBooksRecommendations = async (
 
     const responseData = await response.json();
     const responseJson = responseData.choices[0].message.content;
-
-    // --- HARDCODED RESPONSE ЗА ТЕСТВАНЕ ---
-    // const responseJson =
-    //   import.meta.env.VITE_BOOKS_SOURCE == "GoogleBooks"
-    //     ? googleBooksExampleResponse
-    //     : goodreadsExampleResponse;
 
     const unescapedData = responseJson
       .replace(/^```json([\s\S]*?)```$/, "$1")
@@ -714,10 +694,12 @@ let isOnCooldown = false;
  *
  * @async
  * @function handleSubmit
+ * @param {React.Dispatch<React.SetStateAction<NotificationState | null>>} setNotification - Функция за задаване на състоянието на известията.
  * @param {React.Dispatch<React.SetStateAction<boolean>>} setLoading - Функция за задаване на статус на зареждане.
  * @param {React.Dispatch<React.SetStateAction<boolean>>} setSubmitted - Функция за задаване на статус за подадена заявка.
  * @param {React.Dispatch<React.SetStateAction<number>>} setSubmitCount - Функция за актуализиране на броя на подадените заявки.
  * @param {React.Dispatch<React.SetStateAction<any[]>>} setRecommendationList - Функция за актуализиране на списъка с препоръки.
+ * @param {React.Dispatch<React.SetStateAction<{ [key: string]: any }>>} setBookmarkedBooks - Функция за актуализиране на списъка с отметнати книги.
  * @param {BooksUserPreferences} booksUserPreferences - Предпочитания на потребителя за книги.
  * @param {string | null} token - Токенът за аутентификация на потребителя.
  * @param {number} submitCount - Броят на подадените заявки.
@@ -739,10 +721,7 @@ export const handleSubmit = async (
   >,
   token: string | null,
   submitCount: number,
-  renderBrainAnalysis: boolean = false,
-  booksUserPreferences: BooksUserPreferences,
-  brainData?: BrainData[],
-  analysisType?: "movies_series" | "books"
+  booksUserPreferences: BooksUserPreferences
 ): Promise<void> => {
   if (isOnCooldown) return;
   isOnCooldown = true;
@@ -763,10 +742,7 @@ export const handleSubmit = async (
   if (booksUserPreferences) {
     const { moods, origin, pacing, depth, targetGroup } = booksUserPreferences;
 
-    if (
-      !renderBrainAnalysis &&
-      (!moods || !origin || !pacing || !depth || !targetGroup)
-    ) {
+    if (!moods || !origin || !pacing || !depth || !targetGroup) {
       showNotification(
         setNotification,
         "Моля, попълнете всички задължителни полета!",
@@ -777,99 +753,49 @@ export const handleSubmit = async (
   }
 
   setLoading(true);
-  if (!renderBrainAnalysis) setSubmitted(true);
+  setSubmitted(true);
+
   try {
-    if (renderBrainAnalysis && analysisType && brainData) {
-      const response = await fetch(
-        `${import.meta.env.VITE_API_BASE_URL}/handle-submit`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`
-          },
-          body: JSON.stringify({
-            type: "books"
-          })
-        }
-      );
+    const response = await fetch(
+      `${import.meta.env.VITE_API_BASE_URL}/handle-submit`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          type: "books"
+        })
+      }
+    );
 
-      const data = await response.json();
+    const data = await response.json();
 
-      const date = new Date().toISOString();
+    const date = new Date().toISOString();
 
-      if (response.status === 200) {
-        setRecommendationList([]);
-        if (
-          booksUserPreferences &&
-          Object.keys(booksUserPreferences).length > 0
-        ) {
-          await saveBooksUserPreferences(date, booksUserPreferences, token);
-          await saveBrainAnalysis(date, brainData, analysisType, token);
-          const filteredBrainData = brainData.map(
-            ({ blink_strength, raw_data, data_type, ...rest }) => rest
-          );
-          await generateBooksRecommendations(
-            date,
-            booksUserPreferences,
-            setRecommendationList,
-            setBookmarkedBooks,
-            token,
-            true,
-            filteredBrainData
-          );
-        }
-        setSubmitCount((prevCount) => prevCount + 1);
-      } else {
-        showNotification(
-          setNotification,
-          data.error || "Възникна проблем.",
-          "error"
+    if (response.status === 200) {
+      setRecommendationList([]);
+      if (
+        booksUserPreferences &&
+        Object.keys(booksUserPreferences).length > 0
+      ) {
+        await saveBooksUserPreferences(date, booksUserPreferences, token);
+        await generateBooksRecommendations(
+          date,
+          booksUserPreferences,
+          setRecommendationList,
+          setBookmarkedBooks,
+          token
         );
       }
+      setSubmitCount((prevCount) => prevCount + 1);
     } else {
-      const response = await fetch(
-        `${import.meta.env.VITE_API_BASE_URL}/handle-submit`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`
-          },
-          body: JSON.stringify({
-            type: "books"
-          })
-        }
+      showNotification(
+        setNotification,
+        data.error || "Възникна проблем.",
+        "error"
       );
-
-      const data = await response.json();
-
-      const date = new Date().toISOString();
-
-      if (response.status === 200) {
-        setRecommendationList([]);
-        if (
-          booksUserPreferences &&
-          Object.keys(booksUserPreferences).length > 0
-        ) {
-          await saveBooksUserPreferences(date, booksUserPreferences, token);
-          await generateBooksRecommendations(
-            date,
-            booksUserPreferences,
-            setRecommendationList,
-            setBookmarkedBooks,
-            token,
-            false
-          );
-        }
-        setSubmitCount((prevCount) => prevCount + 1);
-      } else {
-        showNotification(
-          setNotification,
-          data.error || "Възникна проблем.",
-          "error"
-        );
-      }
     }
   } catch (error) {
     console.error("Error submitting the request:", error);
@@ -883,7 +809,7 @@ export const handleSubmit = async (
       isOnCooldown = false;
     }, 500);
     setLoading(false);
-    if (renderBrainAnalysis) setSubmitted(true);
+    setSubmitted(true);
   }
 };
 
@@ -1138,24 +1064,15 @@ export const handleBack = (
  * @function handleRetakeQuiz
  * @param {React.Dispatch<React.SetStateAction<boolean>>} setLoading - Функцията за показване на индикатора за зареждане.
  * @param {React.Dispatch<React.SetStateAction<boolean>>} setSubmitted - Функцията за нулиране на състоянието на резултата.
- * @param {React.Dispatch<React.SetStateAction<boolean>>} setIsBrainAnalysisComplete - Функцията за нулиране на състоянието на завършен мозъчен анализ.
- * @param {boolean} renderBrainAnalysis - Дали се използва мозъчен анализ.
  * @returns {void} - Няма връщан резултат, но актуализира състоянието на компонентите.
  */
 export const handleRetakeQuiz = (
   setLoading: React.Dispatch<React.SetStateAction<boolean>>,
-  setSubmitted: React.Dispatch<React.SetStateAction<boolean>>,
-  setIsBrainAnalysisComplete?: React.Dispatch<React.SetStateAction<boolean>>,
-  renderBrainAnalysis?: boolean
+  setSubmitted: React.Dispatch<React.SetStateAction<boolean>>
 ): void => {
   setLoading(true);
   setTimeout(() => {
     setSubmitted(false);
     setLoading(false);
   }, 500);
-
-  // Reset brain analysis state if in brain analysis mode
-  if (renderBrainAnalysis && setIsBrainAnalysisComplete) {
-    setIsBrainAnalysisComplete(false);
-  }
 };

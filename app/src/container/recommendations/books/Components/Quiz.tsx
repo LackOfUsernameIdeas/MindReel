@@ -16,8 +16,6 @@ export const Quiz: FC<QuizProps> = ({
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [recommendationList, setRecommendationList] = useState<any[]>([]);
-  const [isBrainAnalysisComplete, setIsBrainAnalysisComplete] = useState(false);
-  const [renderBrainAnalysis, setRenderBrainAnalysis] = useState(false);
   console.log("recommendationList: ", recommendationList);
 
   const alreadyHasRecommendations = recommendationList.length > 0;
@@ -49,17 +47,10 @@ export const Quiz: FC<QuizProps> = ({
                   <p className="text-lg text-gray-600">
                     Искате други препоръки?{" "}
                     <button
-                      onClick={() =>
-                        handleRetakeQuiz(
-                          setLoading,
-                          setSubmitted,
-                          setIsBrainAnalysisComplete,
-                          renderBrainAnalysis
-                        )
-                      }
+                      onClick={() => handleRetakeQuiz(setLoading, setSubmitted)}
                       className="text-primary font-semibold hover:text-secondary transition-colors underline"
                     >
-                      Повторете {renderBrainAnalysis ? "анализа" : "въпросника"}
+                      Повторете въпросника
                     </button>
                   </p>
                 </div>
@@ -77,27 +68,17 @@ export const Quiz: FC<QuizProps> = ({
                 </Card>
               </div>
             ) : (
-              <div
-                className={`${!isBrainAnalysisComplete && "w-full max-w-4xl"}`}
-              >
+              <div className="w-full max-w-4xl">
                 <QuizQuestions
                   setLoading={setLoading}
                   setSubmitted={setSubmitted}
                   submitted={submitted}
                   showViewRecommendations={
-                    alreadyHasRecommendations &&
-                    // Случай 1: Когато не сме в режим на мозъчен анализ и не сме изпратили въпросника
-                    ((!renderBrainAnalysis && !submitted) ||
-                      // Случай 2: Когато сме в режим на мозъчен анализ, но анализът не е завършен
-                      (renderBrainAnalysis && !isBrainAnalysisComplete))
+                    alreadyHasRecommendations && !submitted
                   }
                   alreadyHasRecommendations={alreadyHasRecommendations}
                   setRecommendationList={setRecommendationList}
                   setBookmarkedBooks={setBookmarkedBooks}
-                  setIsBrainAnalysisComplete={setIsBrainAnalysisComplete}
-                  isBrainAnalysisComplete={isBrainAnalysisComplete}
-                  renderBrainAnalysis={renderBrainAnalysis}
-                  setRenderBrainAnalysis={setRenderBrainAnalysis}
                 />
               </div>
             )}

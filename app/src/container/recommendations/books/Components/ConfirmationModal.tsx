@@ -46,7 +46,6 @@ export const ConfirmationModal: FC<ConfirmationModalProps> = ({
                 setBookmarkedBooks,
                 token,
                 submitCount,
-                false,
                 booksUserPreferences
               );
               handleCloseModal();
