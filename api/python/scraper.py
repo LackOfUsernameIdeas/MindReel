@@ -176,7 +176,7 @@ def scrape_book_data():
     ) or 'N/A'
 
     characters = ", ".join(
-        character['name'] for character in work_details.get('characters', [])
+        character['name'] for character in work_details.get('characters', [])[:10]
     ) or 'N/A'
 
     # Форматиране на крайния резултат
