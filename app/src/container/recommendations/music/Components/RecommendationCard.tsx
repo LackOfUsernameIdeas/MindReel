@@ -1,5 +1,5 @@
 import { FC, useEffect, useState } from "react";
-import { Play, ExternalLink, Eye, ThumbsUp } from "lucide-react";
+import { ExternalLink, Eye, ThumbsUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { InfoboxModal } from "@/components/common/infobox/InfoboxModal";
 import { RecommendationCardProps } from "../musicRecommendations-types";

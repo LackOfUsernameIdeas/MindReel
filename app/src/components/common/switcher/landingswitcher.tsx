@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from "react";
+import { useEffect } from "react";
 import { connect } from "react-redux";
 import { Helmet, HelmetProvider } from "react-helmet-async";
 import { storeLanding } from "../../../redux/store";

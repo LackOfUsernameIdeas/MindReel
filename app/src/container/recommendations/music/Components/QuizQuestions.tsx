@@ -30,7 +30,6 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
   alreadyHasRecommendations,
   setRecommendationList
 }) => {
-  const [preferencesType, setPreferencesType] = useState<string | null>(null);
   const [genres, setGenres] = useState<Genre[]>([]);
   const [moods, setMoods] = useState<string[]>([]);
   const [age, setAge] = useState("");

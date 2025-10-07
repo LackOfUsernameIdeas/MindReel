@@ -1,12 +1,5 @@
 import { Card, CardContent } from "@/components/ui/card";
-import {
-  AudioLines,
-  ThumbsUp,
-  Eye,
-  MessageCircle,
-  Radio,
-  Headphones
-} from "lucide-react";
+import { AudioLines, ThumbsUp, Eye, MessageCircle, Radio } from "lucide-react";
 import { formatNumber } from "../helper_functions";
 
 interface MusicStatsData {

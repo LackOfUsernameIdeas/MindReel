@@ -4,10 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { validateToken } from "../../helper_functions_common";
 import FadeInWrapper from "../../../components/common/loader/fadeinwrapper";
 import Notification from "../../../components/common/notification/Notification";
-import {
-  Recommendation,
-  NotificationState
-} from "./booksRecommendations-types";
+import { NotificationState } from "./booksRecommendations-types";
 import BookmarkAlert from "./Components/BookmarkAlert";
 
 interface BooksRecommendationsProps {}

@@ -13,7 +13,6 @@ import {
   NotificationType,
   Question,
   RecommendationsAnalysis,
-  Step,
   WriterData
 } from "./types_common";
 import { io } from "socket.io-client";
