@@ -102,7 +102,7 @@ function getMetascoreColor(metascore: string): string {
 }
 
 const MovieCardVR = ({
-  position = "0 6 -4",
+  position = "0 0 0",
   recommendation = defaultRecommendation,
   handleBookmarkClick,
   isBookmarked: externalIsBookmarked,

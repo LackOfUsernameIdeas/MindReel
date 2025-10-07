@@ -1,7 +1,8 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import "aframe-websurfaces";
 
 interface TrailerModalProps {
+  videoRef: React.RefObject<HTMLVideoElement>;
   isVisible: boolean;
   isTrailerPlaying: boolean;
   setIsTrailerPlaying: React.Dispatch<React.SetStateAction<boolean>>;
@@ -12,16 +13,16 @@ interface TrailerModalProps {
 }
 
 const TrailerModal = ({
+  videoRef,
   isVisible,
   isTrailerPlaying,
   setIsTrailerPlaying,
   title,
   trailerUrl = "https://www.youtube.com/embed/dQw4w9WgXcQ",
   onClose,
-  position = "0 3.5 -4",
+  position = "0 3.5 -4"
 }: TrailerModalProps) => {
   const [modalOpacity, setModalOpacity] = useState(0);
-  const videoRef = useRef<HTMLVideoElement>(null);
   const [progress, setProgress] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
@@ -139,18 +140,6 @@ const TrailerModal = ({
 
   return (
     <>
-      <a-assets>
-        <video
-          id="trailer-video"
-          ref={videoRef}
-          src="cl16.mp4"
-          autoPlay
-          muted
-          playsInline
-          crossOrigin="anonymous"
-        />
-      </a-assets>
-
       <a-entity position={position}>
         <a-plane
           width="26"

@@ -1,14 +1,19 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import "aframe";
 import "aframe-extras";
 import "aframe-physics-system";
 import "aframe-websurfaces";
-import MovieCard from "./MovieCard";
-import DetailModal from "./DetailModal";
-import TrailerModal from "./TrailerModal";
+import MovieCard from "./vrsubcomponents/MovieCard";
+import DetailModal from "./vrsubcomponents/DetailModal";
+import TrailerModal from "./vrsubcomponents/TrailerModal";
+import Projector from "./vrsubcomponents/Projector";
+import ExitSign from "./vrsubcomponents/ExitSign";
+import Seat from "./vrsubcomponents/Seat";
+import PopcornStand from "./vrsubcomponents/PopcornStand";
 
 const TestVr = () => {
   const [isBookmarked, setIsBookmarked] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
   const [showPopup, setShowPopup] = useState(false);
   const [popupOpacity, setPopupOpacity] = useState(0);
   const [showDetailModal, setShowDetailModal] = useState(false);
@@ -27,7 +32,7 @@ const TestVr = () => {
         this.el.addEventListener("raycaster-intersected-cleared", () => {
           this.el.setAttribute("material", "color", "#F44336");
         });
-      },
+      }
     });
 
     const scene = document.querySelector("a-scene");
@@ -90,8 +95,9 @@ const TestVr = () => {
     <a-scene
       webxr="optionalFeatures: local-floor, bounded-floor, hand-tracking"
       vr-mode-ui="enabled: true"
-      renderer="antialias: true"
+      renderer="antialias: true; colorManagement: true; physicallyCorrectLights: true"
       embedded
+      fog="type: linear; color: #0a0a15; near: 10; far: 40"
     >
       <a-camera position="0 1.6 5"></a-camera>
       <a-entity cursor="rayOrigin:mouse"></a-entity>
@@ -107,17 +113,36 @@ const TestVr = () => {
         super-hands
       ></a-entity>
 
-      {/* no actual placeholder rn */}
-      <a-sky src="/placeholder.svg?height=2048&width=4096" color="#1a1a2e" />
+      <a-assets>
+        <video
+          id="trailer-video"
+          ref={videoRef}
+          src="cl16.mp4"
+          autoPlay
+          muted
+          playsInline
+          crossOrigin="anonymous"
+        />
+      </a-assets>
+
+      <a-sky color="#0a0a15" />
 
       {showPopup && (
         <a-entity position="0 8 -6.5">
           <a-plane
             width="8"
             height="1.5"
-            color={isBookmarked ? "#22C55E" : "#EF4444"}
-            material={`shader: flat; opacity: ${popupOpacity}`}
+            color={isBookmarked ? "#10b981" : "#ef4444"}
+            material={`shader: flat; opacity: ${popupOpacity}; side: double`}
             position="0 0 0.01"
+          ></a-plane>
+
+          <a-plane
+            width="8.1"
+            height="1.6"
+            color="#000000"
+            material={`shader: flat; opacity: ${popupOpacity * 0.3}`}
+            position="0.05 -0.05 0"
           ></a-plane>
 
           <a-entity position="-3.5 0 0.02">
@@ -149,7 +174,7 @@ const TestVr = () => {
               align="left"
               color="#FFFFFF"
               width="5"
-              material={`opacity: ${popupOpacity * 0.8}`}
+              material={`opacity: ${popupOpacity * 0.9}`}
               font="https://cdn.aframe.io/fonts/Exo2SemiBold.fnt"
             ></a-text>
           </a-entity>
@@ -175,6 +200,7 @@ const TestVr = () => {
       />
 
       <TrailerModal
+        videoRef={videoRef}
         isVisible={showTrailerModal}
         isTrailerPlaying={isTrailerPlaying}
         setIsTrailerPlaying={setIsTrailerPlaying}
@@ -184,26 +210,79 @@ const TestVr = () => {
         position="0 5 -8"
       />
 
-      <a-plane
-        rotation="-90 0 0"
-        width="50"
-        height="50"
-        color="#8B0000"
-        material="roughness: 0.8"
-        position="0 0 0"
-        static-body
-      ></a-plane>
+      {/* FLOOR */}
+      <a-entity>
+        <a-plane
+          rotation="-90 0 0"
+          width="50"
+          height="50"
+          color="#1a0a0a"
+          material="roughness: 0.95; metalness: 0.05"
+          position="0 0 0"
+          static-body
+        ></a-plane>
 
-      <a-plane
-        rotation="-90 0 0"
-        width="48"
-        height="48"
-        color="#A0522D"
-        material="roughness: 0.9; opacity: 0.3"
-        position="0 0.01 0"
-      ></a-plane>
+        <a-plane
+          rotation="-90 0 0"
+          width="46"
+          height="46"
+          color="#4a1515"
+          material="roughness: 0.98; opacity: 0.6"
+          position="0 0.01 0"
+        ></a-plane>
 
-      {/* to do: make these 5 in a ring, also make them controllable*/}
+        <a-plane
+          rotation="-90 0 0"
+          width="2"
+          height="60"
+          color="#8b2020"
+          material="roughness: 0.9"
+          position="-6 0.02 -2"
+        ></a-plane>
+        <a-plane
+          rotation="-90 0 0"
+          width="2"
+          height="60"
+          color="#8b2020"
+          material="roughness: 0.9"
+          position="6 0.02 -2"
+        ></a-plane>
+      </a-entity>
+
+      {/* WALL BEHIND MOVIE CARD */}
+      <a-entity>
+        <a-plane
+          position="0 3 -12"
+          width="16"
+          height="20"
+          color="#0a0a0a"
+          material="shader: flat; emissive: #1a1a2e; emissiveIntensity: 0.3"
+        ></a-plane>
+        <a-box
+          position="0 3 -11.9"
+          width="21"
+          height="18"
+          depth="0.3"
+          color="#3d2817"
+          material="metalness: 0.4; roughness: 0.6; emissive: #1a0f08; emissiveIntensity: 0.1"
+        ></a-box>
+        <a-plane
+          position="-10 5 -11.5"
+          rotation="0 45 0"
+          width="1.2"
+          height="16"
+          color="#6b1a1a"
+          material="roughness: 0.8; metalness: 0.1"
+        ></a-plane>
+        <a-plane
+          position="10 5 -11.5"
+          rotation="0 335 0"
+          width="1.2"
+          height="16"
+          color="#6b1a1a"
+          material="roughness: 0.8; metalness: 0.1"
+        ></a-plane>
+      </a-entity>
       {!showTrailerModal && (
         <MovieCard
           position="0 2.5 -8"
@@ -214,279 +293,364 @@ const TestVr = () => {
         />
       )}
 
-      <a-plane
-        position="0 3 -12"
-        width="20"
-        height="12"
-        color="#000000"
-        material="shader: flat"
-      ></a-plane>
+      <Projector position="0 4 0" rotation="-15 0 0" />
 
-      <a-box
-        position="0 3 -12.1"
-        width="21"
-        height="13"
-        depth="0.2"
-        color="#8B4513"
-        material="metalness: 0.3; roughness: 0.7"
-      ></a-box>
-
-      {/* seat rows */}
       <a-entity position="0 0 2">
         {Array.from({ length: 8 }, (_, i) => (
-          <a-entity key={`seat-1-${i}`} position={`${(i - 3.5) * 1.2} 0.5 0`}>
-            <a-box
-              width="1"
-              height="0.1"
-              depth="1"
-              color="#8B0000"
-              material="roughness: 0.8"
-            ></a-box>
-            <a-box
-              position="0 0.4 -0.4"
-              width="1"
-              height="0.8"
-              depth="0.1"
-              color="#8B0000"
-              material="roughness: 0.8"
-            ></a-box>
-            <a-box
-              position="-0.45 0.3 -0.2"
-              width="0.1"
-              height="0.4"
-              depth="0.6"
-              color="#654321"
-            ></a-box>
-            <a-box
-              position="0.45 0.3 -0.2"
-              width="0.1"
-              height="0.4"
-              depth="0.6"
-              color="#654321"
-            ></a-box>
-          </a-entity>
+          <Seat key={`seat-1-${i}`} position={`${(i - 3.5) * 1.2} 0.5 0`} />
         ))}
       </a-entity>
 
-      <a-entity position="0 0 4">
+      <a-entity position="0 0.1 4">
         {Array.from({ length: 8 }, (_, i) => (
-          <a-entity key={`seat-2-${i}`} position={`${(i - 3.5) * 1.2} 0.5 0`}>
-            <a-box
-              width="1"
-              height="0.1"
-              depth="1"
-              color="#8B0000"
-              material="roughness: 0.8"
-            ></a-box>
-            <a-box
-              position="0 0.4 -0.4"
-              width="1"
-              height="0.8"
-              depth="0.1"
-              color="#8B0000"
-              material="roughness: 0.8"
-            ></a-box>
-            <a-box
-              position="-0.45 0.3 -0.2"
-              width="0.1"
-              height="0.4"
-              depth="0.6"
-              color="#654321"
-            ></a-box>
-            <a-box
-              position="0.45 0.3 -0.2"
-              width="0.1"
-              height="0.4"
-              depth="0.6"
-              color="#654321"
-            ></a-box>
-          </a-entity>
+          <Seat key={`seat-2-${i}`} position={`${(i - 3.5) * 1.2} 0.5 0`} />
         ))}
       </a-entity>
 
       <a-entity position="0 0.2 6">
         {Array.from({ length: 8 }, (_, i) => (
-          <a-entity key={`seat-3-${i}`} position={`${(i - 3.5) * 1.2} 0.5 0`}>
-            <a-box
-              width="1"
-              height="0.1"
-              depth="1"
-              color="#8B0000"
-              material="roughness: 0.8"
-            ></a-box>
-            <a-box
-              position="0 0.4 -0.4"
-              width="1"
-              height="0.8"
-              depth="0.1"
-              color="#8B0000"
-              material="roughness: 0.8"
-            ></a-box>
-            <a-box
-              position="-0.45 0.3 -0.2"
-              width="0.1"
-              height="0.4"
-              depth="0.6"
-              color="#654321"
-            ></a-box>
-            <a-box
-              position="0.45 0.3 -0.2"
-              width="0.1"
-              height="0.4"
-              depth="0.6"
-              color="#654321"
-            ></a-box>
-          </a-entity>
+          <Seat key={`seat-3-${i}`} position={`${(i - 3.5) * 1.2} 0.5 0`} />
         ))}
       </a-entity>
 
-      {/* walls */}
-      <a-plane
-        position="-15 4 -5"
-        rotation="0 90 0"
-        width="30"
-        height="8"
-        color="#2F1B14"
-        material="roughness: 0.9"
-      ></a-plane>
+      <a-entity position="0 0.3 8">
+        {Array.from({ length: 8 }, (_, i) => (
+          <Seat key={`seat-3-${i}`} position={`${(i - 3.5) * 1.2} 0.5 0`} />
+        ))}
+      </a-entity>
 
-      <a-plane
-        position="15 4 -5"
-        rotation="0 -90 0"
-        width="30"
-        height="8"
-        color="#2F1B14"
-        material="roughness: 0.9"
-      ></a-plane>
+      <a-entity position="0 0.4 10">
+        {Array.from({ length: 8 }, (_, i) => (
+          <Seat key={`seat-3-${i}`} position={`${(i - 3.5) * 1.2} 0.5 0`} />
+        ))}
+      </a-entity>
 
-      <a-plane
-        position="0 4 10"
-        width="30"
-        height="8"
-        color="#2F1B14"
-        material="roughness: 0.9"
-      ></a-plane>
+      <a-entity position="0 0.5 12">
+        {Array.from({ length: 8 }, (_, i) => (
+          <Seat key={`seat-3-${i}`} position={`${(i - 3.5) * 1.2} 0.5 0`} />
+        ))}
+      </a-entity>
 
-      {/* columns */}
-      <a-cylinder
-        position="-8 4 -2"
-        radius="0.5"
-        height="8"
-        color="#8B4513"
-        material="metalness: 0.2; roughness: 0.8"
-      ></a-cylinder>
-      <a-cylinder
-        position="8 4 -2"
-        radius="0.5"
-        height="8"
-        color="#8B4513"
-        material="metalness: 0.2; roughness: 0.8"
-      ></a-cylinder>
+      <a-entity position="0 0.6 14">
+        {Array.from({ length: 8 }, (_, i) => (
+          <Seat key={`seat-3-${i}`} position={`${(i - 3.5) * 1.2} 0.5 0`} />
+        ))}
+      </a-entity>
 
-      {/* all red lightings, screen, ceiling and floor */}
-      <a-light type="ambient" color="#1a1a2e" intensity="0.3"></a-light>
+      <a-entity position="0 0.7 16">
+        {Array.from({ length: 8 }, (_, i) => (
+          <Seat key={`seat-3-${i}`} position={`${(i - 3.5) * 1.2} 0.5 0`} />
+        ))}
+      </a-entity>
 
-      <a-light
-        type="point"
-        position="0 4 -10"
-        color="#ffffff"
-        intensity="1.5"
-        distance="15"
-      ></a-light>
+      {/* WALL LEFT */}
+      <a-entity>
+        <a-plane
+          position="-10 4 -5"
+          rotation="0 90 0"
+          width="60"
+          height="16"
+          color="#1a0f0a"
+          material="roughness: 0.95; metalness: 0.05"
+        ></a-plane>
 
+        <a-box
+          position="-9.9 10.5 -5"
+          rotation="0 90 0"
+          width="60"
+          height="0.3"
+          depth="0.2"
+          color="#3d2817"
+          material="metalness: 0.3; roughness: 0.6"
+        ></a-box>
+        <a-box
+          position="-9.9 6.5 -5"
+          rotation="0 90 0"
+          width="60"
+          height="0.3"
+          depth="0.2"
+          color="#3d2817"
+          material="metalness: 0.3; roughness: 0.6"
+        ></a-box>
+      </a-entity>
+
+      {/* WALL RIGHT */}
+      <a-entity>
+        <a-plane
+          position="10 4 -5"
+          rotation="0 -90 0"
+          width="60"
+          height="16"
+          color="#1a0f0a"
+          material="roughness: 0.95; metalness: 0.05"
+        ></a-plane>
+
+        <a-box
+          position="9.9 10.5 -5"
+          rotation="0 -90 0"
+          width="60"
+          height="0.3"
+          depth="0.2"
+          color="#3d2817"
+          material="metalness: 0.3; roughness: 0.6"
+        ></a-box>
+        <a-box
+          position="9.9 6.5 -5"
+          rotation="0 -90 0"
+          width="60"
+          height="0.3"
+          depth="0.2"
+          color="#3d2817"
+          material="metalness: 0.3; roughness: 0.6"
+        ></a-box>
+      </a-entity>
+
+      {/* BACK WALL */}
+      <a-entity>
+        <a-plane
+          position="0 3 20"
+          width="16"
+          height="20"
+          color="#0a0a0a"
+          material="shader: flat; emissive: #1a1a2e; emissiveIntensity: 0.3"
+        ></a-plane>
+        <a-box
+          position="0 3 19.9"
+          width="21"
+          height="18"
+          depth="0.3"
+          color="#3d2817"
+          material="metalness: 0.4; roughness: 0.6; emissive: #1a0f08; emissiveIntensity: 0.1"
+        ></a-box>
+        <a-plane
+          position="-10 5 19.5"
+          rotation="0 45 0"
+          width="1.2"
+          height="16"
+          color="#6b1a1a"
+          material="roughness: 0.8; metalness: 0.1"
+        ></a-plane>
+        <a-plane
+          position="10 5 19.5"
+          rotation="0 335 0"
+          width="1.2"
+          height="16"
+          color="#6b1a1a"
+          material="roughness: 0.8; metalness: 0.1"
+        ></a-plane>
+      </a-entity>
+      {/* COLUMN LEFT */}
+      <a-entity>
+        <a-cylinder
+          position="-8 4 -2"
+          radius="0.6"
+          height="12"
+          color="#3d2817"
+          material="metalness: 0.3; roughness: 0.7"
+        ></a-cylinder>
+        {/* base */}
+        <a-cylinder
+          position="-8 0.3 -2"
+          radius="0.8"
+          height="0.6"
+          color="#2d1810"
+          material="metalness: 0.4; roughness: 0.6"
+        ></a-cylinder>
+        {/* top */}
+        <a-cylinder
+          position="-8 11.7 -2"
+          radius="0.8"
+          height="0.6"
+          color="#2d1810"
+          material="metalness: 0.4; roughness: 0.6"
+        ></a-cylinder>
+      </a-entity>
+
+      {/* COLUMN RIGHT */}
+      <a-entity>
+        <a-cylinder
+          position="8 4 -2"
+          radius="0.6"
+          height="12"
+          color="#3d2817"
+          material="metalness: 0.3; roughness: 0.7"
+        ></a-cylinder>
+        <a-cylinder
+          position="8 0.3 -2"
+          radius="0.8"
+          height="0.6"
+          color="#2d1810"
+          material="metalness: 0.4; roughness: 0.6"
+        ></a-cylinder>
+        <a-cylinder
+          position="8 11.7 -2"
+          radius="0.8"
+          height="0.6"
+          color="#2d1810"
+          material="metalness: 0.4; roughness: 0.6"
+        ></a-cylinder>
+      </a-entity>
+
+      <a-light type="ambient" color="#0f0f1a" intensity="0.7"></a-light>
+
+      {/* movie card spotlights */}
       <a-light
         type="spot"
         position="-5 7 0"
-        color="#ffaa00"
-        intensity="0.8"
-        angle="45"
+        color="#ffd699"
+        intensity="1.2"
+        angle="40"
+        penumbra="0.3"
         target="#moviecard"
+        castShadow="true"
       ></a-light>
       <a-light
         type="spot"
         position="5 7 0"
-        color="#ffaa00"
-        intensity="0.8"
-        angle="45"
+        color="#ffd699"
+        intensity="1.2"
+        angle="40"
+        penumbra="0.3"
         target="#moviecard"
+        castShadow="true"
+      ></a-light>
+
+      {/* floor lighting */}
+      <a-light
+        type="point"
+        position="-6 0.3 2"
+        color="#ff4d1a"
+        intensity="1.5"
+        distance="30"
+        decay="2"
+      ></a-light>
+      <a-light
+        type="point"
+        position="6 0.3 2"
+        color="#ff4d1a"
+        intensity="1.5"
+        distance="30"
+        decay="2"
+      ></a-light>
+      <a-light
+        type="point"
+        position="-6 0.3 6"
+        color="#ff4d1a"
+        intensity="1.5"
+        distance="30"
+        decay="2"
+      ></a-light>
+      <a-light
+        type="point"
+        position="6 0.3 10"
+        color="#ff4d1a"
+        intensity="1.5"
+        distance="30"
+        decay="2"
+      ></a-light>
+      <a-light
+        type="point"
+        position="-6 0.3 10"
+        color="#ff4d1a"
+        intensity="1.5"
+        distance="30"
+        decay="2"
+      ></a-light>
+      <a-light
+        type="point"
+        position="6 0.3 14"
+        color="#ff4d1a"
+        intensity="1.5"
+        distance="30"
+        decay="2"
+      ></a-light>
+      <a-light
+        type="point"
+        position="-6 0.3 14"
+        color="#ff4d1a"
+        intensity="1.5"
+        distance="30"
+        decay="2"
+      ></a-light>
+      <a-light
+        type="point"
+        position="6 0.3 18"
+        color="#ff4d1a"
+        intensity="1.5"
+        distance="30"
+        decay="2"
+      ></a-light>
+      <a-light
+        type="point"
+        position="-6 0.3 18"
+        color="#ff4d1a"
+        intensity="1.5"
+        distance="30"
+        decay="2"
       ></a-light>
 
       <a-light
         type="point"
-        position="-6 0.2 2"
-        color="#ff6b35"
-        intensity="1"
+        position="6 0.3 6"
+        color="#ff4d1a"
+        intensity="1.5"
         distance="30"
+        decay="2"
+      ></a-light>
+
+      <a-light
+        type="point"
+        position="-12 3 -5"
+        color="#ffb366"
+        intensity="0.8"
+        distance="6"
       ></a-light>
       <a-light
         type="point"
-        position="6 0.2 2"
-        color="#ff6b35"
-        intensity="1"
-        distance="30"
-      ></a-light>
-      <a-light
-        type="point"
-        position="-6 0.2 6"
-        color="#ff6b35"
-        intensity="1"
-        distance="30"
-      ></a-light>
-      <a-light
-        type="point"
-        position="6 0.2 6"
-        color="#ff6b35"
-        intensity="1"
-        distance="30"
+        position="12 3 -5"
+        color="#ffb366"
+        intensity="0.8"
+        distance="6"
       ></a-light>
 
-      {/* deco elements (barely sucessful currently lul)*/}
-      <a-text
-        position="-12 6 8"
-        value="EXIT"
-        color="#00ff00"
-        align="center"
-        width="8"
-        font="https://cdn.aframe.io/fonts/Exo2Bold.fnt"
-      ></a-text>
-      <a-text
-        position="12 6 8"
-        value="EXIT"
-        color="#00ff00"
-        align="center"
-        width="8"
-        font="https://cdn.aframe.io/fonts/Exo2Bold.fnt"
-      ></a-text>
+      <ExitSign position="-6 6 12" />
+      <ExitSign position="6 6 12" />
 
-      <a-plane
-        position="-10.5 5 -11.5"
-        width="1"
-        height="10"
-        color="#8B0000"
-        material="roughness: 0.9"
-      ></a-plane>
-      <a-plane
-        position="10.5 5 -11.5"
-        width="1"
-        height="10"
-        color="#8B0000"
-        material="roughness: 0.9"
-      ></a-plane>
+      <PopcornStand position="-8 0 10" rotation="0 90 0" />
+      <PopcornStand position="8 0 10" rotation="0 90 0" />
 
-      <a-entity position="-10 1 8">
+      {/* ROOF */}
+      <a-entity>
+        <a-plane
+          rotation="90 0 0"
+          width="30"
+          height="60"
+          color="#0a0a0a"
+          material="roughness: 0.9; side: double"
+          position="0 12 -5"
+        ></a-plane>
+
         <a-cylinder
-          radius="1"
-          height="2"
-          color="#FFD700"
-          material="metalness: 0.5; roughness: 0.3"
+          position="-5 11.9 -5"
+          radius="0.5"
+          height="0.4"
+          color="#2a2a2a"
+          material="emissive: #ffcc99; emissiveIntensity: 0.4"
         ></a-cylinder>
-        <a-text
-          position="0 1.5 0"
-          value="POPCORN"
-          color="#ff0000"
-          align="center"
-          width="6"
-        ></a-text>
+        <a-cylinder
+          position="5 11.9 -5"
+          radius="0.5"
+          height="0.4"
+          color="#2a2a2a"
+          material="emissive: #ffcc99; emissiveIntensity: 0.4"
+        ></a-cylinder>
+        <a-cylinder
+          position="0 11.9 0"
+          radius="0.5"
+          height="0.4"
+          color="#2a2a2a"
+          material="emissive: #ffcc99; emissiveIntensity: 0.4"
+        ></a-cylinder>
       </a-entity>
     </a-scene>
   );

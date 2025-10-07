@@ -286,3 +286,8 @@ export type FilteredBrainData = Omit<
   BrainData,
   "blink_strength" | "raw_data" | "data_type"
 >; // BrainData без blink strength, raw data и data type
+
+export interface DefaultVrComponentProps {
+  position?: string;
+  rotation?: string;
+}
