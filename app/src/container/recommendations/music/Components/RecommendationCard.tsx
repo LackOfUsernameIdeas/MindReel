@@ -63,9 +63,9 @@ const RecommendationCard: FC<RecommendationCardProps> = ({
   console.log("recommendationList", recommendationList);
   return (
     <div className="recommendation-card">
-      <div className="flex w-full items-center sm:items-start flex-col md:flex-row">
-        <div className="relative flex-shrink-0 mb-4 md:mb-0 md:mr-8 flex flex-col items-center">
-          {/* Постер */}
+      <div className="flex w-full items-center sm:items-start flex-col lg:flex-row">
+        <div className="relative flex-shrink-0 mb-4 lg:mb-0 lg:mr-6 xl:mr-8 flex flex-col items-center">
+          {/* Album Cover */}
           <div
             className={`relative group ${
               recommendation.youtubeMusicVideoUrl ? "cursor-pointer" : ""
@@ -77,27 +77,27 @@ const RecommendationCard: FC<RecommendationCardProps> = ({
                 src={recommendation.albumCover}
                 alt=""
                 onError={() => setAlbumCoverError(true)}
-                className={`rounded-lg w-96 h-auto transition-all duration-300 ${
+                className={`rounded-lg w-72 sm:w-80 lg:w-64 xl:w-80 2xl:w-96 h-auto transition-all duration-300 ${
                   recommendation.youtubeMusicVideoUrl
                     ? "group-hover:scale-102 group-hover:blur-sm"
                     : ""
                 }`}
               />
             ) : (
-              <div className="rounded-lg w-96 aspect-[3.8/4] bg-white/70 dark:bg-bodybg2" />
+              <div className="rounded-lg w-72 sm:w-80 lg:w-64 xl:w-80 2xl:w-96 aspect-[3.8/4] bg-white/70 dark:bg-bodybg2" />
             )}
             {/* Play button */}
             {recommendation.youtubeMusicVideoUrl && (
               <div className="absolute inset-0 flex items-center justify-center transition-opacity duration-300">
                 <div className="group relative">
                   <div className="absolute inset-0 rounded-full bg-white/20 blur-xl scale-150 group-hover:scale-[1.7] transition-transform duration-500"></div>
-                  <div className="relative bg-white/10 backdrop-blur-md rounded-full p-6 border border-white/30 shadow-2xl transform transition-all duration-300 group-hover:scale-110 group-hover:bg-white/20 group-hover:border-white/50">
+                  <div className="relative bg-white/10 backdrop-blur-md rounded-full p-4 lg:p-5 xl:p-6 border border-white/30 shadow-2xl transform transition-all duration-300 group-hover:scale-110 group-hover:bg-white/20 group-hover:border-white/50">
                     <div className="absolute inset-2 rounded-full bg-gradient-to-br from-white/10 to-transparent"></div>
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       fill="white"
                       viewBox="0 0 24 24"
-                      className="size-16 text-white drop-shadow-lg relative z-10 transform transition-transform duration-300 group-hover:scale-105"
+                      className="size-12 lg:size-14 xl:size-16 text-white drop-shadow-lg relative z-10 transform transition-transform duration-300 group-hover:scale-105"
                       style={{
                         filter:
                           "drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2)) drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3))"
@@ -114,53 +114,70 @@ const RecommendationCard: FC<RecommendationCardProps> = ({
           </div>
         </div>
 
-        <div className="flex-grow">
-          {/* Главна информация */}
+        <div className="flex-grow min-w-0">
+          {/* Main Information */}
           <div className="top-0 z-10">
-            <a href="#" className="block text-xl sm:text-3xl font-bold mb-1">
+            <a
+              href="#"
+              className="block text-xl sm:text-2xl xl:text-3xl font-bold mb-1"
+            >
               {recommendation.title || "Заглавие не е налично"}
             </a>
             <a
               href="#"
-              className="block text-md sm:text-lg font-semibold text-opacity-60 italic mb-2"
+              className="block text-base sm:text-lg font-semibold text-opacity-60 italic mb-2"
             >
               {recommendation.artists || "Артисти неизвестни"}
             </a>
-            <p className="flex gap-1 recommendation-small-details text-sm italic text-defaulttextcolor/70">
-              {recommendation.albumType || "Тип неизвестен"} |{" "}
-              {formatDuration(recommendation.durationMs)} |{" "}
-              {formatDate(recommendation.albumReleaseDateInSpotify)} |{" "}
-              {recommendation.spotifyPopularity
-                ? `Популярност: ${recommendation.spotifyPopularity}/100`
-                : "Популярност: N/A"}
+            <p className="flex flex-wrap gap-x-1 recommendation-small-details text-xs sm:text-sm italic text-defaulttextcolor/70">
+              <span>{recommendation.albumType || "Тип неизвестен"}</span>
+              <span>|</span>
+              <span>{formatDuration(recommendation.durationMs)}</span>
+              <span>|</span>
+              <span>
+                {formatDate(recommendation.albumReleaseDateInSpotify)}
+              </span>
+              <span>|</span>
+              <span>
+                {recommendation.spotifyPopularity
+                  ? `Популярност: ${recommendation.spotifyPopularity}/100`
+                  : "Популярност: N/A"}
+              </span>
             </p>
 
-            {/* Рейтинги */}
-            <div className="flex flex-col sm:flex-row sm:items-center space-y-4 sm:space-y-0 sm:space-x-8 py-2">
+            {/* Ratings */}
+            <div className="flex flex-col lg:flex-row lg:items-center space-y-3 lg:space-y-0 lg:space-x-4 xl:space-x-6 py-2">
               {recommendation.spotifyPopularity && (
                 <div
                   className="flex items-center space-x-2 dark:text-[#1DB954] text-[#1DB954]"
                   title="Spotify популярност: Базирана на слушания и взаимодействия."
                 >
-                  <span className="font-bold text-lg">Spotify: </span>
-                  <div className="w-8 h-8 bg-[#1DB954] rounded-full flex items-center justify-center">
-                    <span className="text-white font-bold text-sm">S</span>
+                  <span className="font-bold text-base lg:text-lg">
+                    Spotify:{" "}
+                  </span>
+                  <div className="w-7 h-7 lg:w-8 lg:h-8 bg-[#1DB954] rounded-full flex items-center justify-center flex-shrink-0">
+                    <span className="text-white font-bold text-xs lg:text-sm">
+                      S
+                    </span>
                   </div>
-                  <span className="font-bold text-lg">
+                  <span className="font-bold text-base lg:text-lg">
                     {recommendation.spotifyPopularity}/100
                   </span>
                   {recommendation.spotifyUrl && (
                     <Button
                       asChild
-                      className="bg-secondary/10 dark:bg-secondary/20"
+                      className="bg-secondary/10 dark:bg-secondary/20 text-xs lg:text-sm px-2 py-1 h-auto"
                     >
                       <a
                         href={recommendation.spotifyUrl}
                         target="_blank"
                         rel="noopener noreferrer"
                       >
-                        <ExternalLink className="w-4 h-4 mr-2" />
-                        Слушай в Spotify
+                        <ExternalLink className="w-3 h-3 lg:w-4 lg:h-4 mr-1 lg:mr-2" />
+                        <span className="hidden xl:inline">
+                          Слушай в Spotify
+                        </span>
+                        <span className="xl:hidden">Spotify</span>
                       </a>
                     </Button>
                   )}
@@ -172,8 +189,8 @@ const RecommendationCard: FC<RecommendationCardProps> = ({
                   className="flex items-center space-x-2"
                   title="YouTube гледания: Общ брой гледания на музикалното видео."
                 >
-                  <Eye className="text-[#FF0000] w-8 h-8" />
-                  <span className="text-red-400 font-semibold text-md sm:text-sm md:text-lg">
+                  <Eye className="text-[#FF0000] w-6 h-6 lg:w-7 lg:h-7 xl:w-8 xl:h-8 flex-shrink-0" />
+                  <span className="text-red-400 font-semibold text-sm lg:text-base xl:text-lg">
                     {formatNumber(recommendation.youtubeMusicVideoViews)}{" "}
                     гледания
                   </span>
@@ -185,8 +202,8 @@ const RecommendationCard: FC<RecommendationCardProps> = ({
                   className="flex items-center space-x-2"
                   title="YouTube харесвания: Брой харесвания на видеото."
                 >
-                  <ThumbsUp className="text-[#FF0000] w-8 h-8" />
-                  <span className="text-red-400 font-semibold text-md sm:text-sm md:text-lg">
+                  <ThumbsUp className="text-[#FF0000] w-6 h-6 lg:w-7 lg:h-7 xl:w-8 xl:h-8 flex-shrink-0" />
+                  <span className="text-red-400 font-semibold text-sm lg:text-base xl:text-lg">
                     {formatNumber(recommendation.youtubeMusicVideoLikes)}
                   </span>
                 </div>
@@ -194,14 +211,14 @@ const RecommendationCard: FC<RecommendationCardProps> = ({
             </div>
           </div>
 
-          {/* Причина за препоръчване */}
+          {/* Reason for recommendation */}
           {recommendation.reason && (
             <div className="mb-4">
-              <h3 className="text-lg font-semibold mb-2">
+              <h3 className="text-base lg:text-lg font-semibold mb-2">
                 Защо препоръчваме {recommendation.title || "тази песен"}?
               </h3>
               <div className="overflow-hidden transition-all duration-500 ease-in-out max-h-[3rem] opacity-70">
-                <p className="text-opacity-80 italic">
+                <p className="text-sm lg:text-base text-opacity-80 italic">
                   {recommendation.reason.length > reasonPreviewLength
                     ? `${recommendation.reason.substring(
                         0,
@@ -213,7 +230,7 @@ const RecommendationCard: FC<RecommendationCardProps> = ({
               {recommendation.reason.length > reasonPreviewLength && (
                 <button
                   onClick={handleReasonModalClick}
-                  className="mt-2 underline hover:scale-105 transition"
+                  className="mt-2 text-sm lg:text-base underline hover:scale-105 transition"
                 >
                   Пълно обяснение
                 </button>
@@ -221,11 +238,13 @@ const RecommendationCard: FC<RecommendationCardProps> = ({
             </div>
           )}
 
-          {/* Описание */}
+          {/* Description */}
           <div className="mb-4">
-            <h3 className="text-lg font-semibold mb-2">Описание</h3>
+            <h3 className="text-base lg:text-lg font-semibold mb-2">
+              Описание
+            </h3>
             <div className="overflow-hidden transition-all duration-500 ease-in-out max-h-[3rem] opacity-70">
-              <p className="text-opacity-80 italic">
+              <p className="text-sm lg:text-base text-opacity-80 italic">
                 {recommendation.description.length > descriptionPreviewLength
                   ? `${recommendation.description.substring(
                       0,
@@ -236,12 +255,12 @@ const RecommendationCard: FC<RecommendationCardProps> = ({
             </div>
           </div>
 
-          {/* Допълнителна информация */}
+          {/* Additional Information */}
           <div className="mb-0">
-            <h3 className="text-lg font-semibold mb-2">
+            <h3 className="text-base lg:text-lg font-semibold mb-2">
               Допълнителна информация:
             </h3>
-            <ul className="flex flex-wrap gap-x-4 text-opacity-80">
+            <ul className="flex flex-wrap gap-x-3 lg:gap-x-4 gap-y-1 text-sm lg:text-base text-opacity-80">
               <li>
                 <strong className="text-primary">Артисти:</strong>{" "}
                 {recommendation.artists.length > 0
