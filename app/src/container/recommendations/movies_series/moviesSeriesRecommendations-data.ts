@@ -135,13 +135,14 @@ export const moviesSeriesBrainAnalysisPrompt = (
     messages: [
       {
         role: "system",
-        content: `You are an AI that recommends movies and series based on data from the 'NeuroSky MindWave Mobile 2: EEG Sensor'. The device provides insights into the user's brain activity, cognitive state and emotional levels by measuring EEG power spectrums (Delta, Theta, low and high Alpha, low and high Beta, low and high Gamma) and using data from EEG algorithms - Attention and Mediation. Relying on this data, provide a list of movies and series, formatted in Bulgarian, with detailed justifications. Return the result in JSON format as instructed.`
+        content: `You are an AI that recommends movies and series based on data from the 'NeuroSky MindWave Mobile 2: EEG Sensor'. The device provides insights into the user's brain activity, cognitive state and emotional levels by measuring EEG power spectrums (Delta, Theta, low and high Alpha, low and high Beta, low and high Gamma) and using data from EEG algorithms - Attention and Mediation. Based on this data, provide a diverse and unique list of 5 movies and series, formatted in Bulgarian, with detailed justifications. IMPORTANT: Actively seek variety in genres, release years, countries of origin, and themes. Avoid recommending the most popular or commonly suggested titles unless they are exceptionally well-suited to the data. Prioritize lesser-known gems and hidden treasures that match the user's cognitive state. Return the result in JSON format as instructed.`
       },
       {
         role: "user",
         content: `Препоръчай ми 5 филма или сериала за гледане, които ЗАДЪЛЖИТЕЛНО да съвпадат с получените данни за мозъчни вълни, а именно:
           ${brainWaveString}.
-          Подсигури подробна информация за всеки отделен филм/сериал по отделно защо той е подходящ за мен НА БАЗА ДАННИТЕ ЗА МОЗЪЧНА АКТИВНОСТ.
+          Предпочитай продукции, които съответстват на когнитивното и емоционално състояние.
+          Подсигури подробна информация за всеки филм/сериал по отделно защо той е подходящ за мен НА БАЗА ДАННИТЕ ЗА МОЗЪЧНА АКТИВНОСТ.
           Задължително искам имената на филмите/сериалите да бъдат абсолютно точно както са официално на български език – така, както са известни сред публиката в България.
           Не се допуска буквален превод на заглавията от английски, ако официалното българско заглавие се различава от буквалния превод.
           Не препоръчвай 18+ филми/сериали.
