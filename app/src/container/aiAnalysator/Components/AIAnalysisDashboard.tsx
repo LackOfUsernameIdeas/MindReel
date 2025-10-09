@@ -42,7 +42,7 @@ const AIAnalysisDashboard: FC<AIAnalysisDashboardProps> = ({
         />
         <Widget
           icon={<i className="ti ti-copy-check text-3xl" />}
-          title={`Брой на релевантни препоръки сред вашите генерирани (TP)`}
+          title={`Брой на релевантни препоръки сред генерираните (TP)`}
           value={precisionData.relevant_recommendations_count}
           help
         />
@@ -54,7 +54,7 @@ const AIAnalysisDashboard: FC<AIAnalysisDashboardProps> = ({
         />
         <Widget
           icon={<i className="ti ti-checkbox text-3xl" />}
-          title={`Брой на релевантни за Вас препоръки в платформата\n(TP + FN)`}
+          title={`Брой на релевантни препоръки в платформата\n(TP + FN)`}
           value={recallData.relevant_platform_recommendations_count}
           help
         />

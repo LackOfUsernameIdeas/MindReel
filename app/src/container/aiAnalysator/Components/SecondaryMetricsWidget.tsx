@@ -30,20 +30,20 @@ const SecondaryMetricsWidget = ({
     <>
       <div
         className={`
-            rounded-lg p-4 cursor-pointer h-full flex flex-col 
-            transition-all duration-200 ease-in-out
-            ${
-              isActive
-                ? "border-l-4 border-primary shadow-lg bg-primary/20 dark:bg-primary/10 scale-[1.05] hover:shadow-xl hover:bg-primary/25 dark:hover:bg-primary/15"
-                : "border border-transparent hover:border-primary/30 hover:shadow-md hover:scale-[1.02] hover:bg-primary/15 dark:hover:bg-primary/25 bg-white dark:bg-bodybg2"
-            }
-          `}
+          rounded-lg p-4 cursor-pointer h-full flex flex-col
+          transition-all duration-200 ease-in-out min-w-0
+          ${
+            isActive
+              ? "border-l-4 border-primary shadow-lg bg-primary/20 dark:bg-primary/10 scale-[1.05] hover:shadow-xl hover:bg-primary/25 dark:hover:bg-primary/15"
+              : "border border-transparent hover:border-primary/30 hover:shadow-md hover:scale-[1.02] hover:bg-primary/15 dark:hover:bg-primary/25 bg-white dark:bg-bodybg2"
+          }
+        `}
         onClick={onClick}
       >
-        <div className="flex items-center gap-2 mb-2">
+        <div className="flex items-start gap-2 mb-2 min-w-0">
           <Badge
             variant={isActive ? "default" : "outline"}
-            className={`goodTiming ${
+            className={`goodTiming text-xs sm:text-sm whitespace-normal break-words ${
               isActive
                 ? "text-white"
                 : "border-defaulttextcolor text-defaulttextcolor"
@@ -54,12 +54,21 @@ const SecondaryMetricsWidget = ({
           <Infobox onClick={toggle} />
         </div>
 
-        <div className="text-lg goodTiming text-defaulttextcolor dark:text-white/80 mb-2 flex-grow">
+        <div
+          className="text-base sm:text-lg goodTiming text-defaulttextcolor dark:text-white/80 mb-2 flex-grow break-words leading-snug"
+          style={{
+            display: "-webkit-box",
+            WebkitLineClamp: 4,
+            WebkitBoxOrient: "vertical",
+            overflow: "hidden"
+          }}
+          title={description}
+        >
           {description}
         </div>
 
         <div
-          className={`text-3xl font-bold mt-auto ${
+          className={`text-2xl sm:text-3xl font-bold mt-auto truncate ${
             isActive
               ? "text-primary"
               : "text-defaulttextcolor dark:text-white/80"
@@ -72,7 +81,7 @@ const SecondaryMetricsWidget = ({
       <InfoboxModal
         onClick={toggle}
         isModalOpen={opened}
-        title={description}
+        title={title}
         description={modalText}
       />
     </>

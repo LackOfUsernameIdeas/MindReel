@@ -93,7 +93,7 @@ const RelevantRecommendations: React.FC<RelevantRecommendationsProps> = ({
               <Infobox onClick={handleInfoButtonClick} />
             </div>
             <div className="flex flex-col sm:flex-row items-center sm:space-x-4">
-              <div className="text-2xl font-bold">
+              <div className="text-sm md:text-lg font-bold">
                 Релевантност: {recommendation.relevanceScore}/7 т.
               </div>
               <Progress
