@@ -135,32 +135,11 @@ export const moviesSeriesBrainAnalysisPrompt = (
     messages: [
       {
         role: "system",
-        content: `You are an AI that recommends movies and series based on data from the 'NeuroSky MindWave Mobile 2: EEG Sensor'. The device provides insights into the user's brain activity, cognitive state and emotional levels by measuring EEG power spectrums (Delta, Theta, low and high Alpha, low and high Beta, low and high Gamma) and using data from EEG algorithms - Attention and Mediation. Based on this data, provide a diverse and unique list of 5 movies and series, formatted in Bulgarian, with detailed justifications. IMPORTANT: Actively seek variety in genres, release years, countries of origin, and themes. Avoid recommending the most popular or commonly suggested titles unless they are exceptionally well-suited to the data. Prioritize lesser-known gems and hidden treasures that match the user's cognitive state. Return the result in JSON format as instructed.`
+        content: `You are an AI that recommends movies and series based on data from the 'NeuroSky MindWave Mobile 2: EEG Sensor'. The device provides insights into the user's brain activity, cognitive state and emotional levels by measuring EEG power spectrums (Delta, Theta, low and high Alpha, low and high Beta, low and high Gamma) and using data from EEG algorithms - Attention and Meditation.\n\nYour task is to provide a diverse and unique list of 5 movies and series, formatted in Bulgarian, with detailed justifications based on the specific EEG patterns.\n\nDIVERSITY REQUIREMENTS (CRITICAL):\n1. Genre Distribution: Include at least 4 different genres across your 5 recommendations\n2. Geographic Diversity: Include films/series from at least 3 different countries or regions (e.g., European cinema, Asian cinema, Latin American, etc.)\n3. Era Diversity: Span multiple decades - include at least one title from before 2000, one from 2000-2010, and vary the rest\n4. Popularity Balance: Include a mix of:\n   - At most 1 widely popular mainstream title\n   - At least 2 critically acclaimed but less commercially known titles\n   - At least 1 independent/arthouse film or niche series\n5. Thematic Variety: Ensure the themes and moods vary (contemplative, energetic, melancholic, uplifting, cerebral, emotional, etc.)\n\nPRIORITIZE: Lesser-known gems, international cinema, documentaries, miniseries, and culturally significant works that align with the specific cognitive and emotional state indicated by the EEG data.\n\nReturn the result in JSON format as instructed.`
       },
       {
         role: "user",
-        content: `Препоръчай ми 5 филма или сериала за гледане, които ЗАДЪЛЖИТЕЛНО да съвпадат с получените данни за мозъчни вълни, а именно:
-          ${brainWaveString}.
-          Предпочитай продукции, които съответстват на когнитивното и емоционално състояние.
-          Подсигури подробна информация за всеки филм/сериал по отделно защо той е подходящ за мен НА БАЗА ДАННИТЕ ЗА МОЗЪЧНА АКТИВНОСТ.
-          Задължително искам имената на филмите/сериалите да бъдат абсолютно точно както са официално на български език – така, както са известни сред публиката в България.
-          Не се допуска буквален превод на заглавията от английски, ако официалното българско заглавие се различава от буквалния превод.
-          Не препоръчвай 18+ филми/сериали.
-          Форматирай своя response във валиден JSON формат по този начин като използваш само двойни кавички:
-          {
-            'Официално име на филма или сериала на английски, както е прието да бъде': {
-              'bgName': 'Официално име на филма или сериала на български, както е прието да бъде, а не буквален превод',
-              'description': 'Описание на филма или сериала',
-              'reason': 'Защо този филм/сериал е подходящ за мен, според данните от устройството?'
-            },
-            'Официално име на филма или сериала на английски, както е прието да бъде': {
-              'bgName': 'Официално име на филма или сериала на български, както е прието да бъде, а не буквален превод',
-              'description': 'Описание на филма или сериала',
-              'reason': 'Защо този филм/сериал е подходящ за мен, според данните от устройството?'
-            },
-              // ...additional recommendations
-          }. Не добавяй излишни думи или скоби. Избягвай вложени двойни или единични кавички(кавички от един тип едно в друго, които да дават грешки на JSON.parse функцията). Увери се, че всички данни са правилно "escape-нати", за да не предизвикат грешки в JSON формата. 
-          JSON формата трябва да е валиден за JavaScript JSON.parse() функцията.`
+        content: `Анализирай внимателно следните данни за мозъчни вълни: ${brainWaveString}.\n\nВЪЗ ОСНОВА НА КОНКРЕТНИТЕ EEG СТОЙНОСТИ препоръчай ми 5 филма или сериала, които:\n1. ТОЧНО съответстват на моето когнитивно и емоционално състояние според измерените мозъчни вълни\n2. Са РАЗНООБРАЗНИ по жанр, произход, епоха и стил (следвай изискванията за разнообразие от системната инструкция)\n3. Не са от често препоръчваните заглавия, ОСВЕН ако не са изключително подходящи за конкретните ми EEG данни\n\nЗа ВСЕКИ филм/сериал предостави:\n- Подробно обяснение КОИ КОНКРЕТНО ПОКАЗАТЕЛИ от моите мозъчни вълни (Delta, Theta, Alpha, Beta, Gamma, Attention, Meditation) правят този филм подходящ\n- Как тоналността и темпото на продукцията съответстват на моята мозъчна активност\n\nИЗИСКВАНИЯ ЗА ИМЕНАТА:\n- Задължително използвай официалните български заглавия, както са известни в България\n- Не правi буквален превод, ако има установено българско име\n- Не препоръчвай 18+ продукции\n\nФОРМАТ:\nФорматирай отговора във валиден JSON с тази структура (използвай само двойни кавички):\n{\n  \"Официално английско заглавие\": {\n    \"bgName\": \"Официално българско заглавие\",\n    \"description\": \"Кратко описание на продукцията\",\n    \"reason\": \"Детайлно обяснение защо КОНКРЕТНИТЕ ми EEG данни (посочи кои стойности) правят този филм/сериал подходящ за мен в момента\"\n  }\n}\n\nУвери се, че:\n- JSON е валиден за JavaScript JSON.parse()\n- Всички специални символи са правилно escape-нати\n- Няма вложени кавички от един и същ тип\n- Няма излишен текст извън JSON структурата`
       }
     ]
   };
