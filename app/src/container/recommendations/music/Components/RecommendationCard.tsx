@@ -146,7 +146,7 @@ const RecommendationCard: FC<RecommendationCardProps> = ({
             </p>
 
             {/* Ratings */}
-            <div className="flex flex-col lg:flex-row lg:items-center space-y-3 lg:space-y-0 lg:space-x-4 xl:space-x-6 py-2">
+            <div className="flex flex-col lg:flex-row lg:flex-wrap lg:items-center space-y-3 lg:space-y-0 lg:space-x-4 xl:space-x-6 py-2">
               {recommendation.spotifyPopularity && (
                 <div
                   className="flex items-center space-x-2 dark:text-[#1DB954] text-[#1DB954]"
@@ -190,7 +190,7 @@ const RecommendationCard: FC<RecommendationCardProps> = ({
                   title="YouTube гледания: Общ брой гледания на музикалното видео."
                 >
                   <Eye className="text-[#FF0000] w-6 h-6 lg:w-7 lg:h-7 xl:w-8 xl:h-8 flex-shrink-0" />
-                  <span className="text-red-400 font-semibold text-sm lg:text-base xl:text-lg">
+                  <span className="text-red-400 font-semibold text-sm lg:text-base xl:text-lg break-all">
                     {formatNumber(recommendation.youtubeMusicVideoViews)}{" "}
                     гледания
                   </span>
@@ -203,7 +203,7 @@ const RecommendationCard: FC<RecommendationCardProps> = ({
                   title="YouTube харесвания: Брой харесвания на видеото."
                 >
                   <ThumbsUp className="text-[#FF0000] w-6 h-6 lg:w-7 lg:h-7 xl:w-8 xl:h-8 flex-shrink-0" />
-                  <span className="text-red-400 font-semibold text-sm lg:text-base xl:text-lg">
+                  <span className="text-red-400 font-semibold text-sm lg:text-base xl:text-lg break-all">
                     {formatNumber(recommendation.youtubeMusicVideoLikes)}
                   </span>
                 </div>
