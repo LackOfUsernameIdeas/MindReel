@@ -121,7 +121,7 @@ const Landing: FC<{}> = () => {
 
           <div className="header-content-right">
             <div className="header-element !items-center">
-              <div className="lg:hidden block goodTiming">
+              <div className="min-[1400px]:hidden block goodTiming">
                 <Link
                   to={`${import.meta.env.BASE_URL}signin`}
                   className="ti-btn ti-btn-primary-full !m-1"
@@ -171,7 +171,7 @@ const Landing: FC<{}> = () => {
                   <path d="M10.707 17.707 16.414 12l-5.707-5.707-1.414 1.414L13.586 12l-4.293 4.293z"></path>{" "}
                 </svg>
               </div>
-              <div className="hidden lg:flex space-x-2 rtl:space-x-reverse whitespace-nowrap antialiased">
+              <div className="hidden min-[1400px]:flex space-x-2 rtl:space-x-reverse whitespace-nowrap antialiased">
                 <Link
                   to={`${import.meta.env.BASE_URL}signin/`}
                   className="ti-btn ti-btn-primary-full m-0 px-6 py-2"
@@ -184,6 +184,22 @@ const Landing: FC<{}> = () => {
                 >
                   Създаване на профил
                 </Link>
+              </div>
+              <div className="header-element !items-center">
+                <div className="min-[1400px]:hidden block goodTiming">
+                  <Link
+                    to={`${import.meta.env.BASE_URL}signin`}
+                    className="ti-btn ti-btn-primary-full !m-1"
+                  >
+                    Вход
+                  </Link>
+                  <Link
+                    to={`${import.meta.env.BASE_URL}signup`}
+                    className="ti-btn ti-btn-secondary-full !m-1"
+                  >
+                    Регистрация
+                  </Link>
+                </div>
               </div>
             </nav>
           </div>
