@@ -295,14 +295,15 @@ const MoviesAndSeriesTable: FC<MoviesAndSeriesTableProps> = ({
             {currentData.map((item, index) => (
               <div
                 key={index}
-                className="bg-white dark:bg-bodybg2/50 shadow-lg rounded-lg p-4 cursor-pointer hover:bg-primary dark:hover:bg-primary hover:text-white transition duration-300 flex flex-col items-center"
+                className="group bg-white dark:bg-bodybg2/50 shadow-lg rounded-lg p-4 cursor-pointer hover:bg-primary dark:hover:bg-primary transition duration-300 flex flex-col items-center"
                 onClick={() => handleMovieClick(item)}
               >
                 <div className="w-full bg-white/50 dark:bg-bodybg2/50 dark:border-black/10 rounded-md shadow-lg dark:shadow-xl text-center mb-4 px-2 py-3">
-                  <h5 className="goodTiming text-base md:text-lg text-defaulttextcolor dark:text-white/80 break-words overflow-wrap-anywhere">
+                  <h5 className="goodTiming text-base md:text-lg text-defaulttextcolor dark:text-white/80 group-hover:text-white break-words overflow-wrap-anywhere transition duration-300">
                     {item.title_en}/{item.title_bg}
                   </h5>
                 </div>
+
                 <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 w-full min-w-0">
                   <img
                     src={item.poster}
@@ -311,33 +312,40 @@ const MoviesAndSeriesTable: FC<MoviesAndSeriesTableProps> = ({
                   />
                   <div className="flex flex-col items-start min-w-0 flex-1 space-y-1 w-full">
                     <span className="text-sm w-full overflow-hidden">
-                      <span className="text-gray-600 font-medium">Жанр:</span>{" "}
-                      <span className="font-GoodTiming text-gray-900 dark:text-white break-words">
+                      <span className="text-gray-600 font-medium group-hover:text-white transition duration-300">
+                        Жанр:
+                      </span>{" "}
+                      <span className="font-GoodTiming text-gray-900 dark:text-white group-hover:text-white transition duration-300 break-words">
                         {item.genre_bg}
                       </span>
                     </span>
+
                     <span className="text-sm w-full overflow-hidden">
-                      <span className="text-gray-600 font-medium">
+                      <span className="text-gray-600 font-medium group-hover:text-white transition duration-300">
                         {item.type === "movie"
                           ? "Продължителност"
                           : "Средна продължителност"}
                         :
                       </span>{" "}
-                      <span className="font-GoodTiming text-gray-900 dark:text-white">
+                      <span className="font-GoodTiming text-gray-900 dark:text-white group-hover:text-white transition duration-300">
                         {item.runtime}
                       </span>
                     </span>
+
                     <span className="text-sm w-full overflow-hidden">
-                      <span className="text-gray-600 font-medium">Вид:</span>{" "}
-                      <span className="font-GoodTiming text-gray-900 dark:text-white">
+                      <span className="text-gray-600 font-medium group-hover:text-white transition duration-300">
+                        Вид:
+                      </span>{" "}
+                      <span className="font-GoodTiming text-gray-900 dark:text-white group-hover:text-white transition duration-300">
                         {getTranslatedType(item.type)}
                       </span>
                     </span>
+
                     <span className="text-sm w-full overflow-hidden">
-                      <span className="text-gray-600 font-medium">
+                      <span className="text-gray-600 font-medium group-hover:text-white transition duration-300">
                         Година на излизане:
                       </span>{" "}
-                      <span className="font-GoodTiming text-gray-900 dark:text-white">
+                      <span className="font-GoodTiming text-gray-900 dark:text-white group-hover:text-white transition duration-300">
                         {item.year}
                       </span>
                     </span>

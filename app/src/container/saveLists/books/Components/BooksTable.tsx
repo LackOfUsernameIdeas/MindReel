@@ -257,41 +257,60 @@ const BooksTable: FC<BooksTableProps> = ({
             {currentData.map((item, index) => (
               <div
                 key={index}
-                className="bg-white dark:bg-bodybg2/50 shadow-lg rounded-lg p-4 cursor-pointer hover:bg-primary dark:hover:bg-primary hover:text-white transition duration-300 flex flex-col items-center"
+                className="group bg-white dark:bg-bodybg2/50 shadow-lg rounded-lg p-4 cursor-pointer hover:bg-primary dark:hover:bg-primary transition duration-300 flex flex-col items-center"
                 onClick={() => handleBookClick(item)}
               >
-                <div className="flex items-center gap-4 w-full mb-4">
+                {/* Title on top */}
+                <div className="w-full bg-white/50 dark:bg-bodybg2/50 dark:border-black/10 rounded-md shadow-lg dark:shadow-xl text-center mb-4 px-2 py-3">
+                  <h5 className="goodTiming text-base md:text-lg text-defaulttextcolor dark:text-white/80 group-hover:text-white break-words overflow-wrap-anywhere transition duration-300">
+                    {item.title_en}/{item.title_bg}
+                  </h5>
+                </div>
+
+                {/* Image and info */}
+                <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 w-full min-w-0">
                   <img
                     src={item.imageLink}
                     alt=""
-                    className="rounded-lg w-32 h-auto !shadow-lg"
+                    className="rounded-lg w-32 h-auto !shadow-lg flex-shrink-0"
                   />
-                  <div className="flex flex-col items-start">
-                    <span className="goodTiming">
-                      Жанр:{" "}
-                      <p className="font-GoodTiming">
+                  <div className="flex flex-col items-start min-w-0 flex-1 space-y-1 w-full">
+                    <span className="text-sm w-full overflow-hidden">
+                      <span className="text-gray-600 font-medium group-hover:text-white transition duration-300">
+                        Жанр:
+                      </span>{" "}
+                      <span className="font-GoodTiming text-gray-900 dark:text-white group-hover:text-white transition duration-300 break-words">
                         {formatGenres(item.genre_bg)}
-                      </p>
+                      </span>
                     </span>
-                    <span className="goodTiming">
-                      Страници:{" "}
-                      <p className="font-GoodTiming">{item.page_count}</p>
+
+                    <span className="text-sm w-full overflow-hidden">
+                      <span className="text-gray-600 font-medium group-hover:text-white transition duration-300">
+                        Страници:
+                      </span>{" "}
+                      <span className="font-GoodTiming text-gray-900 dark:text-white group-hover:text-white transition duration-300">
+                        {item.page_count}
+                      </span>
                     </span>
-                    <span className="goodTiming">
-                      Автор: <p className="font-GoodTiming">{item.author}</p>
+
+                    <span className="text-sm w-full overflow-hidden">
+                      <span className="text-gray-600 font-medium group-hover:text-white transition duration-300">
+                        Автор:
+                      </span>{" "}
+                      <span className="font-GoodTiming text-gray-900 dark:text-white group-hover:text-white transition duration-300 break-words">
+                        {item.author}
+                      </span>
                     </span>
-                    <span className="goodTiming">
-                      Година на писане:{" "}
-                      <p className="font-GoodTiming">
+
+                    <span className="text-sm w-full overflow-hidden">
+                      <span className="text-gray-600 font-medium group-hover:text-white transition duration-300">
+                        Година на писане:
+                      </span>{" "}
+                      <span className="font-GoodTiming text-gray-900 dark:text-white group-hover:text-white transition duration-300">
                         {extractYear(item.date_of_issue)}
-                      </p>
+                      </span>
                     </span>
                   </div>
-                </div>
-                <div className="w-full bg-white bg-bodybg/50 dark:bg-bodybg2/50 dark:border-black/10 rounded-md shadow-lg dark:shadow-xl text-center mt-auto">
-                  <h5 className="goodTiming text-xl text-defaulttextcolor dark:text-white/80">
-                    {item.title_en}/{item.title_bg}
-                  </h5>
                 </div>
               </div>
             ))}
