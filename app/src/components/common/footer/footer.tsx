@@ -60,7 +60,7 @@ const Footer: FC = () => (
               <h3 className="footer-title !text-[1.25rem] !max-sm:text-[1.1rem]">
                 Източници
               </h3>
-              <div className="grid grid-cols-1 min-[1400px]:grid-cols-2 gap-2 auto-rows-min footer-links min-[1400px]:ml-0 -ml-2">
+              <div className="grid grid-cols-1 min-[1400px]:grid-cols-2 gap-2 auto-rows-min footer-links min-[1400px]:ml-0 -ml-2 max-[900px]:justify-items-center">
                 <div className="flex items-center space-x-2 min-[1400px]:ml-[2rem] whitespace-nowrap">
                   <a
                     href="https://platform.openai.com/docs/overview"
@@ -156,7 +156,7 @@ const Footer: FC = () => (
               <h3 className="footer-title !text-[1.25rem] !max-sm:text-[1.1rem]">
                 Използвани технологии
               </h3>
-              <div className="grid grid-cols-1 min-[1400px]:grid-cols-2 gap-2 auto-rows-min footer-links">
+              <div className="grid grid-cols-1 min-[1400px]:grid-cols-2 gap-2 auto-rows-min footer-links max-[900px]:justify-items-center">
                 <div className="flex items-center space-x-2 min-[1400px]:ml-[2rem]">
                   <i className="ti ti-brand-python text-xs"></i>
                   <span className="whitespace-nowrap">Python</span>
