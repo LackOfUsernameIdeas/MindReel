@@ -8,7 +8,7 @@ const Footer: FC = () => (
       {/* Footer Content */}
       <footer className="footer font-normal font-GoodTiming !bg-white text-defaultsize leading-normal text-[0.813] shadow-[0_0_0.4rem_rgba(0,0,0,0.1)] dark:!bg-bodybg py-8 rounded-[2rem] border-t-4 border-t-primary mt-[3rem] mx-4 mb-4 relative z-10">
         <div className="container mx-auto px-8">
-          <div className="footer-content grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+          <div className="footer-content grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
             <div className="footer-column">
               <h3 className="footer-title !text-[1.25rem] !max-sm:text-[1.1rem]">
                 За Нас
@@ -25,7 +25,7 @@ const Footer: FC = () => (
                     ПГИ Перник
                   </a>
                 </li>
-                <li>НЕТИТ „Джон Атанасов“ 2025</li>
+                <li>НЕТИТ „Джон Атанасов" 2025</li>
                 <li>Разпределени приложения</li>
               </ul>
             </div>
@@ -60,8 +60,8 @@ const Footer: FC = () => (
               <h3 className="footer-title !text-[1.25rem] !max-sm:text-[1.1rem]">
                 Източници
               </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-2 auto-rows-min footer-links">
-                <div className="flex items-center space-x-2 md:ml-[2rem] whitespace-nowrap">
+              <div className="grid grid-cols-1 min-[1400px]:grid-cols-2 gap-2 auto-rows-min footer-links min-[1400px]:ml-0 -ml-2">
+                <div className="flex items-center space-x-2 min-[1400px]:ml-[2rem] whitespace-nowrap">
                   <a
                     href="https://platform.openai.com/docs/overview"
                     target="_blank"
@@ -72,7 +72,7 @@ const Footer: FC = () => (
                     <span>OpenAI API</span>
                   </a>
                 </div>
-                <div className="flex items-center space-x-2 md:ml-[2rem]">
+                <div className="flex items-center space-x-2 min-[1400px]:ml-[2rem]">
                   <a
                     href="https://ai.google.dev/gemini-api/docs"
                     target="_blank"
@@ -83,7 +83,7 @@ const Footer: FC = () => (
                     <span>Gemini API</span>
                   </a>
                 </div>
-                <div className="flex items-center space-x-[0.40rem] md:ml-[2rem]">
+                <div className="flex items-center space-x-[0.40rem] min-[1400px]:ml-[2rem]">
                   <a
                     href="https://www.omdbapi.com/#top"
                     target="_blank"
@@ -94,7 +94,7 @@ const Footer: FC = () => (
                     <span>OMDb API</span>
                   </a>
                 </div>
-                <div className="flex items-center space-x-2 md:ml-[2rem]">
+                <div className="flex items-center space-x-2 min-[1400px]:ml-[2rem]">
                   <a
                     href="https://developers.google.com/custom-search/v1/introduction"
                     target="_blank"
@@ -105,7 +105,7 @@ const Footer: FC = () => (
                     <span>Search API</span>
                   </a>
                 </div>
-                <div className="flex items-center space-x-2 md:ml-[2rem]">
+                <div className="flex items-center space-x-2 min-[1400px]:ml-[2rem]">
                   <a
                     href="https://developers.google.com/books"
                     target="_blank"
@@ -116,7 +116,7 @@ const Footer: FC = () => (
                     <span>Books API</span>
                   </a>
                 </div>
-                <div className="flex items-center space-x-2 md:ml-[2rem]">
+                <div className="flex items-center space-x-2 min-[1400px]:ml-[2rem]">
                   <a
                     href="https://www.goodreads.com"
                     target="_blank"
@@ -127,7 +127,7 @@ const Footer: FC = () => (
                     <span>Goodreads</span>
                   </a>
                 </div>
-                <div className="flex items-center space-x-2 md:ml-[2rem]">
+                <div className="flex items-center space-x-2 min-[1400px]:ml-[2rem]">
                   <a
                     href="https://developers.google.com/youtube/v3"
                     target="_blank"
@@ -138,7 +138,7 @@ const Footer: FC = () => (
                     <span>YouTube API</span>
                   </a>
                 </div>
-                <div className="flex items-center space-x-2 md:ml-[2rem]">
+                <div className="flex items-center space-x-2 min-[1400px]:ml-[2rem]">
                   <a
                     href="https://developer.spotify.com/documentation/web-api"
                     target="_blank"
@@ -156,44 +156,44 @@ const Footer: FC = () => (
               <h3 className="footer-title !text-[1.25rem] !max-sm:text-[1.1rem]">
                 Използвани технологии
               </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-2 auto-rows-min footer-links">
-                <div className="flex items-center space-x-2 md:ml-[2rem]">
+              <div className="grid grid-cols-1 min-[1400px]:grid-cols-2 gap-2 auto-rows-min footer-links">
+                <div className="flex items-center space-x-2 min-[1400px]:ml-[2rem]">
                   <i className="ti ti-brand-python text-xs"></i>
                   <span className="whitespace-nowrap">Python</span>
                 </div>
-                <div className="flex items-center space-x-2 md:ml-[2rem]">
+                <div className="flex items-center space-x-2 min-[1400px]:ml-[2rem]">
                   <i className="ti ti-brand-react text-lg sm:text-xs"></i>
                   <span className="whitespace-nowrap">React</span>
                 </div>
-                <div className="flex items-center space-x-[0.40rem] md:ml-[2rem]">
+                <div className="flex items-center space-x-[0.40rem] min-[1400px]:ml-[2rem]">
                   <i className="ti ti-brand-tailwind text-lg sm:text-xs"></i>
                   <span className="whitespace-nowrap">Tailwind CSS</span>
                 </div>
-                <div className="flex items-center space-x-2 md:ml-[2rem]">
+                <div className="flex items-center space-x-2 min-[1400px]:ml-[2rem]">
                   <i className="ti ti-brand-typescript text-lg sm:text-xs"></i>
                   <span className="whitespace-nowrap">TypeScript</span>
                 </div>
-                <div className="flex items-center space-x-2 md:ml-[2rem]">
+                <div className="flex items-center space-x-2 min-[1400px]:ml-[2rem]">
                   <i className="ti ti-brand-nodejs text-lg sm:text-xs"></i>
                   <span className="whitespace-nowrap">NodeJS</span>
                 </div>
-                <div className="flex items-center space-x-2 md:ml-[2rem]">
+                <div className="flex items-center space-x-2 min-[1400px]:ml-[2rem]">
                   <i className="ti ti-brand-vite text-lg sm:text-xs"></i>
                   <span className="whitespace-nowrap">Vite</span>
                 </div>
-                <div className="flex items-center space-x-2 md:ml-[2rem]">
+                <div className="flex items-center space-x-2 min-[1400px]:ml-[2rem]">
                   <i className="ti ti-brand-javascript text-lg sm:text-xs"></i>
                   <span className="whitespace-nowrap">Express JS</span>
                 </div>
-                <div className="flex items-center space-x-2 md:ml-[2rem]">
+                <div className="flex items-center space-x-2 min-[1400px]:ml-[2rem]">
                   <i className="ti ti-database text-lg sm:text-xs"></i>
                   <span className="whitespace-nowrap">MySQL</span>
                 </div>
-                <div className="flex items-center space-x-2 md:ml-[2rem]">
+                <div className="flex items-center space-x-2 min-[1400px]:ml-[2rem]">
                   <i className="ti ti-brand-adobe text-lg sm:text-xs"></i>
                   <span className="whitespace-nowrap">Apex Charts</span>
                 </div>
-                <div className="flex items-center space-x-2 md:ml-[2rem]">
+                <div className="flex items-center space-x-2 min-[1400px]:ml-[2rem]">
                   <i className="ti ti-lock-open text-lg sm:text-xs"></i>
                   <span className="whitespace-nowrap">JWT</span>
                 </div>
