@@ -12,6 +12,7 @@ import {
 } from "../../types_common";
 import {
   moviesSeriesBrainAnalysisPrompt,
+  moviesSeriesBrainAnalysisPrompt2,
   moviesSeriesStandardPreferencesPrompt,
   openAIKey
 } from "./moviesSeriesRecommendations-data";
@@ -244,11 +245,28 @@ export const generateMoviesSeriesRecommendations = async (
 ) => {
   try {
     console.log("brainData", brainData);
-    const requestBody =
-      renderBrainAnalysis && brainData
-        ? moviesSeriesBrainAnalysisPrompt(brainData)
-        : moviesSeriesUserPreferences &&
-          moviesSeriesStandardPreferencesPrompt(moviesSeriesUserPreferences);
+    let requestBody;
+
+    if (renderBrainAnalysis && brainData) {
+      const savedCounter = parseInt(
+        localStorage.getItem("promptCounter") || "0"
+      );
+
+      // Alternate between the two prompts
+      if (savedCounter % 2 === 0) {
+        requestBody = moviesSeriesBrainAnalysisPrompt(brainData);
+        console.log("Using moviesSeriesBrainAnalysisPrompt");
+      } else {
+        requestBody = moviesSeriesBrainAnalysisPrompt2(brainData);
+        console.log("Using moviesSeriesBrainAnalysisPrompt2");
+      }
+
+      localStorage.setItem("promptCounter", (savedCounter + 1).toString());
+    } else if (moviesSeriesUserPreferences) {
+      requestBody = moviesSeriesStandardPreferencesPrompt(
+        moviesSeriesUserPreferences
+      );
+    }
 
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
