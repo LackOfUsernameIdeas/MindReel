@@ -4,8 +4,14 @@ import { RecommendationsList } from "./RecommendationsList";
 import { QuizQuestions } from "./QuizQuestions";
 import { handleRetakeQuiz } from "../helper_functions";
 import Loader from "@/components/common/loader/Loader";
+import { QuizProps } from "../musicRecommendations-types";
 
-export const Quiz: FC = () => {
+export const Quiz: FC<QuizProps> = ({
+  setBookmarkedMusic,
+  setCurrentBookmarkStatus,
+  setAlertVisible,
+  bookmarkedMusic
+}) => {
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [recommendationList, setRecommendationList] = useState<any[]>([]);
@@ -57,6 +63,10 @@ export const Quiz: FC = () => {
                   recommendationList={recommendationList}
                   currentIndex={currentIndex}
                   setCurrentIndex={setCurrentIndex}
+                  setBookmarkedMusic={setBookmarkedMusic}
+                  setCurrentBookmarkStatus={setCurrentBookmarkStatus}
+                  setAlertVisible={setAlertVisible}
+                  bookmarkedMusic={bookmarkedMusic}
                 />
               </div>
             ) : (

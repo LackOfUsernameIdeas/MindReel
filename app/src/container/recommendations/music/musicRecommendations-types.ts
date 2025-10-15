@@ -57,6 +57,15 @@ export interface RecommendationsProps {
   recommendationList: Recommendation[]; // Списък с препоръчани песни
   currentIndex: number;
   setCurrentIndex: React.Dispatch<React.SetStateAction<number>>;
+  setBookmarkedMusic: React.Dispatch<
+    // Функция за маркиране на песен
+    React.SetStateAction<{
+      [key: string]: any; // Динамичен обект с маркирани песни
+    }>
+  >;
+  setCurrentBookmarkStatus: React.Dispatch<React.SetStateAction<boolean>>; // Функция за задаване на текущия статус на маркиране
+  setAlertVisible: React.Dispatch<React.SetStateAction<boolean>>; // Функция за показване на известие
+  bookmarkedMusic: { [key: string]: Recommendation }; // Списък с марк
 }
 
 // Пропс за компонентата RecommendationCard, която показва информация за песен.
@@ -64,6 +73,28 @@ export interface RecommendationCardProps {
   recommendationList: Recommendation[]; // Списък с препоръчани песни
   currentIndex: number; // Текущ индекс на песента
   isExpanded: boolean; // Флаг дали картата е разширена
+  setBookmarkedMusic: React.Dispatch<
+    // Функция за маркиране на филм
+    React.SetStateAction<{
+      [key: string]: any; // Динамичен обект с маркирани книги
+    }>
+  >;
+  setCurrentBookmarkStatus: React.Dispatch<React.SetStateAction<boolean>>; // Функция за задаване на текущия статус на маркиране
+  setAlertVisible: React.Dispatch<React.SetStateAction<boolean>>; // Функция за показване на известие
+  bookmarkedMusic: { [key: string]: Recommendation }; // Списък с маркирани филми
+}
+
+// Пропс за компонентата Quiz, свързана с маркирането на песни.
+export interface QuizProps {
+  setBookmarkedMusic: React.Dispatch<
+    // Функция за маркиране на филм
+    React.SetStateAction<{
+      [key: string]: any; // Динамичен обект с маркирани песни
+    }>
+  >;
+  setCurrentBookmarkStatus: React.Dispatch<React.SetStateAction<boolean>>; // Функция за задаване на текущия статус на маркиране
+  setAlertVisible: React.Dispatch<React.SetStateAction<boolean>>; // Функция за показване на известие
+  bookmarkedMusic: { [key: string]: Recommendation }; // Списък с маркирани песни
 }
 
 // Пропс за компонентата QuizQuestion, която съдържа въпросите и опции.

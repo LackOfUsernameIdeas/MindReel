@@ -7,7 +7,11 @@ import ErrorCard from "../../../../components/common/error/error";
 export const RecommendationsList: FC<RecommendationsProps> = ({
   recommendationList,
   currentIndex,
-  setCurrentIndex
+  setBookmarkedMusic,
+  setCurrentBookmarkStatus,
+  setCurrentIndex,
+  setAlertVisible,
+  bookmarkedMusic
 }) => {
   const [inTransition, setInTransition] = useState(false);
   const [direction, setDirection] = useState<"left" | "right">("right");
@@ -89,6 +93,10 @@ export const RecommendationsList: FC<RecommendationsProps> = ({
           recommendationList={recommendationList}
           currentIndex={currentIndex}
           isExpanded={isExpanded}
+          setBookmarkedMusic={setBookmarkedMusic}
+          setCurrentBookmarkStatus={setCurrentBookmarkStatus}
+          setAlertVisible={setAlertVisible}
+          bookmarkedMusic={bookmarkedMusic}
         />
       </CSSTransition>
 

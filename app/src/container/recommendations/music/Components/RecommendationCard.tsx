@@ -2,27 +2,30 @@ import { FC, useEffect, useState } from "react";
 import { ExternalLink, Eye, ThumbsUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { InfoboxModal } from "@/components/common/infobox/InfoboxModal";
-// import { handleBookmarkClick } from "../helper_functions";
+import { handleBookmarkClick } from "../helper_functions";
 import { RecommendationCardProps } from "../musicRecommendations-types";
 
 const RecommendationCard: FC<RecommendationCardProps> = ({
   recommendationList,
-  currentIndex
+  currentIndex,
+  setBookmarkedMusic,
+  setCurrentBookmarkStatus,
+  setAlertVisible,
+  bookmarkedMusic
 }) => {
-  const [isVideoModalOpen, setIsVideoModalOpen] = useState(false); // Състояние за отваряне на модалния прозорец
-  const [isReasonModalOpen, setIsReasonModalOpen] = useState(false); // Състояние за отваряне на модалния прозорец за причина
-
-  const [albumCoverError, setAlbumCoverError] = useState(false); // Състояние за грешка при зареждане на изображението
+  const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
+  const [isReasonModalOpen, setIsReasonModalOpen] = useState(false);
+  const [albumCoverError, setAlbumCoverError] = useState(false);
 
   const recommendation = recommendationList[currentIndex];
 
   const handleTrailerModalClick = () => {
     recommendation.youtubeMusicVideoUrl && setIsVideoModalOpen((prev) => !prev);
-  }; // Функция за обработка на клик - модален прозорец
+  };
 
   const handleReasonModalClick = () => {
     setIsReasonModalOpen((prev) => !prev);
-  }; // Функция за обработка на клик - модален прозорец за причина
+  };
 
   const formatDuration = (ms: number | null | undefined) => {
     if (!ms) return "Неизвестно";
@@ -58,10 +61,12 @@ const RecommendationCard: FC<RecommendationCardProps> = ({
   const reasonPreviewLength = 150;
 
   useEffect(() => {
-    setAlbumCoverError(false); // Ресет на грешката при зареждане на изображението
+    setAlbumCoverError(false);
   }, [recommendation.albumCover]);
 
   console.log("recommendationList", recommendationList);
+
+  console.log("bookmarkedMusic", bookmarkedMusic);
   return (
     <div className="recommendation-card">
       <div className="flex w-full items-center sm:items-start flex-col lg:flex-row">
@@ -113,6 +118,35 @@ const RecommendationCard: FC<RecommendationCardProps> = ({
               </div>
             )}
           </div>
+          {/* Bookmark Button */}
+          <button
+            onClick={() =>
+              handleBookmarkClick(
+                recommendation,
+                setBookmarkedMusic,
+                setCurrentBookmarkStatus,
+                setAlertVisible
+              )
+            }
+            className="absolute top-4 left-4 p-2 text-[#FFCC33] bg-black/50 bg-opacity-60 rounded-full transition-all duration-300 transform hover:scale-110"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="35"
+              height="35"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+            >
+              {bookmarkedMusic[recommendation.spotifyID ?? ""] ? (
+                <>
+                  <path d="M18 2H6c-1.103 0-2 .897-2 2v18l8-4.572L20 22V4c0-1.103-.897-2-2-2zm0 16.553L12 15.125 6 18.553V4h12v14.553z"></path>
+                  <path d="M6 18.553V4h12v14.553L12 15.125l-6 3.428z"></path>
+                </>
+              ) : (
+                <path d="M18 2H6c-1.103 0-2 .897-2 2v18l8-4.572L20 22V4c0-1.103-.897-2-2-2zm0 16.553-6-3.428-6 3.428V4h12v14.553z"></path>
+              )}
+            </svg>
+          </button>
         </div>
 
         <div className="flex-grow min-w-0">

@@ -5,6 +5,7 @@ import { validateToken } from "../../helper_functions_common";
 import FadeInWrapper from "../../../components/common/loader/fadeinwrapper";
 import Notification from "../../../components/common/notification/Notification";
 import { NotificationState } from "./musicRecommendations-types";
+import BookmarkAlert from "./Components/BookmarkAlert";
 
 interface MusicRecommendationsProps {}
 
@@ -13,6 +14,13 @@ const MusicRecommendations: FC<MusicRecommendationsProps> = () => {
   const [notification, setNotification] = useState<NotificationState | null>(
     null // Състояние за съхраняване на текущото известие (съобщение и тип)
   );
+
+  const [bookmarkedMusic, setBookmarkedMusic] = useState<{
+    [key: string]: any;
+  }>({});
+
+  const [alertVisible, setAlertVisible] = useState(false); // To control alert visibility
+  const [currentBookmarkStatus, setCurrentBookmarkStatus] = useState(false); // Track current bookmark status
 
   useEffect(() => {
     validateToken(setNotification); // Стартиране на проверката на токена при първоначално зареждане на компонента
@@ -25,6 +33,10 @@ const MusicRecommendations: FC<MusicRecommendationsProps> = () => {
     setNotification(null);
   };
 
+  const handleDismiss = () => {
+    setAlertVisible(false);
+  };
+
   return (
     <>
       {notification && (
@@ -34,8 +46,19 @@ const MusicRecommendations: FC<MusicRecommendationsProps> = () => {
           onClose={handleNotificationClose}
         />
       )}
+      {alertVisible && (
+        <BookmarkAlert
+          isBookmarked={currentBookmarkStatus}
+          onDismiss={handleDismiss}
+        />
+      )}
       <FadeInWrapper>
-        <Quiz />
+        <Quiz
+          bookmarkedMusic={bookmarkedMusic}
+          setBookmarkedMusic={setBookmarkedMusic}
+          setCurrentBookmarkStatus={setCurrentBookmarkStatus}
+          setAlertVisible={setAlertVisible}
+        />
       </FadeInWrapper>
     </>
   );
