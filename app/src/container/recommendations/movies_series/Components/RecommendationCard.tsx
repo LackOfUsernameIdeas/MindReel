@@ -31,7 +31,7 @@ const RecommendationCard: FC<RecommendationCardProps> = ({
   const [posterError, setPosterError] = useState(false); // Състояние за грешка при зареждане на изображението
 
   const handleTrailerModalClick = () => {
-    setIsTrailerModalOpen((prev) => !prev);
+    recommendation.youtubeTrailerUrl && setIsTrailerModalOpen((prev) => !prev);
   }; // Функция за обработка на клик - модален прозорец
 
   const handleReasonModalClick = () => {
@@ -137,8 +137,8 @@ const RecommendationCard: FC<RecommendationCardProps> = ({
   console.log("recommendationList", recommendationList);
   return (
     <div className="recommendation-card">
-      <div className="flex w-full items-center sm:items-start flex-col md:flex-row">
-        <div className="relative flex-shrink-0 mb-4 md:mb-0 md:mr-8 flex flex-col items-center">
+      <div className="flex w-full items-center sm:items-start flex-col lg:flex-row">
+        <div className="relative flex-shrink-0 mb-4 lg:mb-0 lg:mr-6 xl:mr-8 flex flex-col items-center">
           {/* Постер */}
           <div
             className={`relative group ${
@@ -151,27 +151,27 @@ const RecommendationCard: FC<RecommendationCardProps> = ({
                 src={recommendation.poster}
                 alt=""
                 onError={() => setPosterError(true)}
-                className={`rounded-lg w-96 h-auto transition-all duration-300 ${
+                className={`rounded-lg w-72 sm:w-80 lg:w-64 xl:w-80 2xl:w-96 h-auto transition-all duration-300 ${
                   recommendation.youtubeTrailerUrl
                     ? "group-hover:scale-102 group-hover:blur-sm"
                     : ""
                 }`}
               />
             ) : (
-              <div className="rounded-lg w-96 aspect-[2.8/4] bg-white/70 dark:bg-bodybg2" />
+              <div className="rounded-lg w-72 sm:w-80 lg:w-64 xl:w-80 2xl:w-96 aspect-[2.8/4] bg-white/70 dark:bg-bodybg2" />
             )}
             {/* Play button */}
             {recommendation.youtubeTrailerUrl && (
               <div className="absolute inset-0 flex items-center justify-center transition-opacity duration-300">
                 <div className="group relative">
                   <div className="absolute inset-0 rounded-full bg-white/20 blur-xl scale-150 group-hover:scale-[1.7] transition-transform duration-500"></div>
-                  <div className="relative bg-white/10 backdrop-blur-md rounded-full p-6 border border-white/30 shadow-2xl transform transition-all duration-300 group-hover:scale-110 group-hover:bg-white/20 group-hover:border-white/50">
+                  <div className="relative bg-white/10 backdrop-blur-md rounded-full p-4 lg:p-5 xl:p-6 border border-white/30 shadow-2xl transform transition-all duration-300 group-hover:scale-110 group-hover:bg-white/20 group-hover:border-white/50">
                     <div className="absolute inset-2 rounded-full bg-gradient-to-br from-white/10 to-transparent"></div>
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       fill="white"
                       viewBox="0 0 24 24"
-                      className="size-16 text-white drop-shadow-lg relative z-10 transform transition-transform duration-300 group-hover:scale-105"
+                      className="size-12 lg:size-14 xl:size-16 text-white drop-shadow-lg relative z-10 transform transition-transform duration-300 group-hover:scale-105"
                       style={{
                         filter:
                           "drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2)) drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3))"
@@ -217,42 +217,53 @@ const RecommendationCard: FC<RecommendationCardProps> = ({
           </button>
         </div>
 
-        <div className="flex-grow">
+        <div className="flex-grow min-w-0">
           {/* Главна информация */}
           <div className="top-0 z-10">
-            <a href="#" className="block text-xl sm:text-3xl font-bold mb-1">
+            <a
+              href="#"
+              className="block text-xl sm:text-2xl xl:text-3xl font-bold mb-1"
+            >
               {recommendation.bgName || "Заглавие не е налично"}
             </a>
             <a
               href="#"
-              className="block text-md sm:text-lg font-semibold text-opacity-60 italic mb-2"
+              className="block text-base sm:text-lg font-semibold text-opacity-60 italic mb-2"
             >
               {recommendation.title || "Заглавие на английски не е налично"}
             </a>
-            <p className="flex gap-1 recommendation-small-details text-sm italic text-defaulttextcolor/70">
-              {translatedGenres || "Жанр неизвестен"} |{" "}
-              {!isMovie &&
-                `Брой сезони: ${
-                  recommendation.totalSeasons || "Неизвестен"
-                } | `}
-              {runtime || "Неизвестно времетраене"}{" "}
+            <p className="flex flex-wrap gap-x-1 recommendation-small-details text-xs sm:text-sm italic text-defaulttextcolor/70">
+              <span>{translatedGenres || "Жанр неизвестен"}</span>
+              <span>|</span>
               {!isMovie && (
-                <p title="Средно аритметично времетраене на един епизод">
-                  (Ср. за 1 епизод)
-                </p>
+                <>
+                  <span>
+                    Брой сезони: {recommendation.totalSeasons || "Неизвестен"}
+                  </span>
+                  <span>|</span>
+                </>
               )}
-              | {recommendation.year || "Година неизвестна"} | Рейтинг:{" "}
-              {recommendation.rated || "N/A"}
+              <span>{runtime || "Неизвестно времетраене"}</span>
+              {!isMovie && (
+                <span title="Средно аритметично времетраене на един епизод">
+                  {" "}
+                  (Ср. за 1 епизод)
+                </span>
+              )}
+              <span>|</span>
+              <span>{recommendation.year || "Година неизвестна"}</span>
+              <span>|</span>
+              <span>Рейтинг: {recommendation.rated || "N/A"}</span>
             </p>
             {/* Рейтинги */}
-            <div className="flex flex-col sm:flex-row sm:items-center space-y-4 sm:space-y-0 sm:space-x-8 py-2">
+            <div className="flex flex-col lg:flex-row lg:flex-wrap lg:items-center space-y-3 lg:space-y-0 lg:space-x-4 xl:space-x-6 py-2">
               <div
                 className="flex items-center space-x-2 dark:text-[#FFCC33] text-[#bf9413]"
                 title="IMDb рейтинг: Базиран на отзиви и оценки от потребители."
               >
-                <span className="font-bold text-lg">IMDb: </span>
-                <FaStar className="w-8 h-8" />
-                <span className="font-bold text-lg">
+                <span className="font-bold text-base lg:text-lg">IMDb: </span>
+                <FaStar className="w-6 h-6 lg:w-7 lg:h-7 xl:w-8 xl:h-8 flex-shrink-0" />
+                <span className="font-bold text-base lg:text-lg break-all">
                   {recommendation.imdbRating || "N/A"} /{" "}
                   {recommendation.imdbVotes || "N/A"} гласа
                 </span>
@@ -283,7 +294,7 @@ const RecommendationCard: FC<RecommendationCardProps> = ({
                       {recommendation.metascore || "N/A"}
                     </span>
                   </div>
-                  <span className="font-semibold text-md sm:text-sm md:text-lg">
+                  <span className="font-semibold text-sm lg:text-base xl:text-lg">
                     Метаскор
                   </span>
                 </div>
@@ -293,8 +304,8 @@ const RecommendationCard: FC<RecommendationCardProps> = ({
                   className="flex items-center space-x-2"
                   title="Rotten Tomatoes рейтинг: Процент положителни рецензии от професионални критици."
                 >
-                  <SiRottentomatoes className="text-[#FF0000] w-8 h-8" />
-                  <span className="text-red-400 font-semibold text-md sm:text-sm md:text-lg">
+                  <SiRottentomatoes className="text-[#FF0000] w-6 h-6 lg:w-7 lg:h-7 xl:w-8 xl:h-8 flex-shrink-0" />
+                  <span className="text-red-400 font-semibold text-sm lg:text-base xl:text-lg break-all">
                     {rottenTomatoesRating}
                   </span>
                 </div>
@@ -304,12 +315,12 @@ const RecommendationCard: FC<RecommendationCardProps> = ({
           {/* Причина за препоръчване */}
           {recommendation.reason && (
             <div className="mb-4">
-              <h3 className="text-lg font-semibold mb-2">
+              <h3 className="text-base lg:text-lg font-semibold mb-2">
                 Защо препоръчваме{" "}
                 {recommendation.bgName || "Заглавие не е налично"}?
               </h3>
               <div className="overflow-hidden transition-all duration-500 ease-in-out max-h-[3rem] opacity-70">
-                <p className="text-opacity-80 italic">
+                <p className="text-sm lg:text-base text-opacity-80 italic">
                   {recommendation.reason.length > reasonPreviewLength
                     ? `${recommendation.reason.substring(
                         0,
@@ -321,7 +332,7 @@ const RecommendationCard: FC<RecommendationCardProps> = ({
               {recommendation.reason.length > reasonPreviewLength && (
                 <button
                   onClick={handleReasonModalClick}
-                  className="mt-2 underline hover:scale-105 transition"
+                  className="mt-2 text-sm lg:text-base underline hover:scale-105 transition"
                 >
                   Пълно обяснение
                 </button>
@@ -330,9 +341,11 @@ const RecommendationCard: FC<RecommendationCardProps> = ({
           )}
           {/* Описание */}
           <div className="mb-4">
-            <h3 className="text-lg font-semibold mb-2">Описание</h3>
+            <h3 className="text-base lg:text-lg font-semibold mb-2">
+              Описание
+            </h3>
             <div className="overflow-hidden transition-all duration-500 ease-in-out max-h-[3rem] opacity-70">
-              <p className="text-opacity-80 italic">
+              <p className="text-sm lg:text-base text-opacity-80 italic">
                 {recommendation.description.length > plotPreviewLength
                   ? `${recommendation.description.substring(
                       0,
@@ -345,7 +358,7 @@ const RecommendationCard: FC<RecommendationCardProps> = ({
               recommendation.description.length > plotPreviewLength && (
                 <button
                   onClick={() => openModal("description")}
-                  className="mt-2 underline hover:scale-105 transition"
+                  className="mt-2 text-sm lg:text-base underline hover:scale-105 transition"
                 >
                   Пълно описание
                 </button>
@@ -353,9 +366,9 @@ const RecommendationCard: FC<RecommendationCardProps> = ({
           </div>
           {/* Сюжет */}
           <div className="mb-4">
-            <h3 className="text-lg font-semibold mb-2">Сюжет</h3>
+            <h3 className="text-base lg:text-lg font-semibold mb-2">Сюжет</h3>
             <div className="overflow-hidden transition-all duration-500 ease-in-out max-h-[3rem] opacity-70">
-              <p className="text-opacity-80 italic">
+              <p className="text-sm lg:text-base text-opacity-80 italic">
                 {translatedPlot.length > plotPreviewLength
                   ? `${translatedPlot.substring(0, plotPreviewLength)}...`
                   : translatedPlot}
@@ -365,18 +378,18 @@ const RecommendationCard: FC<RecommendationCardProps> = ({
             {translatedPlot && translatedPlot.length > plotPreviewLength && (
               <button
                 onClick={() => openModal("plot")}
-                className="mt-2 underline hover:scale-105 transition"
+                className="mt-2 text-sm lg:text-base underline hover:scale-105 transition"
               >
                 Пълен сюжет
               </button>
             )}
           </div>
           {/* Допълнителна информация */}
-          <div className="mb-4">
-            <h3 className="text-lg font-semibold mb-2">
+          <div className="mb-0">
+            <h3 className="text-base lg:text-lg font-semibold mb-2">
               Допълнителна информация:
             </h3>
-            <ul className="flex flex-wrap gap-x-4 text-opacity-80">
+            <ul className="flex flex-wrap gap-x-3 lg:gap-x-4 gap-y-1 text-sm lg:text-base text-opacity-80">
               <li>
                 <strong className="text-primary">Режисьор:</strong>{" "}
                 {translatedDirectors && translatedDirectors !== "N/A"
