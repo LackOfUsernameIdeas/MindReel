@@ -1210,7 +1210,7 @@ app.get("/get-goodreads-data-for-a-book", (req, res) => {
   }
 
   // Стартиране на Python процес и подаване на URL като аргумент
-  const pythonProcess = spawn(pythonPath, ["./python/scraper.py", url]);
+  const pythonProcess = spawn(pythonPathLocal, ["./python/scraper.py", url]);
 
   let response = "";
 
@@ -1245,7 +1245,7 @@ app.get("/get-goodreads-json-object-for-a-book", (req, res) => {
   }
 
   // Стартиране на Python процес и подаване на URL като аргумент
-  const pythonProcess = spawn(pythonPath, [
+  const pythonProcess = spawn(pythonPathLocal, [
     "./python/scraper_script_tag_json.py",
     url
   ]);
