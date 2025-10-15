@@ -58,8 +58,6 @@ export const targetGroupOptions = [
   "Възрастни над 65"
 ];
 
-export const openAIKey = import.meta.env.VITE_OPENAI_API_KEY;
-
 export const moviesSeriesStandardPreferencesPrompt = (
   userPreferences: MoviesSeriesUserPreferences
 ) => {

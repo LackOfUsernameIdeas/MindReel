@@ -13,8 +13,7 @@ import {
 import {
   moviesSeriesBrainAnalysisPrompt,
   moviesSeriesBrainAnalysisPrompt2,
-  moviesSeriesStandardPreferencesPrompt,
-  openAIKey
+  moviesSeriesStandardPreferencesPrompt
 } from "./moviesSeriesRecommendations-data";
 import { moviesSeriesGenreOptions } from "../../data_common";
 import {
@@ -268,14 +267,18 @@ export const generateMoviesSeriesRecommendations = async (
       );
     }
 
-    const response = await fetch("https://api.openai.com/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${openAIKey}`
-      },
-      body: JSON.stringify(requestBody)
-    });
+    const response = await fetch(
+      `${import.meta.env.VITE_API_BASE_URL}/get-model-response`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          requestBody
+        })
+      }
+    );
 
     console.log("prompt: ", requestBody);
 

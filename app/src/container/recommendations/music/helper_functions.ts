@@ -1,9 +1,6 @@
 import { Genre, MusicUserPreferences } from "./musicRecommendations-types";
 import { Question, NotificationState } from "../../types_common";
-import {
-  musicStandardPreferencesPrompt,
-  openAIKey
-} from "./musicRecommendations-data";
+import { musicStandardPreferencesPrompt } from "./musicRecommendations-data";
 import { musicGenreOptions } from "../../data_common";
 import { showNotification, validateToken } from "../../helper_functions_common";
 
@@ -344,14 +341,18 @@ export const generateMusicRecommendations = async (
       musicUserPreferences &&
       musicStandardPreferencesPrompt(musicUserPreferences);
 
-    const response = await fetch("https://api.openai.com/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${openAIKey}`
-      },
-      body: JSON.stringify(requestBody)
-    });
+    const response = await fetch(
+      `${import.meta.env.VITE_API_BASE_URL}/get-model-response`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          requestBody
+        })
+      }
+    );
 
     console.log("prompt: ", requestBody);
 

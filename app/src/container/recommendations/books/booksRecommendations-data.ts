@@ -43,8 +43,6 @@ export const targetGroupOptions = [
   "Възрастни над 65"
 ];
 
-export const openAIKey = import.meta.env.VITE_OPENAI_API_KEY;
-
 export const googleBooksPrompt = (userPreferences: BooksUserPreferences) => {
   const genres = userPreferences.genres.map((genre) => genre.en).join(", ");
   return {

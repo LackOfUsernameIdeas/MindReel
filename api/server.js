@@ -15,6 +15,8 @@ const pythonPathLocal = require("./config.js").pythonPathLocal;
 const SECRET_KEY = require("./credentials.js").SECRET_KEY;
 const EMAIL_USER = require("./credentials.js").EMAIL_USER;
 const EMAIL_PASS = require("./credentials.js").EMAIL_PASS;
+const OPENAI_API_KEY = require("./credentials.js").OPENAI_API_KEY;
+const GEMINI_API_KEY = require("./credentials.js").GEMINI_API_KEY;
 const fs = require("fs");
 const path = require("path");
 
@@ -1208,7 +1210,7 @@ app.get("/get-goodreads-data-for-a-book", (req, res) => {
   }
 
   // Стартиране на Python процес и подаване на URL като аргумент
-  const pythonProcess = spawn(pythonPathLocal, ["./python/scraper.py", url]);
+  const pythonProcess = spawn(pythonPath, ["./python/scraper.py", url]);
 
   let response = "";
 
@@ -1243,7 +1245,7 @@ app.get("/get-goodreads-json-object-for-a-book", (req, res) => {
   }
 
   // Стартиране на Python процес и подаване на URL като аргумент
-  const pythonProcess = spawn(pythonPathLocal, [
+  const pythonProcess = spawn(pythonPath, [
     "./python/scraper_script_tag_json.py",
     url
   ]);
@@ -1272,57 +1274,39 @@ app.get("/get-goodreads-json-object-for-a-book", (req, res) => {
 });
 
 // Достъпване на конретен AI модел
-app.post("/get-model-response", (req, res) => {
-  const {
-    messages,
-    provider = "openai",
-    modelOpenAI = "gpt-4o",
-    api_key
-  } = req.body;
+app.post("/get-model-response", async (req, res) => {
+  try {
+    const { requestBody } = req.body;
 
-  if (!messages || !Array.isArray(messages)) {
-    return res
-      .status(400)
-      .json({ error: "Invalid request. 'messages' must be an array." });
-  }
+    // Call OpenAI API
+    const response = await fetch("https://api.openai.com/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${OPENAI_API_KEY}`
+      },
+      body: JSON.stringify(requestBody)
+    });
 
-  // Spawn the Python process
-  const pythonProcess = spawn(pythonPathLocal, [
-    "./python/fetch_ai_response.py"
-  ]);
-
-  let response = "";
-
-  // Send messages as JSON to Python via stdin
-  pythonProcess.stdin.write(
-    JSON.stringify({ provider, messages, modelOpenAI, api_key })
-  );
-  pythonProcess.stdin.end(); // Close the input stream
-
-  // Capture output from stdout
-  pythonProcess.stdout.on("data", (data) => {
-    response += data.toString();
-  });
-
-  // Capture error output from stderr (for debugging)
-  pythonProcess.stderr.on("data", (data) => {
-    console.error("Python script stderr:", data.toString());
-  });
-
-  // Handle the closing of the Python process
-  pythonProcess.on("close", (code) => {
-    if (code === 0) {
-      try {
-        const jsonResponse = JSON.parse(response.trim());
-        res.status(200).json(jsonResponse); // Return JSON to the client
-      } catch (e) {
-        console.error("Error parsing JSON response:", e);
-        res.status(500).send("Error parsing response from Python");
-      }
-    } else {
-      res.status(500).send("Error: Python script execution failed");
+    // Check if response is ok
+    if (!response.ok) {
+      const errorData = await response.json();
+      return res.status(response.status).json({
+        error: errorData.error || "OpenAI API request failed"
+      });
     }
-  });
+
+    const responseData = await response.json();
+
+    // Return the response
+    res.json(responseData);
+  } catch (error) {
+    console.error("Error in /get-model-response:", error);
+    res.status(500).json({
+      error: "Internal server error",
+      message: error.message
+    });
+  }
 });
 
 // Проверка дали даден филм/сериал е подходящ за конкретните потребителски предпочитания
