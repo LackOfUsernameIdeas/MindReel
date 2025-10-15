@@ -15,6 +15,7 @@ import PrivateRoute from "./pages/PrivateRoute.tsx";
 import MoviesSeriesIndividualStats from "./container/individualStats/movies_series/MoviesSeriesIndividualStats.tsx";
 import Watchlist from "./container/saveLists/movies_series/Watchlist.tsx";
 import Readlist from "./container/saveLists/books/Readlist.tsx";
+import Listenlist from "./container/saveLists/music/Listenlist.tsx";
 import Contact from "./container/contact/Contact.tsx";
 import ChooseRecommendations from "./container/recommendations/choose/ChooseRecommendations.tsx";
 import AIAnalysator from "./container/aiAnalysator/AIAnalysator.tsx";
@@ -59,6 +60,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
             />
             <Route path="saveLists/movies_series" element={<Watchlist />} />
             <Route path="saveLists/books" element={<Readlist />} />
+            <Route path="saveLists/music" element={<Listenlist />} />
             <Route path="contact" element={<Contact />} />
           </Route>
 

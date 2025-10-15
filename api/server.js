@@ -514,7 +514,7 @@ app.post("/save-to-list", (req, res) => {
           .status(201)
           .json({ message: "Movie/Series recommendation added successfully!" });
       });
-    } else {
+    } else if (recommendationType === "books") {
       db.saveToReadlist(userId, data, (err, result) => {
         if (err) {
           return res.status(500).json({ error: err.message });
@@ -523,13 +523,23 @@ app.post("/save-to-list", (req, res) => {
           .status(201)
           .json({ message: "Book recommendation added successfully!" });
       });
+    } else if (recommendationType === "music") {
+      db.saveToListenlist(userId, data, (err, result) => {
+        if (err) {
+          return res.status(500).json({ error: err.message });
+        }
+        res
+          .status(201)
+          .json({ message: "Music recommendation added successfully!" });
+      });
     }
   });
 });
 
 // Изтриване на препоръка от списъка за гледане
 app.delete("/remove-from-list", (req, res) => {
-  const { token, imdbID, source, book_id, recommendationType } = req.body;
+  const { token, imdbID, source, book_id, spotifyID, recommendationType } =
+    req.body;
 
   if (!token) {
     return res.status(401).json({ error: "Token is required" });
@@ -545,6 +555,10 @@ app.delete("/remove-from-list", (req, res) => {
 
   if (recommendationType === "books" && !book_id) {
     return res.status(400).json({ error: "Book ID is required for books" });
+  }
+
+  if (recommendationType === "music" && !spotifyID) {
+    return res.status(400).json({ error: "Spotify ID is required for songs" });
   }
 
   jwt.verify(token, SECRET_KEY, (err, decoded) => {
@@ -565,7 +579,7 @@ app.delete("/remove-from-list", (req, res) => {
           message: "Movie/Series recommendation removed successfully!"
         });
       });
-    } else {
+    } else if (recommendationType === "books") {
       db.removeFromReadlist(userId, source, book_id, (err, result) => {
         if (err) {
           return res.status(500).json({ error: err.message });
@@ -579,13 +593,28 @@ app.delete("/remove-from-list", (req, res) => {
           .status(200)
           .json({ message: "Book recommendation removed successfully!" });
       });
+    } else if (recommendationType === "music") {
+      db.removeFromListenlist(userId, spotifyID, (err, result) => {
+        if (err) {
+          return res.status(500).json({ error: err.message });
+        }
+        if (result.affectedRows === 0) {
+          return res
+            .status(404)
+            .json({ error: "Song recommendation not found" });
+        }
+        res.status(200).json({
+          message: "Song recommendation removed successfully!"
+        });
+      });
     }
   });
 });
 
 // Изтриване на препоръка от списъка за гледане
 app.post("/check-for-recommendation-in-list", (req, res) => {
-  const { token, imdbID, source, book_id, recommendationType } = req.body;
+  const { token, imdbID, source, book_id, spotifyID, recommendationType } =
+    req.body;
 
   if (!token) {
     return res.status(401).json({ error: "Token is required" });
@@ -600,6 +629,10 @@ app.post("/check-for-recommendation-in-list", (req, res) => {
   }
 
   if (recommendationType === "books" && !book_id) {
+    return res.status(400).json({ error: "Book ID is required for books" });
+  }
+
+  if (recommendationType === "music" && !spotifyID) {
     return res.status(400).json({ error: "Book ID is required for books" });
   }
 
@@ -625,7 +658,7 @@ app.post("/check-for-recommendation-in-list", (req, res) => {
           return res.status(200).json({ exists: results.length > 0 });
         }
       );
-    } else {
+    } else if (recommendationType === "books") {
       db.checkRecommendationExistsInReadlist(
         userId,
         source,
@@ -641,6 +674,23 @@ app.post("/check-for-recommendation-in-list", (req, res) => {
           return res.status(200).json({ exists: results.length > 0 });
         }
       );
+    } else if (recommendationType === "music") {
+      db.checkRecommendationExistsInListenlist(
+        userId,
+        spotifyID,
+        (error, results) => {
+          if (error) {
+            return res
+              .status(500)
+              .json({ error: "Database error", details: error });
+          }
+
+          // Always respond with 200 and include the 'exists' flag
+          return res.status(200).json({ exists: results.length > 0 });
+        }
+      );
+    } else {
+      return res.status(400).json({ error: "Invalid recommendation type" });
     }
   });
 });

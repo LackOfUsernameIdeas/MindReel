@@ -67,6 +67,14 @@ export const MENUITEMS = [
         active: false,
         selected: false,
         title: "ЗА ЧЕТЕНЕ"
+      },
+      {
+        path: `${import.meta.env.BASE_URL}app/saveLists/music`,
+        icon: <i className="side-sub-menu__icon ti ti-music"></i>,
+        type: "link",
+        active: false,
+        selected: false,
+        title: "ЗА СЛУШАНЕ"
       }
     ]
   },

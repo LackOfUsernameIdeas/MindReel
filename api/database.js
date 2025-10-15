@@ -339,6 +339,60 @@ const saveToReadlist = (userId, data, callback) => {
 };
 
 /**
+ * Запазва песен в списъка за слушане на потребителя.
+ * @param {number} userId - Идентификатор на потребителя.
+ * @param {Object} data - Данни за песента.
+ * @param {Function} callback - Функция за обратно извикване след завършване на заявката.
+ */
+const saveToListenlist = (userId, data, callback) => {
+  const query = `INSERT INTO listenlist (
+    user_id,
+    title,
+    artists,
+    description,
+    reason,
+    durationMs,
+    albumTitle,
+    albumType,
+    albumCover,
+    albumTotalTracks,
+    albumReleaseDateInSpotify,
+    spotifyID,
+    spotifyUrl,
+    spotifyPopularity,
+    youtubeMusicVideoID,
+    youtubeMusicVideoUrl,
+    youtubeMusicVideoViews,
+    youtubeMusicVideoLikes,
+    youtubeMusicVideoComments
+  ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`;
+
+  const values = [
+    userId,
+    data.title || null,
+    data.artists || null,
+    data.description || null,
+    data.reason || null,
+    data.durationMs || null,
+    data.albumTitle || null,
+    data.albumType || null,
+    data.albumCover || null,
+    data.albumTotalTracks || null,
+    data.albumReleaseDateInSpotify || null,
+    data.spotifyID || null,
+    data.spotifyUrl || null,
+    data.spotifyPopularity || null,
+    data.youtubeMusicVideoID || null,
+    data.youtubeMusicVideoUrl || null,
+    data.youtubeMusicVideoViews || null,
+    data.youtubeMusicVideoLikes || null,
+    data.youtubeMusicVideoComments || null
+  ];
+
+  db.query(query, values, callback);
+};
+
+/**
  * Премахва елемент от списъка за гледане на потребителя.
  *
  * @param {number} userId - Идентификатор на потребителя.
@@ -399,6 +453,18 @@ const checkRecommendationExistsInReadlist = (
     source === "GoogleBooks" ? "google_books_id = ?" : "	goodreads_id = ?"
   }`;
   db.query(query, [userId, book_id], callback);
+};
+
+/**
+ * Проверява дали препоръката съществува в списъка за слушане на потребителя.
+ *
+ * @param {number} userId - Идентификатор на потребителя.
+ * @param {string} spotifyID - Идентификатор в Spotify на филма/сериала.
+ * @param {function} callback - Функция, която ще бъде извикана след изпълнението на заявката.
+ */
+const checkRecommendationExistsInListenlist = (userId, imdbID, callback) => {
+  const query = "SELECT * FROM listenlist WHERE user_id = ? AND imdbID = ?";
+  db.query(query, [userId, imdbID], callback);
 };
 
 /**
@@ -4668,10 +4734,12 @@ module.exports = {
   saveMusicRecommendation,
   saveToWatchlist,
   saveToReadlist,
+  saveToListenlist,
   removeFromWatchlist,
   removeFromReadlist,
   checkRecommendationExistsInWatchlist,
   checkRecommendationExistsInReadlist,
+  checkRecommendationExistsInListenlist,
   saveMoviesSeriesUserPreferences,
   saveBooksUserPreferences,
   saveMusicUserPreferences,

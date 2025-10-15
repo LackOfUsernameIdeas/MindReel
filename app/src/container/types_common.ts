@@ -174,6 +174,31 @@ export interface BookRecommendation {
   source: string; // Източник (напр. Google Books)
 }
 
+// Интерфейс за песен с всички основни данни за песента.
+export interface MusicRecommendation {
+  id?: string; // ID на препоръката
+  user_id?: string; // ID на потребителя
+  title: string; // Заглавие на песента
+  artists: string[]; // Артисти
+  description: string; // Описание на песента
+  reason: string; // Причина за препоръката
+  durationMs?: number | null; // Продължителност в милисекунди
+  albumTitle?: string | null; // Име на албума
+  albumType?: string | null; // Тип на албума (single, album и т.н.)
+  albumCover?: string | null; // URL към корицата на албума
+  albumTotalTracks?: number | null; // Брой песни в албума
+  albumReleaseDateInSpotify?: string | null; // Дата на издаване
+  spotifyID?: string | null; // Spotify ID
+  spotifyUrl?: string | null; // Spotify линк
+  spotifyPopularity?: number | null; // Популярност в Spotify
+  youtubeMusicVideoID?: string | null; // YouTube ID
+  youtubeMusicVideoUrl?: string | null; // YouTube линк
+  youtubeMusicVideoViews?: number | null; // Брой гледания
+  youtubeMusicVideoLikes?: number | null; // Брой харесвания
+  youtubeMusicVideoComments?: number | null; // Брой коментари
+  date?: string; // Дата на запис на препоръката
+}
+
 export type RecommendationsAnalysis = {
   relevantCount: number; // Броят на релевантните препоръки
   totalCount: number; // Общо броят на препоръките

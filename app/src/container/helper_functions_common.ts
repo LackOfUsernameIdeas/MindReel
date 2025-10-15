@@ -4,6 +4,7 @@ import {
   ActorData,
   Analysis,
   BookRecommendation,
+  MusicRecommendation,
   BrainData,
   DirectorData,
   Genre,
@@ -267,6 +268,50 @@ export const checkRecommendationExistsInReadlist = async (
 };
 
 /**
+ * Проверява дали препоръката вече съществува в списъка за слушане на потребителя.
+ *
+ * @async
+ * @function checkRecommendationExistsInListenlist
+ * @param {string} spotifyID - Spotify ID на препоръката.
+ * @param {string | null} token - Токен за автентикация на потребителя.
+ * @returns {Promise<boolean>} - Връща true, ако препоръката вече съществува.
+ * @throws {Error} - Хвърля грешка, ако проверката не може да бъде извършена.
+ */
+export const checkRecommendationExistsInListenlist = async (
+  spotifyID: string,
+  token: string | null
+): Promise<boolean> => {
+  try {
+    const response = await fetch(
+      `${import.meta.env.VITE_API_BASE_URL}/check-for-recommendation-in-list`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          token,
+          spotifyID,
+          recommendationType: "music"
+        })
+      }
+    );
+
+    if (response.status === 404) {
+      throw new Error("Грешка при проверка на списъка за гледане.");
+    }
+
+    const result = await response.json();
+    console.log("result: ", result.exists, spotifyID);
+
+    return result.exists || false;
+  } catch (error) {
+    console.error("Грешка при проверката:", error);
+    return false;
+  }
+};
+
+/**
  * Записва препоръка за филм или сериал в списъка за гледане на потребителя.
  * Препоръката съдържа подробности като заглавие, жанр, рейтинг и други.
  * След успешното записване, данните се изпращат до сървъра чрез съответния API маршрут.
@@ -481,6 +526,72 @@ export const saveToReadlist = async (
 };
 
 /**
+ * Записва препоръка за песен в списъка за слушане на потребителя.
+ * Препоръката съдържа подробности като заглавие, жанр, рейтинги и други.
+ * След успешното записване, данните се изпращат до сървъра чрез съответния API рут.
+ *
+ * @async
+ * @function saveToListenlist
+ * @param {any} recommendation - Обект с данни за препоръката.
+ * @param {string | null} token - Токен за автентикация на потребителя.
+ * @returns {Promise<void>} - Няма върнат резултат, но изпраща заявка към сървъра.
+ * @throws {Error} - Хвърля грешка, ако данните не могат да бъдат записани.
+ */
+export const saveToListenlist = async (
+  recommendation: MusicRecommendation,
+  token: string | null
+): Promise<void> => {
+  try {
+    if (!recommendation || typeof recommendation !== "object") {
+      console.warn("Няма валидни данни за препоръката.");
+      return;
+    }
+
+    // Проверка дали съществува в списъка за гледане
+    const exists = await checkRecommendationExistsInListenlist(
+      recommendation?.spotifyID ?? "",
+      token
+    );
+
+    if (exists) {
+      console.log("Препоръката вече е добавена в списъка за слушане.");
+      return;
+    }
+
+    const formattedRecommendation = {
+      token,
+      ...recommendation
+    };
+
+    console.log("formattedRecommendation: ", formattedRecommendation);
+    const response = await fetch(
+      `${import.meta.env.VITE_API_BASE_URL}/save-to-list`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          recommendationType: "music",
+          recommendation: formattedRecommendation
+        })
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(
+        "Неуспешно записване на препоръката в списъка за слушане."
+      );
+    }
+
+    const result = await response.json();
+    console.log("Препоръката е успешно добавена:", result);
+  } catch (error) {
+    console.error("Грешка при записването в списъка за слушане:", error);
+  }
+};
+
+/**
  * Премахва филм или сериал от списъка за гледане на потребителя.
  *
  * @async
@@ -574,6 +685,54 @@ export const removeFromReadlist = async (
     console.log("Successfully removed from readlist:", result);
   } catch (error) {
     console.error("Error removing from readlist:", error);
+  }
+};
+
+/**
+ * Премахва филм или сериал от списъка за гледане на потребителя.
+ *
+ * @async
+ * @function removeFromListenlist
+ * @param {string} spotifyID - Уникален идентификатор на песента.
+ * @param {string | null} token - Токен за автентикация на потребителя.
+ * @returns {Promise<void>} - Няма върнат резултат, но изпраща заявка към сървъра.
+ * @throws {Error} - Хвърля грешка, ако данните не могат да бъдат премахнати.
+ */
+export const removeFromListenlist = async (
+  spotifyID: string,
+  token: string | null
+): Promise<void> => {
+  try {
+    if (!spotifyID) {
+      console.warn(
+        "Spotify ID is required to remove a song from the listenlist."
+      );
+      return;
+    }
+
+    const response = await fetch(
+      `${import.meta.env.VITE_API_BASE_URL}/remove-from-list`,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          token,
+          spotifyID,
+          recommendationType: "music"
+        })
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("Failed to remove the song from the listenlist.");
+    }
+
+    const result = await response.json();
+    console.log("Successfully removed from listenlist:", result);
+  } catch (error) {
+    console.error("Error removing from listenlist:", error);
   }
 };
 
