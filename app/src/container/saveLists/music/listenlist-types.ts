@@ -41,7 +41,6 @@ export interface RecommendationCardAlertProps {
 // Интерфейс за пропс на таблицата за песни в listenlist
 export interface MusicTableProps {
   data: MusicRecommendation[];
-  type: "recommendations" | "listenlist";
   setBookmarkedMusic: React.Dispatch<
     // Функция за обновяване на списъка с маркирани песни
     React.SetStateAction<{
