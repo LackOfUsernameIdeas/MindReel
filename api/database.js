@@ -424,6 +424,20 @@ const removeFromReadlist = (userId, source, book_id, callback) => {
 };
 
 /**
+ * Премахва елемент от списъка за слушане на потребителя.
+ *
+ * @param {number} userId - Идентификатор на потребителя.
+ * @param {string} spotifyID - Идентификатор на Spotify ID на песента.
+ * @param {function} callback - Функция, която ще бъде извикана след изпълнението на заявката.
+ */
+const removeFromListenlist = (userId, imdbID, callback) => {
+  const query = `DELETE FROM listenlist WHERE user_id = ? AND spotifyID = ?;`;
+  const values = [userId, imdbID];
+
+  db.query(query, values, callback);
+};
+
+/**
  * Проверява дали препоръката съществува в списъка за гледане на потребителя.
  *
  * @param {number} userId - Идентификатор на потребителя.
@@ -463,7 +477,7 @@ const checkRecommendationExistsInReadlist = (
  * @param {function} callback - Функция, която ще бъде извикана след изпълнението на заявката.
  */
 const checkRecommendationExistsInListenlist = (userId, imdbID, callback) => {
-  const query = "SELECT * FROM listenlist WHERE user_id = ? AND imdbID = ?";
+  const query = "SELECT * FROM listenlist WHERE user_id = ? AND spotifyID = ?";
   db.query(query, [userId, imdbID], callback);
 };
 
@@ -2336,7 +2350,7 @@ const getUsersWatchlist = (userId, callback) => {
  *
  * @callback callback
  * @param {Error|null} err - Ако възникне грешка по време на заявката.
- * @param {Array} results - Массив с резултатите от заявката.
+ * @param {Array} results - Масив с резултатите от заявката.
  * @returns {void}
  */
 const getUsersReadlist = (userId, callback) => {
@@ -2344,6 +2358,27 @@ const getUsersReadlist = (userId, callback) => {
     SELECT * FROM readlist
     WHERE user_id = ?
     ORDER BY title_en ASC;
+  `;
+
+  db.query(query, [userId], callback);
+};
+
+/**
+ * Функция за извличане на списъка за слушне на потребител по неговото ID.
+ *
+ * @param {number} userId - ID на потребителя, за когото се извършва търсенето.
+ * @param {function} callback - Функция за обработка на резултатите от заявката.
+ *
+ * @callback callback
+ * @param {Error|null} err - Ако възникне грешка по време на заявката.
+ * @param {Array} results - Масив с резултатите от заявката.
+ * @returns {void}
+ */
+const getUsersListenlist = (userId, callback) => {
+  const query = `
+    SELECT * FROM listenlist
+    WHERE user_id = ?
+    ORDER BY title ASC;
   `;
 
   db.query(query, [userId], callback);
@@ -4737,6 +4772,7 @@ module.exports = {
   saveToListenlist,
   removeFromWatchlist,
   removeFromReadlist,
+  removeFromListenlist,
   checkRecommendationExistsInWatchlist,
   checkRecommendationExistsInReadlist,
   checkRecommendationExistsInListenlist,
@@ -4765,6 +4801,7 @@ module.exports = {
   getUsersTopRecommendations,
   getUsersWatchlist,
   getUsersReadlist,
+  getUsersListenlist,
   getUsersTopGenres,
   getUsersTopGenresFromWatchlist,
   getUsersTopActors,

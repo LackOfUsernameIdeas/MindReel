@@ -62,9 +62,7 @@ export type TopGenres = {
 
 // Обобщени данни за потребителя (например топ препоръки и жанрове)
 export type DataType = {
-  topRecommendationsListenlist: {
-    listenlist: MusicRecommendation[]; // Топ препоръки в списък за гледане
-  };
+  topRecommendationsListenlist: MusicRecommendation[]; // Топ препоръки в списък за слушане;
 };
 
 // Категории роли (актьори, режисьори, писатели)

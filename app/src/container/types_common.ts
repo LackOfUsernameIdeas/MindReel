@@ -179,7 +179,7 @@ export interface MusicRecommendation {
   id?: string; // ID на препоръката
   user_id?: string; // ID на потребителя
   title: string; // Заглавие на песента
-  artists: string[]; // Артисти
+  artists: string; // Артисти
   description: string; // Описание на песента
   reason: string; // Причина за препоръката
   durationMs?: number | null; // Продължителност в милисекунди

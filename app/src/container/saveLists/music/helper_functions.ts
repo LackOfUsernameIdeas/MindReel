@@ -25,8 +25,8 @@ export const fetchData = async (
     // Fetch statistics data independently
     const endpoints = [
       {
-        key: "topRecommendationsWatchlist",
-        endpoint: "/stats/individual/watchlist",
+        key: "topRecommendationsListenlist",
+        endpoint: "/stats/individual/listenlist",
         method: "POST",
         body: { token: token }
       }

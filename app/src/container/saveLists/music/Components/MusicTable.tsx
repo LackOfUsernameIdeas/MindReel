@@ -7,34 +7,11 @@ import {
   AccordionTrigger,
   AccordionContent
 } from "@/components/ui/accordion";
-
-// Simplified types for the example
-interface MusicRecommendation {
-  id?: string;
-  user_id?: string;
-  title: string;
-  artists: string[];
-  description: string;
-  reason: string;
-  durationMs?: number | null;
-  albumTitle?: string | null;
-  albumType?: string | null;
-  albumCover?: string | null;
-  albumTotalTracks?: number | null;
-  albumReleaseDateInSpotify?: string | null;
-  spotifyID?: string | null;
-  spotifyUrl?: string | null;
-  spotifyPopularity?: number | null;
-  youtubeMusicVideoID?: string | null;
-  youtubeMusicVideoUrl?: string | null;
-  youtubeMusicVideoViews?: number | null;
-  youtubeMusicVideoLikes?: number | null;
-  youtubeMusicVideoComments?: number | null;
-  date?: string;
-}
+import { InfoboxModal } from "@/components/common/infobox/InfoboxModal";
+import Infobox from "@/components/common/infobox/infobox";
+import { MusicRecommendation } from "@/container/types_common";
 
 interface MusicTableProps {
-  type: string;
   data: MusicRecommendation[];
   setBookmarkedSongs: (songs: { [key: string]: any }) => void;
   setCurrentBookmarkStatus: (status: boolean) => void;
@@ -42,13 +19,7 @@ interface MusicTableProps {
   bookmarkedSongs: { [key: string]: any };
 }
 
-const MusicTable: FC<MusicTableProps> = ({
-  data,
-  bookmarkedSongs,
-  setBookmarkedSongs,
-  setCurrentBookmarkStatus,
-  setAlertVisible
-}) => {
+const MusicTable: FC<MusicTableProps> = ({ data }) => {
   const [selectedItem, setSelectedItem] = useState<MusicRecommendation | null>(
     null
   );
@@ -65,6 +36,13 @@ const MusicTable: FC<MusicTableProps> = ({
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const query = event.target.value.toLowerCase();
     setSearchQuery(query);
+  };
+
+  // Функция за форматиране на артисти
+  const formatArtists = (artists?: string): string => {
+    if (!artists) return "N/A";
+    if (Array.isArray(artists)) return artists.join(", ");
+    return artists;
   };
 
   // Функция за форматиране на продължителността
@@ -98,8 +76,12 @@ const MusicTable: FC<MusicTableProps> = ({
     if (item.title?.toLowerCase().includes(query)) return true;
 
     // Търсене в артисти
-    if (item.artists?.some((artist) => artist.toLowerCase().includes(query)))
-      return true;
+    if (Array.isArray(item.artists)) {
+      if (item.artists.some((artist) => artist.toLowerCase().includes(query)))
+        return true;
+    } else if (typeof item.artists === "string") {
+      if (item.artists.toLowerCase().includes(query)) return true;
+    }
 
     // Търсене в албум
     if (item.albumTitle?.toLowerCase().includes(query)) return true;
@@ -181,12 +163,7 @@ const MusicTable: FC<MusicTableProps> = ({
                   value={searchQuery}
                   onChange={handleSearchChange}
                 />
-                <button
-                  onClick={handleInfoButtonClick}
-                  className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-primary/10 hover:bg-primary/20 transition-colors"
-                >
-                  <span className="text-primary text-lg font-bold">i</span>
-                </button>
+                <Infobox onClick={handleInfoButtonClick} />
               </div>
             </div>
 
@@ -287,7 +264,7 @@ const MusicTable: FC<MusicTableProps> = ({
                         Артист(и):
                       </span>{" "}
                       <span className="font-GoodTiming text-gray-900 dark:text-white group-hover:text-white transition duration-300 break-words">
-                        {item.artists?.join(", ") || "N/A"}
+                        {formatArtists(item.artists)}
                       </span>
                     </span>
 
@@ -412,99 +389,89 @@ const MusicTable: FC<MusicTableProps> = ({
         </div>
       </div>
 
-      {isModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-          <div className="bg-white dark:bg-bodybg rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-            <div className="p-6">
-              <div className="flex justify-between items-center mb-4">
-                <h3 className="text-xl font-bold">Търсачка</h3>
-                <button
-                  onClick={handleInfoButtonClick}
-                  className="text-gray-500 hover:text-gray-700"
-                >
-                  ✕
-                </button>
-              </div>
-              <div className="space-y-4">
-                <p>
-                  <span className="font-semibold">Търсачката</span> е
-                  инструмент, който Ви позволява да търсите за{" "}
-                  <span className="font-semibold">конкретни песни</span>, които
-                  сте запазили във вашия списък за слушане и искате да намерите.
-                  Тя взима въведения в нея текст и го сравнява със{" "}
-                  <span className="font-semibold">следните категории:</span>
-                </p>
-                <Accordion type="single" collapsible className="space-y-4">
-                  <AccordionItem value="title">
-                    <AccordionTrigger>🎵 Заглавие</AccordionTrigger>
-                    <AccordionContent>
-                      Можете да намерите търсената от Вас песен, въвеждайки
-                      заглавието ѝ.
-                      <ul className="list-disc pl-6 mt-4">
-                        <li>
-                          <strong>Пример:</strong> Bohemian Rhapsody
-                        </li>
-                      </ul>
-                    </AccordionContent>
-                  </AccordionItem>
+      <InfoboxModal
+        onClick={handleInfoButtonClick}
+        isModalOpen={isModalOpen}
+        title="Търсачка"
+        description={
+          <>
+            <p>
+              <span className="font-semibold">Търсачката</span> е инструмент,
+              който Ви позволява да търсите за{" "}
+              <span className="font-semibold">конкретни песни</span>, които сте
+              запазили във вашия списък за слушане и искате да намерите. Тя
+              взима въведения в нея текст и го сравнява със{" "}
+              <span className="font-semibold">следните категории:</span>
+            </p>
+            <Accordion type="single" collapsible className="space-y-4">
+              <AccordionItem value="title">
+                <AccordionTrigger>🎵 Заглавие</AccordionTrigger>
+                <AccordionContent>
+                  Можете да намерите търсената от Вас песен, въвеждайки
+                  заглавието ѝ.
+                  <ul className="list-disc pl-6 mt-4">
+                    <li>
+                      <strong>Пример:</strong> Bohemian Rhapsody
+                    </li>
+                  </ul>
+                </AccordionContent>
+              </AccordionItem>
 
-                  <AccordionItem value="artist">
-                    <AccordionTrigger>🎤 Артист</AccordionTrigger>
-                    <AccordionContent>
-                      Можете да намерите търсената от Вас песен, въвеждайки име
-                      на артист.
-                      <ul className="list-disc pl-6 mt-4">
-                        <li>
-                          <strong>Пример:</strong> Queen, The Beatles
-                        </li>
-                      </ul>
-                    </AccordionContent>
-                  </AccordionItem>
+              <AccordionItem value="artist">
+                <AccordionTrigger>🎤 Артист</AccordionTrigger>
+                <AccordionContent>
+                  Можете да намерите търсената от Вас песен, въвеждайки име на
+                  артист.
+                  <ul className="list-disc pl-6 mt-4">
+                    <li>
+                      <strong>Пример:</strong> Queen, The Beatles
+                    </li>
+                  </ul>
+                </AccordionContent>
+              </AccordionItem>
 
-                  <AccordionItem value="album">
-                    <AccordionTrigger>💿 Албум</AccordionTrigger>
-                    <AccordionContent>
-                      Можете да намерите търсената от Вас песен, въвеждайки
-                      името на албума.
-                      <ul className="list-disc pl-6 mt-4">
-                        <li>
-                          <strong>Пример:</strong> A Night at the Opera
-                        </li>
-                      </ul>
-                    </AccordionContent>
-                  </AccordionItem>
+              <AccordionItem value="album">
+                <AccordionTrigger>💿 Албум</AccordionTrigger>
+                <AccordionContent>
+                  Можете да намерите търсената от Вас песен, въвеждайки името на
+                  албума.
+                  <ul className="list-disc pl-6 mt-4">
+                    <li>
+                      <strong>Пример:</strong> A Night at the Opera
+                    </li>
+                  </ul>
+                </AccordionContent>
+              </AccordionItem>
 
-                  <AccordionItem value="year">
-                    <AccordionTrigger>📅 Година на издаване</AccordionTrigger>
-                    <AccordionContent>
-                      Можете да намерите търсената от Вас песен, въвеждайки
-                      годината на издаване.
-                      <ul className="list-disc pl-6 mt-4">
-                        <li>
-                          <strong>Пример:</strong> 1975, 2020
-                        </li>
-                      </ul>
-                    </AccordionContent>
-                  </AccordionItem>
+              <AccordionItem value="year">
+                <AccordionTrigger>📅 Година на издаване</AccordionTrigger>
+                <AccordionContent>
+                  Можете да намерите търсената от Вас песен, въвеждайки годината
+                  на издаване.
+                  <ul className="list-disc pl-6 mt-4">
+                    <li>
+                      <strong>Пример:</strong> 1975, 2020
+                    </li>
+                  </ul>
+                </AccordionContent>
+              </AccordionItem>
 
-                  <AccordionItem value="id">
-                    <AccordionTrigger>🔍 Spotify ID</AccordionTrigger>
-                    <AccordionContent>
-                      Можете да намерите търсената от Вас песен, въвеждайки
-                      уникалният ѝ Spotify идентификатор.
-                      <ul className="list-disc pl-6 mt-4">
-                        <li>
-                          <strong>Пример:</strong> 3z8h0TU7ReDPLIbEnYhWZb
-                        </li>
-                      </ul>
-                    </AccordionContent>
-                  </AccordionItem>
-                </Accordion>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+              <AccordionItem value="id">
+                <AccordionTrigger>🔍 Spotify ID</AccordionTrigger>
+                <AccordionContent>
+                  Можете да намерите търсената от Вас песен, въвеждайки
+                  уникалният ѝ Spotify идентификатор.
+                  <ul className="list-disc pl-6 mt-4">
+                    <li>
+                      <strong>Пример:</strong> 3z8h0TU7ReDPLIbEnYhWZb
+                    </li>
+                  </ul>
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
+          </>
+        }
+      />
     </Fragment>
   );
 };

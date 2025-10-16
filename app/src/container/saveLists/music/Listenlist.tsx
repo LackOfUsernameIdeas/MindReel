@@ -23,9 +23,7 @@ import { Card } from "@/components/ui/card";
 const Listenlist: FC = () => {
   // Състояния за задържане на извлечени данни
   const [data, setData] = useState<DataType>({
-    topRecommendationsListenlist: {
-      listenlist: []
-    } // Запазени филми/сериали в списък за гледане
+    topRecommendationsListenlist: [] // Запазени песни в списък за слушане
   });
 
   const [notification, setNotification] = useState<NotificationState | null>(
@@ -70,8 +68,8 @@ const Listenlist: FC = () => {
 
       if (token) {
         const updatedBookmarks: { [key: string]: any } = {};
-        if (data.topRecommendationsListenlist.listenlist) {
-          for (const song of data.topRecommendationsListenlist.listenlist) {
+        if (data.topRecommendationsListenlist) {
+          for (const song of data.topRecommendationsListenlist) {
             try {
               const isBookmarked = await checkRecommendationExistsInListenlist(
                 song.spotifyID ?? "",
@@ -90,7 +88,7 @@ const Listenlist: FC = () => {
     };
 
     loadBookmarkStatus();
-  }, [data.topRecommendationsListenlist.listenlist]);
+  }, [data.topRecommendationsListenlist]);
 
   if (loading) {
     return (
@@ -103,8 +101,8 @@ const Listenlist: FC = () => {
   console.log("data: ", data);
 
   if (
-    !data.topRecommendationsListenlist.listenlist ||
-    data.topRecommendationsListenlist.listenlist.length === 0
+    !data.topRecommendationsListenlist ||
+    data.topRecommendationsListenlist.length === 0
   ) {
     return (
       <>
@@ -226,8 +224,7 @@ const Listenlist: FC = () => {
           </div>
 
           <MusicTable
-            type="listenlist"
-            data={data.topRecommendationsListenlist.listenlist}
+            data={data.topRecommendationsListenlist}
             setBookmarkedSongs={setBookmarkedSongs}
             setCurrentBookmarkStatus={setCurrentBookmarkStatus}
             setAlertVisible={setAlertVisible}

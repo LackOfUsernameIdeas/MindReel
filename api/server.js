@@ -1042,6 +1042,24 @@ app.post("/stats/individual/readlist", (req, res) => {
   });
 });
 
+// Вземане на данни за песни в списък за слушане на даден потребител
+app.post("/stats/individual/listenlist", (req, res) => {
+  const { token } = req.body;
+  console.log("--Списък за слушане--");
+
+  jwt.verify(token, SECRET_KEY, (err, decoded) => {
+    if (err) return res.status(401).json({ error: "Invalid token" });
+    const userId = decoded.id;
+    db.getUsersListenlist(userId, (err, result) => {
+      if (err) {
+        return res.status(500).json({ error: "Error fetching listenlist" });
+      }
+      console.log("--Списък за слушане--");
+      res.json(result);
+    });
+  });
+});
+
 // Вземане на данни за най-препоръчвани жанрове на даден потребител
 app.post("/stats/individual/top-genres", (req, res) => {
   const limit = parseInt(req.query.limit) || 10;
