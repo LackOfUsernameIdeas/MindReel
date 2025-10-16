@@ -916,6 +916,57 @@ export const handleBookBookmarkClick = (
 };
 
 /**
+ * Добавя или премахва песен от списъка с любими на потребителя.
+ * Прикрепя състоянията на компонентите като параметри, за да актуализира състоянието.
+ *
+ * @param {object} song - Песента, която ще бъде добавена или премахната.
+ * @param {Function} setBookmarkedMusic - Функция за актуализиране на състоянието на отметките.
+ * @param {Function} setCurrentBookmarkStatus - Функция за актуализиране на текущия статус на отметката.
+ * @param {Function} setAlertVisible - Функция за показване на алармата.
+ * @returns {void} - Функцията не връща стойност.
+ */
+export const handleMusicBookmarkClick = (
+  song: MusicRecommendation,
+  setBookmarkedMusic?: React.Dispatch<
+    React.SetStateAction<{ [key: string]: any }>
+  >,
+  setCurrentBookmarkStatus?: React.Dispatch<React.SetStateAction<boolean>>,
+  setAlertVisible?: React.Dispatch<React.SetStateAction<boolean>>
+) => {
+  setBookmarkedMusic &&
+    setBookmarkedMusic((prev) => {
+      const isBookmarked = !!prev[song?.spotifyID ?? ""];
+      const updatedBookmarks = { ...prev };
+      const token =
+        localStorage.getItem("authToken") ||
+        sessionStorage.getItem("authToken");
+
+      if (isBookmarked) {
+        // Remove the movie from bookmarks if it's already bookmarked
+        delete updatedBookmarks[song?.spotifyID ?? ""];
+
+        removeFromListenlist(song?.spotifyID ?? "", token).catch(
+          (error: any) => {
+            console.error("Error removing from watchlist:", error);
+          }
+        );
+      } else {
+        // Add the movie to bookmarks if it's not already bookmarked
+        updatedBookmarks[song?.spotifyID ?? ""] = song;
+
+        saveToListenlist(song, token).catch((error: any) => {
+          console.error("Error saving to watchlist:", error);
+        });
+      }
+
+      setCurrentBookmarkStatus && setCurrentBookmarkStatus(!isBookmarked); // Update the current bookmark status
+      setAlertVisible && setAlertVisible(true); // Show the alert
+
+      return updatedBookmarks; // Return the updated bookmarks object
+    });
+};
+
+/**
  * Форматира предпочитанията за анализ в зависимост от флага `shouldFormat`.
  *
  * @param {any} moviesSeriesUserPreferences - Предпочитания на потребителя за филми/сериали.

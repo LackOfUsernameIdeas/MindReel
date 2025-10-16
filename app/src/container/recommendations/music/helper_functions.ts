@@ -649,21 +649,21 @@ export const handleSubmit = async (
  * Прикрепя състоянията на компонентите като параметри, за да актуализира състоянието.
  *
  * @param {object} song - Песента, която ще бъде добавена или премахната.
- * @param {Function} setBookmarkedSongs - Функция за актуализиране на състоянието на отметките.
+ * @param {Function} setBookmarkedMusic - Функция за актуализиране на състоянието на отметките.
  * @param {Function} setCurrentBookmarkStatus - Функция за актуализиране на текущия статус на отметката.
  * @param {Function} setAlertVisible - Функция за показване на алармата.
  * @returns {void} - Функцията не връща стойност.
  */
 export const handleBookmarkClick = (
   song: Recommendation,
-  setBookmarkedSongs?: React.Dispatch<
+  setBookmarkedMusic?: React.Dispatch<
     React.SetStateAction<{ [key: string]: any }>
   >,
   setCurrentBookmarkStatus?: React.Dispatch<React.SetStateAction<boolean>>,
   setAlertVisible?: React.Dispatch<React.SetStateAction<boolean>>
 ) => {
-  setBookmarkedSongs &&
-    setBookmarkedSongs((prev) => {
+  setBookmarkedMusic &&
+    setBookmarkedMusic((prev) => {
       const isBookmarked = !!prev[song?.spotifyID ?? ""];
       const updatedBookmarks = { ...prev };
       const token =

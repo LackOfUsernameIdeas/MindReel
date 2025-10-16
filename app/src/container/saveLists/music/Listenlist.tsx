@@ -29,7 +29,7 @@ const Listenlist: FC = () => {
   const [notification, setNotification] = useState<NotificationState | null>(
     null
   ); // Състояние за показване на известия (например съобщения за грешки, успехи или предупреждения)
-  const [bookmarkedSongs, setBookmarkedSongs] = useState<{
+  const [bookmarkedMusic, setBookmarkedMusic] = useState<{
     [key: string]: any;
   }>({});
   const [alertVisible, setAlertVisible] = useState(false); // To control alert visibility
@@ -83,7 +83,7 @@ const Listenlist: FC = () => {
             }
           }
         }
-        setBookmarkedSongs(updatedBookmarks);
+        setBookmarkedMusic(updatedBookmarks);
       }
     };
 
@@ -225,10 +225,10 @@ const Listenlist: FC = () => {
 
           <MusicTable
             data={data.topRecommendationsListenlist}
-            setBookmarkedSongs={setBookmarkedSongs}
+            setBookmarkedMusic={setBookmarkedMusic}
             setCurrentBookmarkStatus={setCurrentBookmarkStatus}
             setAlertVisible={setAlertVisible}
-            bookmarkedSongs={bookmarkedSongs}
+            bookmarkedMusic={bookmarkedMusic}
           />
         </div>
       </Fragment>

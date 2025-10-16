@@ -1,230 +1,115 @@
 import { FC, useState, useEffect, useRef } from "react";
-import { FaStar } from "react-icons/fa";
-import { SiRottentomatoes } from "react-icons/si";
-import { PlotAndDescriptionModal } from "./PlotAndDescriptionModal";
-import { Rating, RecommendationCardAlertProps } from "../listenlist-types";
-import {
-  handleMovieSeriesBookmarkClick,
-  translate
-} from "../../../helper_functions_common";
+import { ExternalLink, Eye, ThumbsUp } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { InfoboxModal } from "@/components/common/infobox/InfoboxModal";
+import { handleMusicBookmarkClick } from "../../../helper_functions_common";
+import { RecommendationCardAlertProps } from "../listenlist-types";
 
-// Компонент за показване на избран филм/сериал като alert
 const RecommendationCardAlert: FC<RecommendationCardAlertProps> = ({
   selectedItem,
   onClose,
-  bookmarkedMovies,
-  setBookmarkedMovies,
+  setBookmarkedMusic,
   setCurrentBookmarkStatus,
-  setAlertVisible
+  setAlertVisible,
+  bookmarkedMusic
 }) => {
-  const [translatedDirectors, setTranslatedDirectors] = useState<string>(""); // Преведените режисьори
-  const [translatedWriters, setTranslatedWriters] = useState<string>(""); // Преведените сценаристи
-  const [translatedActors, setTranslatedActors] = useState<string>(""); // Преведените актьори
-  const [translatedAwards, setTranslatedAwards] = useState<string>(""); // Преведените награди
-  const [translatedPlot, setTranslatedPlot] = useState<string>(""); // Преведеното описание на сюжета
-  const [translatedCountry, setTranslatedCountry] = useState<string>(""); // Преведената страна
-  const [translatedLanguage, setTranslatedLanguage] = useState<string>(""); // Преведеният език
-  const [visible, setVisible] = useState(false); // Показване на компонента
-  const [isModalOpen, setIsModalOpen] = useState(false); // Статус на модалния прозорец
-  const [isReasonModalOpen, setIsReasonModalOpen] = useState(false); // Състояние за отваряне на модалния прозорец за причина
-  const [modalType, setModalType] = useState<"description" | "plot">(
-    "description"
-  );
-  const [modalData, setModalData] = useState<string | undefined>(""); // Данни за съдържанието на модалния прозорец
-  const previewLength = 150; // Дължина на прегледа на съдържанието (oписаниeто и сюжета)
-  const modalRef = useRef<HTMLDivElement>(null); // Референция към модалния контейнер за директна манипулация в DOM
+  const [visible, setVisible] = useState(false);
+  const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
+  const [isReasonModalOpen, setIsReasonModalOpen] = useState(false);
+  const [albumCoverError, setAlbumCoverError] = useState(false);
+  const previewLength = 150;
+  const modalRef = useRef<HTMLDivElement>(null);
 
-  const [position, setPosition] = useState<number>(0); // Държи текущата вертикална позиция на модала (Y)
-  const [dragging, setDragging] = useState<boolean>(false); // Флаг, който показва дали потребителят в момента влачи модала
-  const [lastY, setLastY] = useState<number>(0); // Запазва последната Y-координата на допир за плавно движение
+  const [position, setPosition] = useState<number>(0);
+  const [dragging, setDragging] = useState<boolean>(false);
+  const [lastY, setLastY] = useState<number>(0);
 
-  const [isTrailerModalOpen, setIsTrailerModalOpen] = useState(false); // Състояние за отваряне на модалния прозорец
+  // Helper functions
+  const formatArtists = (artists?: string | string[] | null): string => {
+    if (!artists) return "N/A";
+    if (Array.isArray(artists)) return artists.join(", ");
+    return artists;
+  };
 
-  const [posterError, setPosterError] = useState(false); // Състояние за грешка при зареждане на изображението
+  const formatDuration = (ms?: number | null): string => {
+    if (!ms) return "N/A";
+    const minutes = Math.floor(ms / 60000);
+    const seconds = Math.floor((ms % 60000) / 1000);
+    return `${minutes}:${seconds.toString().padStart(2, "0")}`;
+  };
+
+  const formatNumber = (num?: number | null): string => {
+    if (!num) return "N/A";
+    if (num >= 1000000000) return `${(num / 1000000000).toFixed(1)}B`;
+    if (num >= 1000000) return `${(num / 1000000).toFixed(1)}M`;
+    if (num >= 1000) return `${(num / 1000).toFixed(1)}K`;
+    return num.toString();
+  };
+
+  const formatDate = (dateString?: string | null): string => {
+    if (!dateString) return "Неизвестна";
+    return new Date(dateString).toLocaleDateString("bg-BG", {
+      year: "numeric",
+      month: "long",
+      day: "numeric"
+    });
+  };
 
   const handleTrailerModalClick = () => {
-    setIsTrailerModalOpen((prev) => !prev);
-  }; // Функция за обработка на клик - модален прозорец
+    selectedItem?.youtubeMusicVideoUrl && setIsVideoModalOpen((prev) => !prev);
+  };
 
   const handleReasonModalClick = () => {
     setIsReasonModalOpen((prev) => !prev);
-  }; // Функция за обработка на клик - модален прозорец за причина
+  };
 
-  // useEffect, който предотвратява скролването на фоновата страница, докато потребителят влачи модала
   useEffect(() => {
     const preventScroll = (e: TouchEvent) => {
-      if (dragging) e.preventDefault(); // Спира скролването на основната страница
+      if (dragging) e.preventDefault();
     };
 
     document.addEventListener("touchmove", preventScroll, { passive: false });
-
     return () => {
-      document.removeEventListener("touchmove", preventScroll); // Премахва слушателя при спиране на влаченето
+      document.removeEventListener("touchmove", preventScroll);
     };
   }, [dragging]);
 
-  // Функция, която се изпълнява при докосване на модала
   const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
-    setDragging(true); // Активира режима на влачене
-    setLastY(e.touches[0].clientY); // Запазва началната Y-координата
+    setDragging(true);
+    setLastY(e.touches[0].clientY);
   };
 
-  // Функция, която се изпълнява при движение на пръста по екрана
   const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
-    if (!dragging) return; // Ако не влачим, прекратяваме функцията
-
-    const deltaY = e.touches[0].clientY - lastY; // Изчислява разликата в позицията
-    setLastY(e.touches[0].clientY); // Обновява последната Y-координата
-
-    // Използваме requestAnimationFrame за по-плавно движение
+    if (!dragging) return;
+    const deltaY = e.touches[0].clientY - lastY;
+    setLastY(e.touches[0].clientY);
     requestAnimationFrame(() => {
       setPosition((prev) => prev + deltaY);
     });
   };
 
-  // Функция, която се изпълнява, когато потребителят вдигне пръста си от екрана
   const handleTouchEnd = () => {
-    setDragging(false); // Деактивира режима на влачене
+    setDragging(false);
   };
 
-  // Когато има информация за филма/сериала, кардът се render-ва
   useEffect(() => {
     if (selectedItem) {
       setVisible(true);
     }
   }, [selectedItem]);
 
-  // Затваряме компонента след 300ms
+  useEffect(() => {
+    setAlbumCoverError(false);
+  }, [selectedItem?.albumCover]);
+
   const handleClose = () => {
     setVisible(false);
     setTimeout(() => {
-      onClose(); // Извикваме
+      onClose();
     }, 300);
   };
 
-  // Отваря modal-а
-  const openModal = (type: "description" | "plot") => {
-    setModalType(type);
-    setModalData(
-      type === "description" ? selectedItem?.description || "" : translatedPlot
-    );
-    setIsModalOpen(true);
-  };
-
-  // Затваря modal-а
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-  };
-
-  // useEffect за превод на името на режисьора
-  useEffect(() => {
-    if (selectedItem?.director !== null) {
-      async function fetchDirectorTranslation() {
-        const translated =
-          selectedItem?.director && (await translate(selectedItem.director));
-        translated && setTranslatedDirectors(translated);
-      }
-      fetchDirectorTranslation();
-    }
-  }, [selectedItem?.director]);
-
-  // useEffect за превод на името на сценариста
-  useEffect(() => {
-    if (selectedItem?.writer) {
-      async function fetchWriterTranslation() {
-        const translated =
-          selectedItem?.writer && (await translate(selectedItem.writer));
-        translated && setTranslatedWriters(translated);
-      }
-      fetchWriterTranslation();
-    }
-  }, [selectedItem?.writer]);
-
-  // useEffect за превод на името на актьорите
-  useEffect(() => {
-    if (selectedItem?.actors) {
-      async function fetchActorsTranslation() {
-        const translated =
-          selectedItem?.actors && (await translate(selectedItem.actors));
-        translated && setTranslatedActors(translated);
-      }
-      fetchActorsTranslation();
-    }
-  }, [selectedItem?.actors]);
-
-  // useEffect за превод на наградите на филма/сериала
-  useEffect(() => {
-    if (selectedItem?.awards) {
-      async function fetchAwardsTranslation() {
-        const translated =
-          selectedItem?.awards && (await translate(selectedItem.awards));
-        translated && setTranslatedAwards(translated);
-      }
-      fetchAwardsTranslation();
-    }
-  }, [selectedItem?.awards]);
-
-  // useEffect за превод на сюжета на филма/сериала
-  useEffect(() => {
-    if (selectedItem?.plot) {
-      async function fetchPlotTranslation() {
-        const translated =
-          selectedItem?.plot && (await translate(selectedItem.plot));
-        translated && setTranslatedPlot(translated);
-      }
-
-      fetchPlotTranslation();
-    }
-  }, [selectedItem?.plot]);
-
-  // useEffect за превод на държавата на филма/сериала
-  useEffect(() => {
-    if (selectedItem?.country) {
-      async function fetchCountryTranslation() {
-        const translated =
-          selectedItem?.country && (await translate(selectedItem?.country));
-        translated && setTranslatedCountry(translated);
-      }
-      fetchCountryTranslation();
-    }
-  }, [selectedItem?.country]);
-
-  // useEffect за превод на езика на филма/сериала
-  useEffect(() => {
-    if (selectedItem?.language) {
-      async function fetchLanguageTranslation() {
-        const translated =
-          selectedItem?.language && (await translate(selectedItem?.language));
-        translated && setTranslatedLanguage(translated);
-      }
-      fetchLanguageTranslation();
-    }
-  }, [selectedItem?.language]);
-
-  useEffect(() => {
-    setPosterError(false); // Ресет на грешката при зареждане на изображението
-  }, [selectedItem?.poster]);
-
-  // Ако няма избран елемент, връщаме null (не рендерираме компонента)
   if (!selectedItem) return null;
-
-  // Преведените жанрове, с дефолтна стойност, ако липсват
-  const translatedGenres = selectedItem.genre_bg || "Жанр неизвестен";
-
-  // Проверка дали избраният елемент е филм
-  const isMovie = selectedItem.type === "movie";
-
-  // Форматиране на рейтингите
-  const ratings: Rating[] = Array.isArray(selectedItem.ratings)
-    ? selectedItem.ratings
-    : JSON.parse(selectedItem.ratings || "[]");
-
-  // Рейтинг от Rotten Tomatoes, ако е наличен
-  const rottenTomatoesRating = Array.isArray(ratings)
-    ? ratings.find((rating) => rating.Source === "Rotten Tomatoes")?.Value ||
-      "N/A"
-    : "N/A";
 
   return (
     <div
@@ -248,29 +133,29 @@ const RecommendationCardAlert: FC<RecommendationCardAlertProps> = ({
         <div className="recommendation-card">
           <div className="flex w-full items-start flex-col md:flex-row gap-4 md:gap-6">
             <div className="relative flex-shrink-0 w-full md:w-auto flex flex-col items-center">
-              {/* Постер */}
+              {/* Album Cover */}
               <div
                 className={`relative group ${
-                  selectedItem.youtubeTrailerUrl ? "cursor-pointer" : ""
+                  selectedItem.youtubeMusicVideoUrl ? "cursor-pointer" : ""
                 } w-full max-w-[280px] sm:max-w-[320px] md:max-w-none md:w-64`}
                 onClick={handleTrailerModalClick}
               >
-                {!posterError && selectedItem.poster ? (
+                {!albumCoverError && selectedItem.albumCover ? (
                   <img
-                    src={selectedItem.poster}
+                    src={selectedItem.albumCover}
                     alt=""
-                    onError={() => setPosterError(true)}
+                    onError={() => setAlbumCoverError(true)}
                     className={`rounded-lg w-full h-auto transition-all duration-300 ${
-                      selectedItem.youtubeTrailerUrl
+                      selectedItem.youtubeMusicVideoUrl
                         ? "group-hover:scale-102 group-hover:blur-sm"
                         : ""
                     }`}
                   />
                 ) : (
-                  <div className="rounded-lg w-full aspect-[2.8/4] bg-white/70 dark:bg-bodybg2" />
+                  <div className="rounded-lg w-full aspect-[3.8/4] bg-white/70 dark:bg-bodybg2" />
                 )}
                 {/* Play button */}
-                {selectedItem.youtubeTrailerUrl && (
+                {selectedItem.youtubeMusicVideoUrl && (
                   <div className="absolute inset-0 flex items-center justify-center transition-opacity duration-300">
                     <div className="group relative">
                       <div className="absolute inset-0 rounded-full bg-white/20 blur-xl scale-150 group-hover:scale-[1.7] transition-transform duration-500"></div>
@@ -295,12 +180,12 @@ const RecommendationCardAlert: FC<RecommendationCardAlertProps> = ({
                   </div>
                 )}
               </div>
-              {/* Бутон за добавяне/премахване от watchlist */}
+              {/* Bookmark Button */}
               <button
                 onClick={() =>
-                  handleMovieSeriesBookmarkClick(
+                  handleMusicBookmarkClick(
                     selectedItem,
-                    setBookmarkedMovies,
+                    setBookmarkedMusic,
                     setCurrentBookmarkStatus,
                     setAlertVisible
                   )
@@ -315,7 +200,7 @@ const RecommendationCardAlert: FC<RecommendationCardAlertProps> = ({
                   viewBox="0 0 24 24"
                   fill="currentColor"
                 >
-                  {bookmarkedMovies[selectedItem.imdbID] ? (
+                  {bookmarkedMusic[selectedItem?.spotifyID ?? ""] ? (
                     <>
                       <path d="M18 2H6c-1.103 0-2 .897-2 2v18l8-4.572L20 22V4c0-1.103-.897-2-2-2zm0 16.553L12 15.125 6 18.553V4h12v14.553z"></path>
                       <path d="M6 18.553V4h12v14.553L12 15.125l-6 3.428z"></path>
@@ -328,95 +213,94 @@ const RecommendationCardAlert: FC<RecommendationCardAlertProps> = ({
             </div>
 
             <div className="flex-grow w-full md:flex-1 text-left">
-              {/* Главна информация */}
+              {/* Main Information */}
               <div className="mb-4">
                 <p className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold mb-1 sm:mb-2">
-                  {selectedItem.title_bg || "Заглавие не е налично"}
+                  {selectedItem.title || "Заглавие не е налично"}
                 </p>
                 <p className="text-sm sm:text-md md:text-lg font-semibold text-opacity-60 italic mb-2">
-                  {selectedItem.title_en ||
-                    "Заглавие на английски не е налично"}
+                  {formatArtists(selectedItem.artists)}
                 </p>
                 <p className="flex flex-wrap gap-1 text-xs sm:text-sm italic text-defaulttextcolor/70">
-                  {translatedGenres || "Жанр неизвестен"} |{" "}
-                  {!isMovie &&
-                    `Брой сезони: ${
-                      selectedItem.totalSeasons || "Неизвестен"
-                    } | `}
-                  {selectedItem.runtime || "Неизвестно времетраене"}{" "}
-                  {!isMovie && (
-                    <span title="Средно аритметично времетраене на един епизод">
-                      (Ср. за 1 епизод)
-                    </span>
-                  )}
-                  | {selectedItem.year || "Година неизвестна"} | Рейтинг:{" "}
-                  {selectedItem.rated || "N/A"}
+                  {selectedItem.albumType || "Тип неизвестен"} |{" "}
+                  {formatDuration(selectedItem.durationMs)} |{" "}
+                  {formatDate(selectedItem.albumReleaseDateInSpotify)} |{" "}
+                  {selectedItem.spotifyPopularity
+                    ? `Популярност: ${selectedItem.spotifyPopularity}/100`
+                    : "Популярност: N/A"}
                 </p>
-                {/* Рейтинги */}
+
+                {/* Ratings */}
                 <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 md:gap-6 py-2">
-                  <div
-                    className="flex items-center gap-2 dark:text-[#FFCC33] text-[#bf9413]"
-                    title="IMDb рейтинг: Базиран на отзиви и оценки от потребители."
-                  >
-                    <span className="font-bold text-sm sm:text-base md:text-lg">
-                      IMDb:{" "}
-                    </span>
-                    <FaStar className="w-5 h-5 sm:w-6 sm:h-6 md:w-8 md:h-8" />
-                    <span className="font-bold text-sm sm:text-base md:text-lg">
-                      {selectedItem.imdbRating || "N/A"} /{" "}
-                      {selectedItem.imdbVotes || "N/A"} гласа
-                    </span>
-                  </div>
-                  {isMovie && (
+                  {selectedItem.spotifyPopularity && (
                     <div
-                      className="flex items-center gap-2"
-                      title="Метаскор: Средно претеглена оценка от критически рецензии за филма."
+                      className="flex items-center gap-2 dark:text-[#1DB954] text-[#1DB954]"
+                      title="Spotify популярност: Базирана на слушания и взаимодействия."
                     >
-                      <div
-                        className={`flex items-center justify-center rounded-md text-white ${
-                          parseInt(selectedItem.metascore) >= 60
-                            ? "bg-[#54A72A]"
-                            : parseInt(selectedItem.metascore) >= 40
-                            ? "bg-[#FFCC33]"
-                            : "bg-[#FF0000]"
-                        }`}
-                        style={{ width: "2rem", height: "2rem" }}
-                      >
-                        <span
-                          className={`${
-                            selectedItem.metascore === "N/A" ||
-                            !selectedItem.metascore
-                              ? "text-xs"
-                              : "text-base sm:text-lg"
-                          }`}
-                        >
-                          {selectedItem.metascore || "N/A"}
+                      <span className="font-bold text-sm sm:text-base md:text-lg">
+                        Spotify:{" "}
+                      </span>
+                      <div className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 bg-[#1DB954] rounded-full flex items-center justify-center flex-shrink-0">
+                        <span className="text-white font-bold text-xs sm:text-sm">
+                          S
                         </span>
                       </div>
-                      <span className="font-semibold text-sm sm:text-base md:text-lg">
-                        Метаскор
+                      <span className="font-bold text-sm sm:text-base md:text-lg">
+                        {selectedItem.spotifyPopularity}/100
+                      </span>
+                      {selectedItem.spotifyUrl && (
+                        <Button
+                          asChild
+                          className="bg-secondary/10 dark:bg-secondary/20 text-xs sm:text-sm px-2 py-1 h-auto"
+                        >
+                          <a
+                            href={selectedItem.spotifyUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            <ExternalLink className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+                            <span className="hidden sm:inline">
+                              Слушай в Spotify
+                            </span>
+                            <span className="sm:hidden">Spotify</span>
+                          </a>
+                        </Button>
+                      )}
+                    </div>
+                  )}
+
+                  {selectedItem.youtubeMusicVideoViews && (
+                    <div
+                      className="flex items-center gap-2"
+                      title="YouTube гледания: Общ брой гледания на музикалното видео."
+                    >
+                      <Eye className="text-[#FF0000] w-5 h-5 sm:w-6 sm:h-6 md:w-8 md:h-8 flex-shrink-0" />
+                      <span className="text-red-400 font-semibold text-sm sm:text-base md:text-lg">
+                        {formatNumber(selectedItem.youtubeMusicVideoViews)}{" "}
+                        гледания
                       </span>
                     </div>
                   )}
-                  {isMovie && (
+
+                  {selectedItem.youtubeMusicVideoLikes && (
                     <div
                       className="flex items-center gap-2"
-                      title="Rotten Tomatoes рейтинг: Процент положителни рецензии от професионални критици."
+                      title="YouTube харесвания: Брой харесвания на видеото."
                     >
-                      <SiRottentomatoes className="text-[#FF0000] w-5 h-5 sm:w-6 sm:h-6 md:w-8 md:h-8" />
+                      <ThumbsUp className="text-[#FF0000] w-5 h-5 sm:w-6 sm:h-6 md:w-8 md:h-8 flex-shrink-0" />
                       <span className="text-red-400 font-semibold text-sm sm:text-base md:text-lg">
-                        {rottenTomatoesRating}
+                        {formatNumber(selectedItem.youtubeMusicVideoLikes)}
                       </span>
                     </div>
                   )}
                 </div>
               </div>
-              {/* Причина за препоръчване */}
+
+              {/* Reason for recommendation */}
               {selectedItem.reason && (
                 <div className="mb-4">
                   <h3 className="text-base sm:text-lg font-semibold mb-2">
-                    Защо препоръчваме{" "}
-                    {selectedItem.title_bg || "Заглавие не е налично"}?
+                    Защо препоръчваме {selectedItem.title || "тази песен"}?
                   </h3>
                   <div className="overflow-hidden transition-all duration-500 ease-in-out max-h-[3rem] opacity-70">
                     <p className="text-sm sm:text-base text-opacity-80 italic">
@@ -438,7 +322,8 @@ const RecommendationCardAlert: FC<RecommendationCardAlertProps> = ({
                   )}
                 </div>
               )}
-              {/* Описание */}
+
+              {/* Description */}
               <div className="mb-4">
                 <h3 className="text-base sm:text-lg font-semibold mb-2">
                   Описание
@@ -453,109 +338,46 @@ const RecommendationCardAlert: FC<RecommendationCardAlertProps> = ({
                       : selectedItem.description}
                   </p>
                 </div>
-
-                {selectedItem.description &&
-                  selectedItem.description.length > previewLength && (
-                    <button
-                      onClick={() => openModal("description")}
-                      className="mt-2 text-sm sm:text-base underline hover:scale-105 transition"
-                    >
-                      Пълно описание
-                    </button>
-                  )}
               </div>
-              {/* Сюжет */}
-              <div className="mb-4">
-                <h3 className="text-base sm:text-lg font-semibold mb-2">
-                  Сюжет
-                </h3>
-                <div className="overflow-hidden transition-all duration-500 ease-in-out max-h-[3rem] opacity-70">
-                  <p className="text-sm sm:text-base text-opacity-80 italic">
-                    {translatedPlot.length > previewLength
-                      ? `${translatedPlot.substring(0, previewLength)}...`
-                      : translatedPlot}
-                  </p>
-                </div>
 
-                {translatedPlot && translatedPlot.length > previewLength && (
-                  <button
-                    onClick={() => openModal("plot")}
-                    className="mt-2 text-sm sm:text-base underline hover:scale-105 transition"
-                  >
-                    Пълен сюжет
-                  </button>
-                )}
-              </div>
-              {/* Допълнителна информация */}
+              {/* Additional Information */}
               <div className="mb-4">
                 <h3 className="text-base sm:text-lg font-semibold mb-2">
                   Допълнителна информация:
                 </h3>
                 <ul className="flex flex-wrap gap-x-4 gap-y-1 text-sm sm:text-base text-opacity-80">
                   <li>
-                    <strong className="text-primary">Режисьор:</strong>{" "}
-                    {translatedDirectors && translatedDirectors !== "N/A"
-                      ? translatedDirectors
-                      : "Неизвестен"}
+                    <strong className="text-primary">Артисти:</strong>{" "}
+                    {formatArtists(selectedItem.artists)}
                   </li>
                   <li>
-                    <strong className="text-primary">Сценаристи:</strong>{" "}
-                    {translatedWriters && translatedWriters !== "N/A"
-                      ? translatedWriters
-                      : "Неизвестни"}
+                    <strong className="text-primary">Албум:</strong>{" "}
+                    {selectedItem.albumTitle || "Неизвестен"}
                   </li>
                   <li>
-                    <strong className="text-primary">Актьори:</strong>{" "}
-                    {translatedActors && translatedActors !== "N/A"
-                      ? translatedActors
-                      : "Неизвестни"}
+                    <strong className="text-primary">Тип албум:</strong>{" "}
+                    {selectedItem.albumType || "Неизвестен"}
                   </li>
-                  {isMovie && (
+                  <li>
+                    <strong className="text-primary">Продължителност:</strong>{" "}
+                    {formatDuration(selectedItem.durationMs)}
+                  </li>
+                  <li>
+                    <strong className="text-primary">Дата на издаване:</strong>{" "}
+                    {formatDate(selectedItem.albumReleaseDateInSpotify)}
+                  </li>
+                  {selectedItem.albumTotalTracks && (
                     <li>
-                      <strong className="text-primary">Продукция:</strong>{" "}
-                      {selectedItem.production || "N/A"}
+                      <strong className="text-primary">Песни в албума:</strong>{" "}
+                      {selectedItem.albumTotalTracks}
                     </li>
                   )}
-                  <li>
-                    <strong className="text-primary">Пуснат на:</strong>{" "}
-                    {selectedItem.released || "N/A"}
-                  </li>
-                  <li>
-                    <strong className="text-primary">Език:</strong>{" "}
-                    {translatedLanguage && translatedLanguage !== "N/A"
-                      ? translatedLanguage
-                      : "Неизвестен"}
-                  </li>
-                  <li>
-                    <strong className="text-primary">Държава/-и:</strong>{" "}
-                    {translatedCountry && translatedCountry !== "N/A"
-                      ? translatedCountry
-                      : "Неизвестна/-и"}
-                  </li>
-                  <li>
-                    <strong className="text-primary">Награди:</strong>{" "}
-                    {translatedAwards && translatedAwards !== "N/A"
-                      ? translatedAwards
-                      : "Няма"}
-                  </li>
-                  {isMovie && (
+                  {selectedItem.spotifyPopularity && (
                     <li>
-                      <strong className="text-primary">Боксофис:</strong>{" "}
-                      {selectedItem.boxOffice || "N/A"}
-                    </li>
-                  )}
-                  {isMovie && (
-                    <li>
-                      <strong className="text-primary">DVD:</strong>{" "}
-                      {selectedItem.DVD !== "N/A" ? selectedItem.DVD : "Няма"}
-                    </li>
-                  )}
-                  {isMovie && (
-                    <li>
-                      <strong className="text-primary">Уебсайт:</strong>{" "}
-                      {selectedItem.website !== "N/A"
-                        ? selectedItem.website
-                        : "Няма"}
+                      <strong className="text-primary">
+                        Spotify популярност:
+                      </strong>{" "}
+                      {selectedItem.spotifyPopularity}/100
                     </li>
                   )}
                 </ul>
@@ -563,7 +385,8 @@ const RecommendationCardAlert: FC<RecommendationCardAlertProps> = ({
             </div>
           </div>
         </div>
-        {/* Х */}
+
+        {/* Close Button */}
         <button
           onClick={handleClose}
           className="absolute top-2 right-2 sm:top-4 sm:right-4 p-1 sm:p-2 text-[#FFCC33] bg-opacity-60 rounded-full transition-transform duration-300 transform hover:scale-110 z-10"
@@ -612,18 +435,15 @@ const RecommendationCardAlert: FC<RecommendationCardAlertProps> = ({
           </svg>
         </button>
       </div>
-      {/*Modal за пълното описание/сюжет на филма/сериала*/}
-      <PlotAndDescriptionModal
-        isOpen={isModalOpen}
-        onClose={handleCloseModal}
-        modalData={modalData}
-        modalType={modalType}
-      />
-      {selectedItem.youtubeTrailerUrl && (
+
+      {/* Video Modal */}
+      {selectedItem.youtubeMusicVideoUrl && (
         <InfoboxModal
           onClick={handleTrailerModalClick}
-          isModalOpen={isTrailerModalOpen}
-          title={`Трейлър на ${selectedItem.title_bg} - ${selectedItem.title_en}`}
+          isModalOpen={isVideoModalOpen}
+          title={`Музикално видео на ${selectedItem.title} - ${formatArtists(
+            selectedItem.artists
+          )}`}
           description={
             <div className="container text-center">
               <div className="flex justify-center">
@@ -631,7 +451,7 @@ const RecommendationCardAlert: FC<RecommendationCardAlertProps> = ({
                   <div className="aspect-video">
                     <iframe
                       className="w-full h-full"
-                      src={selectedItem.youtubeTrailerUrl}
+                      src={selectedItem.youtubeMusicVideoUrl}
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                       allowFullScreen
                     ></iframe>
@@ -642,12 +462,13 @@ const RecommendationCardAlert: FC<RecommendationCardAlertProps> = ({
           }
         />
       )}
+
       {/* Reason Modal */}
       {selectedItem.reason && selectedItem.reason.length > previewLength && (
         <InfoboxModal
           onClick={handleReasonModalClick}
           isModalOpen={isReasonModalOpen}
-          title={`Защо препоръчваме ${selectedItem.title_bg}?`}
+          title={`Защо препоръчваме ${selectedItem.title}?`}
           description={
             <div className="text-left">
               <p className="text-opacity-80 italic whitespace-pre-wrap">

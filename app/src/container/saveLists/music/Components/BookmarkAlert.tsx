@@ -44,8 +44,8 @@ const BookmarkAlert: React.FC<BookmarkAlertProps> = ({
             </svg>
             <span>
               {isBookmarked
-                ? "Добавено в списък за гледане"
-                : "Премахнато от списък за гледане"}
+                ? "Добавено в списък за слушане"
+                : "Премахнато от списък за слушане"}
             </span>
           </div>
           <button
@@ -74,13 +74,13 @@ const BookmarkAlert: React.FC<BookmarkAlertProps> = ({
         </div>
         <div className="pl-8 text-[0.75rem] opacity-[0.8] mb-1">
           {isBookmarked
-            ? `Вашият филм/сериал е запазен в `
-            : `Този филм/сериал е премахнат от `}
+            ? `Вашата песен е запазена в `
+            : `Тази песен е премахната от `}
           <Link
-            to={`${import.meta.env.BASE_URL}app/saveLists/movies_series`}
+            to={`${import.meta.env.BASE_URL}app/saveLists/music`}
             className="font-bold underline"
           >
-            списъка ви за гледане
+            списъка ви за слушане
           </Link>
           !
         </div>

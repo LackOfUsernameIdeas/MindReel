@@ -10,16 +10,17 @@ import {
 import { InfoboxModal } from "@/components/common/infobox/InfoboxModal";
 import Infobox from "@/components/common/infobox/infobox";
 import { MusicRecommendation } from "@/container/types_common";
+import RecommendationCardAlert from "./RecommendationCardAlert";
+import FilterSidebar from "./FilterSidebar";
+import { MusicTableProps } from "../listenlist-types";
 
-interface MusicTableProps {
-  data: MusicRecommendation[];
-  setBookmarkedSongs: (songs: { [key: string]: any }) => void;
-  setCurrentBookmarkStatus: (status: boolean) => void;
-  setAlertVisible: (visible: boolean) => void;
-  bookmarkedSongs: { [key: string]: any };
-}
-
-const MusicTable: FC<MusicTableProps> = ({ data }) => {
+const MusicTable: FC<MusicTableProps> = ({
+  data,
+  setBookmarkedMusic,
+  setCurrentBookmarkStatus,
+  setAlertVisible,
+  bookmarkedMusic
+}) => {
   const [selectedItem, setSelectedItem] = useState<MusicRecommendation | null>(
     null
   );
@@ -53,14 +54,6 @@ const MusicTable: FC<MusicTableProps> = ({ data }) => {
     return `${minutes}м ${seconds}с`;
   };
 
-  // Функция за форматиране на големи числа
-  const formatNumber = (num?: number | null): string => {
-    if (!num) return "N/A";
-    if (num >= 1000000) return `${(num / 1000000).toFixed(1)}М`;
-    if (num >= 1000) return `${(num / 1000).toFixed(1)}К`;
-    return num.toString();
-  };
-
   // Функция за форматиране на дата
   const formatDate = (dateString?: string | null): string => {
     if (!dateString) return "N/A";
@@ -86,10 +79,10 @@ const MusicTable: FC<MusicTableProps> = ({ data }) => {
     // Търсене в албум
     if (item.albumTitle?.toLowerCase().includes(query)) return true;
 
-    // Търсене в тип на албум
+    // Търсене в тип на продукция
     if (item.albumType?.toLowerCase().includes(query)) return true;
 
-    // Търсене в година на издаване
+    // Търсене в година на излизане
     if (item.albumReleaseDateInSpotify?.includes(query)) return true;
 
     // Търсене в Spotify ID
@@ -146,7 +139,21 @@ const MusicTable: FC<MusicTableProps> = ({ data }) => {
           onClick={() => setIsFilterOpen(false)}
         />
       )}
-
+      <FilterSidebar
+        isOpen={isFilterOpen}
+        onClose={() => setIsFilterOpen(false)}
+        data={data}
+        setFilteredData={setFilteredData}
+        setCurrentPage={setCurrentPage}
+      />
+      <RecommendationCardAlert
+        selectedItem={selectedItem}
+        onClose={() => setSelectedItem(null)}
+        setBookmarkedMusic={setBookmarkedMusic}
+        setCurrentBookmarkStatus={setCurrentBookmarkStatus}
+        setAlertVisible={setAlertVisible}
+        bookmarkedMusic={bookmarkedMusic}
+      />
       <div className="xxl:col-span-12 xl:col-span-12 col-span-12">
         <div className="box custom-card">
           <div className="box-header justify-between flex flex-col sm:flex-row items-center space-y-3 sm:space-y-0">
@@ -403,7 +410,7 @@ const MusicTable: FC<MusicTableProps> = ({ data }) => {
               взима въведения в нея текст и го сравнява със{" "}
               <span className="font-semibold">следните категории:</span>
             </p>
-            <Accordion type="single" collapsible className="space-y-4">
+            <Accordion type="single" collapsible className="space-y-4 pt-5">
               <AccordionItem value="title">
                 <AccordionTrigger>🎵 Заглавие</AccordionTrigger>
                 <AccordionContent>
@@ -444,7 +451,7 @@ const MusicTable: FC<MusicTableProps> = ({ data }) => {
               </AccordionItem>
 
               <AccordionItem value="year">
-                <AccordionTrigger>📅 Година на издаване</AccordionTrigger>
+                <AccordionTrigger>📅 година на излизане</AccordionTrigger>
                 <AccordionContent>
                   Можете да намерите търсената от Вас песен, въвеждайки годината
                   на издаване.
