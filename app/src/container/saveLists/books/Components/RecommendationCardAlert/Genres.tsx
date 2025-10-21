@@ -53,9 +53,9 @@ const Genres: FC<GenresProps> = ({ genres, source }) => {
                               viewBox="0 0 28 28"
                               fill="none"
                               stroke="currentColor"
-                              stroke-width="2"
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
+                              strokeWidth="2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
                               className="icon icon-tabler icons-tabler-outline icon-tabler-corner-down-right text-primary dark:text-primary/90"
                             >
                               <path
