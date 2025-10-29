@@ -133,7 +133,7 @@ export const VRRecommendationsList: FC<{
           <video
             id="trailer-video"
             ref={videoRef}
-            src="app/public/cl16.mp4"
+            src="app/public/video.mp4"
             autoPlay
             muted
             playsInline
