@@ -18,6 +18,7 @@ const EMAIL_PASS = require("./credentials.js").EMAIL_PASS;
 const OPENAI_API_KEY = require("./credentials.js").OPENAI_API_KEY;
 const GEMINI_API_KEY = require("./credentials.js").GEMINI_API_KEY;
 const YTDlpWrap = require("yt-dlp-wrap").default;
+const ytdlp = require("yt-dlp-exec");
 const fs = require("fs");
 const path = require("path");
 
@@ -2193,80 +2194,135 @@ app.get("/stats/platform/average-youtube-comments", (req, res) => {
   });
 });
 
+// // 📥 Изтегляне на YouTube видео в съответната директория
+// app.get("/download/youtube-video", (req, res) => {
+//   try {
+//     const { url, outputDir, fileName } = req.query;
+
+//     if (!url || !outputDir || !fileName) {
+//       return res.status(400).json({ error: "Missing parameter." });
+//     }
+
+//     const safeOutputDir = outputDir;
+//     const safeFileName = fileName;
+//     const fullPath = path.join(safeOutputDir, safeFileName);
+
+//     // Ensure output directory exists
+//     if (!fs.existsSync(safeOutputDir)) {
+//       fs.mkdirSync(safeOutputDir, { recursive: true });
+//     }
+
+//     console.log(`🎬 Starting download for ${url} → ${fullPath}`);
+
+//     // Spawn Python process to run yt-dlp
+//     const ytDlp = spawn("python", ["-m", "yt_dlp", "-o", fullPath, url]);
+
+//     let output = "";
+
+//     ytDlp.stdout.on("data", (data) => {
+//       const str = data.toString();
+//       output += str;
+//       process.stdout.write(str); // show progress in server console
+//     });
+
+//     ytDlp.stderr.on("data", (data) => {
+//       const str = data.toString();
+//       output += str;
+//       process.stderr.write(str);
+//     });
+
+//     ytDlp.on("close", (code) => {
+//       if (code !== 0) {
+//         console.error("❌ Download failed with code", code);
+//         return res.status(500).json({
+//           status: "error",
+//           message: "Download failed",
+//           code,
+//           output
+//         });
+//       }
+
+//       if (!fs.existsSync(fullPath)) {
+//         return res.status(404).json({
+//           status: "error",
+//           message: "File not found after download"
+//         });
+//       }
+
+//       const stats = fs.statSync(fullPath);
+//       const fileSizeMB = (stats.size / (1024 * 1024)).toFixed(2);
+
+//       res.json({
+//         status: "success",
+//         message: "Download completed successfully",
+//         url,
+//         outputFile: fullPath,
+//         fileSizeMB
+//       });
+//     });
+//   } catch (error) {
+//     console.error("Error:", error);
+//     res.status(500).json({ error: error.message });
+//   }
+// });
+
 // 📥 Изтегляне на YouTube видео в съответната директория
-app.get("/download/youtube-video", (req, res) => {
+app.get("/download/youtube-video", async (req, res) => {
   try {
-    const { url, outputDir, fileName } = req.query;
+    const { url, outputDir, fileName, cookies } = req.query;
 
     if (!url || !outputDir || !fileName) {
       return res.status(400).json({ error: "Missing parameter." });
     }
 
-    const safeOutputDir = outputDir;
-    const safeFileName = fileName;
+    const safeOutputDir = outputDir.toString();
+    const safeFileName = fileName.toString();
     const fullPath = path.join(safeOutputDir, safeFileName);
 
-    // Ensure output directory exists
     if (!fs.existsSync(safeOutputDir)) {
       fs.mkdirSync(safeOutputDir, { recursive: true });
     }
 
     console.log(`🎬 Starting download for ${url} → ${fullPath}`);
 
-    // Start yt-dlp process
-    const ytDlpEventEmitter = ytDlpWrap.exec([url, "-o", fullPath]);
+    const options = {
+      output: fullPath,
+      format: "best"
+    };
 
-    let progressData = {};
-    let errorOccurred = null;
+    if (cookies) {
+      options.cookies = cookies.toString();
+    }
 
-    ytDlpEventEmitter
-      .on("progress", (progress) => {
-        progressData = progress;
-        process.stdout.write(
-          `\rDownloading: ${progress.percent}% (${progress.currentSpeed}) ETA: ${progress.eta}s`
-        );
-      })
-      .on("ytDlpEvent", (eventType, eventData) => {
-        console.log(eventType, eventData);
-      })
-      .on("error", (error) => {
-        console.error("❌ Download error:", error);
-      })
-      .on("close", (code) => {
-        console.log("\n✅ Download process finished with code:", code);
+    // Run yt-dlp and wait for it to finish
+    await ytdlp(url.toString(), options);
 
-        if (errorOccurred) {
-          return res.status(500).json({
-            status: "error",
-            message: "Download failed",
-            error: errorOccurred.message || errorOccurred
-          });
-        }
-
-        // Check if file exists
-        if (!fs.existsSync(fullPath)) {
-          return res.status(404).json({
-            status: "error",
-            message: "File not found after download"
-          });
-        }
-
-        // Get file info
-        const stats = fs.statSync(fullPath);
-        const fileSizeMB = (stats.size / (1024 * 1024)).toFixed(2);
-
-        res.json({
-          status: "success",
-          message: "Download completed successfully",
-          url,
-          outputFile: fullPath,
-          fileSizeMB,
-          progress: progressData
-        });
+    if (!fs.existsSync(fullPath)) {
+      return res.status(404).json({
+        status: "error",
+        message: "File not found after download"
       });
+    }
+
+    const stats = fs.statSync(fullPath);
+    const fileSizeMB = (stats.size / (1024 * 1024)).toFixed(2);
+
+    res.json({
+      status: "success",
+      message: "Download completed successfully",
+      url,
+      outputFile: fullPath,
+      fileSizeMB
+    });
+
+    console.log("✅ Download completed!");
   } catch (error) {
-    console.error("Error:", error);
-    res.status(500).json({ error: error.message });
+    console.error("❌ Download failed:", error);
+    res.status(500).json({
+      status: "error",
+      message: "Download failed",
+      error: error.message || error
+    });
   }
 });
 
