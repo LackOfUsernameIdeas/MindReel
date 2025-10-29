@@ -13,7 +13,6 @@ import Seat from "./vr/Seat";
 import PopcornStand from "./vr/PopcornStand";
 import { Recommendation } from "@/container/recommendations/movies_series/moviesSeriesRecommendations-types.ts";
 import { handleBookmarkClick } from "@/container/recommendations/movies_series/helper_functions.ts";
-import CustomVRButton from "./vr/CustomVRButton";
 
 // export const VRRecommendationsList: FC<RecommendationsProps> = ({
 //   recommendationList,
@@ -677,8 +676,6 @@ export const VRRecommendationsList: FC<{
           ></a-cylinder>
         </a-entity>
       </a-scene>
-
-      <CustomVRButton />
     </>
   );
 };

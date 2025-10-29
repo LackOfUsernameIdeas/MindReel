@@ -10,6 +10,7 @@ import {
 } from "../moviesSeriesRecommendations-types";
 import RecommendationsAnalysesWidgets from "@/components/common/recommendationsAnalyses/recommendationsAnalyses";
 import { VRRecommendationsList } from "./VRRecommendationsList";
+import CustomVRButton from "./vr/CustomVRButton";
 
 export const Quiz: FC<QuizProps> = ({
   setBookmarkedMovies,
@@ -105,13 +106,16 @@ export const Quiz: FC<QuizProps> = ({
                 </div>
 
                 {renderVrScene ? (
-                  <VRRecommendationsList
-                    recommendationList={recommendationList}
-                    currentIndex={currentIndex}
-                    setBookmarkedMovies={setBookmarkedMovies}
-                    setCurrentBookmarkStatus={setCurrentBookmarkStatus}
-                    bookmarkedMovies={bookmarkedMovies}
-                  />
+                  <>
+                    <CustomVRButton />
+                    <VRRecommendationsList
+                      recommendationList={recommendationList}
+                      currentIndex={currentIndex}
+                      setBookmarkedMovies={setBookmarkedMovies}
+                      setCurrentBookmarkStatus={setCurrentBookmarkStatus}
+                      bookmarkedMovies={bookmarkedMovies}
+                    />
+                  </>
                 ) : (
                   <>
                     <RecommendationsList
