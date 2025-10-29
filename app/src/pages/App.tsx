@@ -50,8 +50,8 @@ function App() {
           <div className="page">
             <Header />
             <Sidebar />
-            <div className="content main-index">
-              <div className="main-content" onClick={Bodyclickk}>
+            <div className="content main-index flex flex-col flex-grow">
+              <div className="main-content flex-grow" onClick={Bodyclickk}>
                 <Outlet />
               </div>
               <Footer />

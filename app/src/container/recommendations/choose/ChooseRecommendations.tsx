@@ -70,7 +70,7 @@ const ChooseRecommendations: FC = () => {
         classNames="fade" // CSS класове за анимация
         unmountOnExit // Компонентът се премахва от DOM, ако не се показва
       >
-        <div className="mb-[12rem]">
+        <div className="mb-[10rem]">
           {/* Карти с информация за AI */}
           <div className="bg-bodybg p-6 rounded-xl shadow-lg space-y-6 my-[1.5rem]">
             {/* Карти с информация за потребителя */}

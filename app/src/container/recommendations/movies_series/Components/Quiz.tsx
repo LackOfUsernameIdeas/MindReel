@@ -106,7 +106,7 @@ export const Quiz: FC<QuizProps> = ({
                 </div>
 
                 {renderVrScene ? (
-                  <>
+                  <div>
                     <CustomVRButton />
                     <VRRecommendationsList
                       recommendationList={recommendationList}
@@ -115,7 +115,7 @@ export const Quiz: FC<QuizProps> = ({
                       setCurrentBookmarkStatus={setCurrentBookmarkStatus}
                       bookmarkedMovies={bookmarkedMovies}
                     />
-                  </>
+                  </div>
                 ) : (
                   <>
                     <RecommendationsList

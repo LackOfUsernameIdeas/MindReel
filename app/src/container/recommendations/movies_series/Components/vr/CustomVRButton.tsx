@@ -31,7 +31,7 @@ const CustomVRButton: FC = () => {
     <div className="flex justify-center">
       <button
         onClick={enterVR}
-        className="next glow-next bg-opacity-70 text-white font-bold rounded-lg py-4 px-6 text-lg transition-all duration-300 ease-in-out transform hover:scale-105"
+        className="next glow-next bg-opacity-80 text-white font-bold rounded-2xl py-6 px-10 text-2xl transition-all duration-300 ease-in-out transform hover:scale-110 shadow-lg"
         style={{
           display: "flex",
           flexDirection: "row",
@@ -47,7 +47,7 @@ const CustomVRButton: FC = () => {
           viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
-          strokeWidth="2"
+          strokeWidth="2.5"
           strokeLinecap="round"
           strokeLinejoin="round"
           style={{
