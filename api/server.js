@@ -17,11 +17,13 @@ const EMAIL_USER = require("./credentials.js").EMAIL_USER;
 const EMAIL_PASS = require("./credentials.js").EMAIL_PASS;
 const OPENAI_API_KEY = require("./credentials.js").OPENAI_API_KEY;
 const GEMINI_API_KEY = require("./credentials.js").GEMINI_API_KEY;
+const YTDlpWrap = require("yt-dlp-wrap").default;
 const fs = require("fs");
 const path = require("path");
 
 const app = express();
 const server = http.createServer(app);
+const ytDlpWrap = new YTDlpWrap("yt-dlp");
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
 
@@ -2189,6 +2191,83 @@ app.get("/stats/platform/average-youtube-comments", (req, res) => {
 
     res.json(youtubeComments);
   });
+});
+
+// 📥 Изтегляне на YouTube видео в съответната директория
+app.get("/download/youtube-video", (req, res) => {
+  try {
+    const { url, outputDir, fileName } = req.query;
+
+    if (!url || !outputDir || !fileName) {
+      return res.status(400).json({ error: "Missing parameter." });
+    }
+
+    const safeOutputDir = outputDir;
+    const safeFileName = fileName;
+    const fullPath = path.join(safeOutputDir, safeFileName);
+
+    // Ensure output directory exists
+    if (!fs.existsSync(safeOutputDir)) {
+      fs.mkdirSync(safeOutputDir, { recursive: true });
+    }
+
+    console.log(`🎬 Starting download for ${url} → ${fullPath}`);
+
+    // Start yt-dlp process
+    const ytDlpEventEmitter = ytDlpWrap.exec([url, "-o", fullPath]);
+
+    let progressData = {};
+    let errorOccurred = null;
+
+    ytDlpEventEmitter
+      .on("progress", (progress) => {
+        progressData = progress;
+        process.stdout.write(
+          `\rDownloading: ${progress.percent}% (${progress.currentSpeed}) ETA: ${progress.eta}s`
+        );
+      })
+      .on("ytDlpEvent", (eventType, eventData) => {
+        console.log(eventType, eventData);
+      })
+      .on("error", (error) => {
+        console.error("❌ Download error:", error);
+      })
+      .on("close", (code) => {
+        console.log("\n✅ Download process finished with code:", code);
+
+        if (errorOccurred) {
+          return res.status(500).json({
+            status: "error",
+            message: "Download failed",
+            error: errorOccurred.message || errorOccurred
+          });
+        }
+
+        // Check if file exists
+        if (!fs.existsSync(fullPath)) {
+          return res.status(404).json({
+            status: "error",
+            message: "File not found after download"
+          });
+        }
+
+        // Get file info
+        const stats = fs.statSync(fullPath);
+        const fileSizeMB = (stats.size / (1024 * 1024)).toFixed(2);
+
+        res.json({
+          status: "success",
+          message: "Download completed successfully",
+          url,
+          outputFile: fullPath,
+          fileSizeMB,
+          progress: progressData
+        });
+      });
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).json({ error: error.message });
+  }
 });
 
 // Запазване на данни за мозъчния анализ, свързани с филми, сериали и книги.

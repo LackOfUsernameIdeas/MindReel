@@ -9,7 +9,8 @@
     "jsonwebtoken": "^9.0.2",
     "mysql2": "^3.11.4",
     "nodemailer": "^6.9.16",
-    "socket.io": "^4.8.1"
+    "socket.io": "^4.8.1",
+    "yt-dlp-wrap": "^2.3.12"
   },
   "name": "api",
   "version": "1.0.0",
