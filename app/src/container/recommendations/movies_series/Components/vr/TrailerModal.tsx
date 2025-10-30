@@ -18,7 +18,7 @@ const TrailerModal = ({
   title,
   onClose,
   position = "0 3.5 -4",
-  trailerUrl = "about:blank"
+  trailerUrl
 }: TrailerModalProps) => {
   const [modalOpacity, setModalOpacity] = useState(0);
   const [isMounted, setIsMounted] = useState(false);
@@ -60,11 +60,32 @@ const TrailerModal = ({
     }
   }, [isTrailerPlaying, setIsTrailerPlaying, onClose]);
 
+  // Update websurface URL when playing starts
+  useEffect(() => {
+    if (browserRef.current && isTrailerPlaying) {
+      // Small delay to ensure the entity is fully mounted
+      setTimeout(() => {
+        if (browserRef.current) {
+          browserRef.current.setAttribute("websurface", {
+            url: trailerUrl,
+            width: 12,
+            height: 6.75,
+            autoUpdate: true,
+            interactive: true
+          });
+        }
+      }, 100);
+    }
+  }, [isTrailerPlaying, trailerUrl]);
+
   const handlePlayClick = () => {
     setIsTrailerPlaying(true);
   };
 
   const handleExitBrowser = () => {
+    if (browserRef.current) {
+      browserRef.current.setAttribute("websurface", "url", "about:blank");
+    }
     setIsTrailerPlaying(false);
   };
 
@@ -130,13 +151,11 @@ const TrailerModal = ({
 
         {isTrailerPlaying ? (
           <>
-            {/* Browser surface - positioned closer to camera (higher z-index equivalent) */}
+            {/* Browser surface with interactive websurface */}
             <a-entity
               ref={browserRef}
               position="0 1 0.1"
-              websurface={`url: ${trailerUrl}; width: 1920; height: 1080; autoUpdate: true`}
-              geometry="primitive: plane; width: 12; height: 6.75"
-              material={`shader: flat; opacity: ${modalOpacity}; side: double`}
+              websurface="url: about:blank; width: 12; height: 6.75; autoUpdate: true; interactive: true"
             ></a-entity>
 
             {/* Exit Browser Button - positioned even closer */}
