@@ -1,97 +1,137 @@
 import { useEffect, useState } from "react";
-import "aframe-websurfaces";
 
 interface TrailerModalProps {
-  videoRef: React.RefObject<HTMLVideoElement>;
   isVisible: boolean;
   isTrailerPlaying: boolean;
   setIsTrailerPlaying: React.Dispatch<React.SetStateAction<boolean>>;
   title: string;
   onClose: () => void;
   position?: string;
+  videoUrl?: string; // Direct video URL to play
+  youtubeUrl?: string; // YouTube URL (will show not supported message)
 }
 
 const TrailerModal = ({
-  videoRef,
   isVisible,
   isTrailerPlaying,
   setIsTrailerPlaying,
   title,
   onClose,
-  position = "0 3.5 -4"
+  position = "0 3.5 -4",
+  videoUrl,
+  youtubeUrl
 }: TrailerModalProps) => {
   const [modalOpacity, setModalOpacity] = useState(0);
   const [progress, setProgress] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
+  const [videoElement, setVideoElement] = useState<HTMLVideoElement | null>(
+    null
+  );
+
+  // Extract YouTube video ID from URL
+  const getYouTubeVideoId = (url: string): string | null => {
+    const regExp =
+      /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+    const match = url.match(regExp);
+    return match && match[2].length === 11 ? match[2] : null;
+  };
+
+  const videoId = youtubeUrl ? getYouTubeVideoId(youtubeUrl) : null;
+  const isYouTube = !!videoId;
+  const hasDirectVideo = !!videoUrl;
 
   useEffect(() => {
     if (isVisible) {
       setModalOpacity(1);
+      // Get or create video element
+      const videoId = "dynamic-trailer-video";
+      let video = document.getElementById(videoId) as HTMLVideoElement;
+
+      if (!video) {
+        // Create video element if it doesn't exist
+        video = document.createElement("video");
+        video.id = videoId;
+        video.setAttribute("crossorigin", "anonymous");
+        video.setAttribute("playsinline", "");
+        video.muted = true;
+
+        // Add to assets
+        const assets = document.querySelector("a-assets");
+        if (assets) {
+          assets.appendChild(video);
+        }
+      }
+
+      setVideoElement(video);
+
+      // Set video source if provided
+      if (hasDirectVideo && videoUrl) {
+        video.src = videoUrl;
+        video.load();
+      }
     } else {
       setModalOpacity(0);
       setIsTrailerPlaying(false);
-      videoRef.current?.pause();
+      if (videoElement) {
+        videoElement.pause();
+        videoElement.currentTime = 0;
+      }
     }
-  }, [isVisible]);
+  }, [isVisible, videoUrl, hasDirectVideo]);
 
   useEffect(() => {
-    const v = videoRef.current;
-    if (!v) return;
+    if (!videoElement || isYouTube) return;
 
     const updateProgress = () => {
-      if (v.duration > 0) {
-        setProgress(v.currentTime / v.duration);
-        setCurrentTime(v.currentTime);
-        setDuration(v.duration);
-        setIsPlaying(!v.paused);
+      if (videoElement.duration > 0) {
+        setProgress(videoElement.currentTime / videoElement.duration);
+        setCurrentTime(videoElement.currentTime);
+        setDuration(videoElement.duration);
+        setIsPlaying(!videoElement.paused);
       }
     };
 
-    v.addEventListener("timeupdate", updateProgress);
-    v.addEventListener("loadedmetadata", updateProgress);
+    videoElement.addEventListener("timeupdate", updateProgress);
+    videoElement.addEventListener("loadedmetadata", updateProgress);
     return () => {
-      v.removeEventListener("timeupdate", updateProgress);
-      v.removeEventListener("loadedmetadata", updateProgress);
+      videoElement.removeEventListener("timeupdate", updateProgress);
+      videoElement.removeEventListener("loadedmetadata", updateProgress);
     };
-  }, []);
+  }, [videoElement, isYouTube]);
 
   useEffect(() => {
-    if (isTrailerPlaying) {
-      const v = videoRef.current;
-      if (v) {
-        v.muted = false;
-        v.play().catch((err) => console.warn("Autoplay blocked:", err));
-      }
+    if (isTrailerPlaying && !isYouTube && videoElement) {
+      videoElement.muted = false;
+      videoElement
+        .play()
+        .catch((err) => console.warn("Autoplay blocked:", err));
     }
-  }, [isTrailerPlaying]);
+  }, [isTrailerPlaying, isYouTube, videoElement]);
 
   const handlePlayClick = () => {
     setIsTrailerPlaying(true);
   };
 
   const togglePlayPause = () => {
-    const v = videoRef.current;
-    if (!v) return;
-    if (v.paused) {
-      v.play();
+    if (isYouTube || !videoElement) return;
+    if (videoElement.paused) {
+      videoElement.play();
     } else {
-      v.pause();
+      videoElement.pause();
     }
   };
 
   const restartVideo = () => {
-    const v = videoRef.current;
-    if (!v) return;
-    v.currentTime = 0;
-    v.play();
+    if (isYouTube || !videoElement) return;
+    videoElement.currentTime = 0;
+    videoElement.play();
   };
 
   const seekTo = (fraction: number) => {
-    const v = videoRef.current;
-    if (!v || !v.duration) return;
-    v.currentTime = v.duration * fraction;
+    if (isYouTube || !videoElement || !videoElement.duration) return;
+    videoElement.currentTime = videoElement.duration * fraction;
   };
 
   const formatTime = (seconds: number) => {
@@ -175,92 +215,145 @@ const TrailerModal = ({
 
         {isTrailerPlaying ? (
           <>
-            <a-video
-              id="yt-surface"
-              src="#trailer-video"
-              position="0 1 0.02"
-              width="12"
-              height="6.75"
-            />
-
-            <a-plane
-              width="12"
-              height="1.5"
-              color="#000000"
-              material={`shader: flat; opacity: ${modalOpacity * 0.8}`}
-              position="0 -2.5 0.02"
-            />
-
-            <a-entity
-              position="-4.5 -2.5 0.03"
-              class="clickable"
-              onClick={togglePlayPause}
-            >
-              <a-image
-                src={isPlaying ? pauseIconSvg : playIconSvg}
-                width="0.8"
-                height="0.8"
-                material={`shader: flat; transparent: true; opacity: ${modalOpacity}`}
+            {isYouTube ? (
+              <>
+                <a-plane
+                  width="12"
+                  height="6.75"
+                  color="#000000"
+                  material={`shader: flat; opacity: ${modalOpacity}`}
+                  position="0 1 0.01"
+                ></a-plane>
+                <a-text
+                  value="YouTube playback not supported in VR\nPlease use a direct video file (.mp4, .webm)"
+                  position="0 1.2 0.02"
+                  align="center"
+                  color="#FFFFFF"
+                  width="8"
+                  material={`opacity: ${modalOpacity}`}
+                  font="https://cdn.aframe.io/fonts/Exo2Bold.fnt"
+                  wrap-count="40"
+                ></a-text>
+                <a-text
+                  value={`Video ID: ${videoId}`}
+                  position="0 0.3 0.02"
+                  align="center"
+                  color="#888888"
+                  width="6"
+                  material={`opacity: ${modalOpacity}`}
+                  font="https://cdn.aframe.io/fonts/Exo2SemiBold.fnt"
+                ></a-text>
+              </>
+            ) : hasDirectVideo ? (
+              <a-video
+                src="#dynamic-trailer-video"
+                position="0 1 0.02"
+                width="12"
+                height="6.75"
               />
-            </a-entity>
+            ) : (
+              <>
+                <a-plane
+                  width="12"
+                  height="6.75"
+                  color="#000000"
+                  material={`shader: flat; opacity: ${modalOpacity}`}
+                  position="0 1 0.01"
+                ></a-plane>
+                <a-text
+                  value="No video source provided"
+                  position="0 1 0.02"
+                  align="center"
+                  color="#FFFFFF"
+                  width="8"
+                  material={`opacity: ${modalOpacity}`}
+                  font="https://cdn.aframe.io/fonts/Exo2Bold.fnt"
+                ></a-text>
+              </>
+            )}
 
-            <a-entity
-              position="-3.5 -2.5 0.03"
-              class="clickable"
-              onClick={restartVideo}
-            >
-              <a-image
-                src={restartIconSvg}
-                width="0.7"
-                height="0.7"
-                material={`shader: flat; transparent: true; opacity: ${modalOpacity}`}
-              />
-            </a-entity>
+            {!isYouTube && hasDirectVideo && (
+              <>
+                <a-plane
+                  width="12"
+                  height="1.5"
+                  color="#000000"
+                  material={`shader: flat; opacity: ${modalOpacity * 0.8}`}
+                  position="0 -2.5 0.02"
+                />
 
-            <a-text
-              value={`${formatTime(currentTime)} / ${formatTime(duration)}`}
-              position="-2.5 -2.5 0.03"
-              align="left"
-              color="#FFFFFF"
-              width="4"
-              material={`opacity: ${modalOpacity}`}
-            />
+                <a-entity
+                  position="-4.5 -2.5 0.03"
+                  class="clickable"
+                  onClick={togglePlayPause}
+                >
+                  <a-image
+                    src={isPlaying ? pauseIconSvg : playIconSvg}
+                    width="0.8"
+                    height="0.8"
+                    material={`shader: flat; transparent: true; opacity: ${modalOpacity}`}
+                  />
+                </a-entity>
 
-            <a-entity position="1.5 -2.5 0.03">
-              <a-plane
-                width="6"
-                height="0.15"
-                color="#444444"
-                material={`shader: flat; opacity: ${modalOpacity}`}
-              />
+                <a-entity
+                  position="-3.5 -2.5 0.03"
+                  class="clickable"
+                  onClick={restartVideo}
+                >
+                  <a-image
+                    src={restartIconSvg}
+                    width="0.7"
+                    height="0.7"
+                    material={`shader: flat; transparent: true; opacity: ${modalOpacity}`}
+                  />
+                </a-entity>
 
-              <a-plane
-                width={6 * progress}
-                height="0.15"
-                color="#ff4444"
-                material={`shader: flat; opacity: ${modalOpacity}`}
-                position={`${-3 + (6 * progress) / 2} 0 0.01`}
-              />
+                <a-text
+                  value={`${formatTime(currentTime)} / ${formatTime(duration)}`}
+                  position="-2.5 -2.5 0.03"
+                  align="left"
+                  color="#FFFFFF"
+                  width="4"
+                  material={`opacity: ${modalOpacity}`}
+                />
 
-              <a-sphere
-                radius="0.08"
-                color="#ffffff"
-                material={`shader: flat; opacity: ${modalOpacity}`}
-                position={`${-3 + 6 * progress} 0 0.02`}
-              />
+                <a-entity position="1.5 -2.5 0.03">
+                  <a-plane
+                    width="6"
+                    height="0.15"
+                    color="#444444"
+                    material={`shader: flat; opacity: ${modalOpacity}`}
+                  />
 
-              <a-plane
-                width="6"
-                height="0.4"
-                color="#000"
-                opacity="0"
-                class="clickable"
-                onClick={(e: any) => {
-                  const uv = e.detail.intersection.uv;
-                  if (uv) seekTo(uv.x);
-                }}
-              />
-            </a-entity>
+                  <a-plane
+                    width={6 * progress}
+                    height="0.15"
+                    color="#ff4444"
+                    material={`shader: flat; opacity: ${modalOpacity}`}
+                    position={`${-3 + (6 * progress) / 2} 0 0.01`}
+                  />
+
+                  <a-sphere
+                    radius="0.08"
+                    color="#ffffff"
+                    material={`shader: flat; opacity: ${modalOpacity}`}
+                    position={`${-3 + 6 * progress} 0 0.02`}
+                  />
+
+                  <a-plane
+                    width="6"
+                    height="0.4"
+                    color="#000"
+                    opacity="0"
+                    class="clickable"
+                    onClick={(e: any) => {
+                      const uv = e.detail.intersection.uv;
+                      if (uv) seekTo(uv.x);
+                    }}
+                  />
+                </a-entity>
+              </>
+            )}
           </>
         ) : (
           <>

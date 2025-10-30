@@ -215,13 +215,13 @@ export const VRRecommendationsList: FC<{
       />
 
       <TrailerModal
-        videoRef={videoRef}
         isVisible={showTrailerModal}
         isTrailerPlaying={isTrailerPlaying}
         setIsTrailerPlaying={setIsTrailerPlaying}
         title="БЪЧ КАСИДИ И СЪНДЪНС КИД"
         onClose={handleCloseTrailerModal}
         position="0 5 -8"
+        videoUrl="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
       />
 
       {/* FLOOR */}
