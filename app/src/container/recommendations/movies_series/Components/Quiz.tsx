@@ -108,6 +108,7 @@ export const Quiz: FC<QuizProps> = ({
                 {renderVrScene ? (
                   <div>
                     <CustomVRButton />
+                    <h1>zrd</h1>
                     <VRRecommendationsList
                       recommendationList={recommendationList}
                       currentIndex={currentIndex}

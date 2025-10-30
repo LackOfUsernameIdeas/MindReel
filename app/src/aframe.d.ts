@@ -38,6 +38,7 @@ declare global {
           draggable?: boolean;
           geometry?: string;
           websurface?: string;
+          material?: string;
         };
       "a-camera": React.DetailedHTMLProps<
         React.HTMLAttributes<HTMLElement>,
