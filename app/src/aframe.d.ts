@@ -78,6 +78,7 @@ declare global {
         crossOrigin?: string;
         metalness?: string;
         geometry?: string;
+        material?: string;
       };
       "a-plane": React.ClassAttributes<HTMLElement> &
         React.HTMLAttributes<HTMLElement> & {

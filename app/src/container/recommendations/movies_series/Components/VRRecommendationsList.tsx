@@ -221,7 +221,7 @@ export const VRRecommendationsList: FC<{
         title="БЪЧ КАСИДИ И СЪНДЪНС КИД"
         onClose={handleCloseTrailerModal}
         position="0 5 -8"
-        videoUrl="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+        videoUrl="https://www.youtube.com/embed/b9EkMc79ZSU?autoplay=1&mute=1"
       />
 
       {/* FLOOR */}

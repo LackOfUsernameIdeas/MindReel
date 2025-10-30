@@ -216,34 +216,10 @@ const TrailerModal = ({
         {isTrailerPlaying ? (
           <>
             {isYouTube ? (
-              <>
-                <a-plane
-                  width="12"
-                  height="6.75"
-                  color="#000000"
-                  material={`shader: flat; opacity: ${modalOpacity}`}
-                  position="0 1 0.01"
-                ></a-plane>
-                <a-text
-                  value="YouTube playback not supported in VR\nPlease use a direct video file (.mp4, .webm)"
-                  position="0 1.2 0.02"
-                  align="center"
-                  color="#FFFFFF"
-                  width="8"
-                  material={`opacity: ${modalOpacity}`}
-                  font="https://cdn.aframe.io/fonts/Exo2Bold.fnt"
-                  wrap-count="40"
-                ></a-text>
-                <a-text
-                  value={`Video ID: ${videoId}`}
-                  position="0 0.3 0.02"
-                  align="center"
-                  color="#888888"
-                  width="6"
-                  material={`opacity: ${modalOpacity}`}
-                  font="https://cdn.aframe.io/fonts/Exo2SemiBold.fnt"
-                ></a-text>
-              </>
+              <a-entity
+                websurface={`url:${youtubeUrl}; width:12; height:6.75;`}
+                position="0 1 0.02"
+              ></a-entity>
             ) : hasDirectVideo ? (
               <a-video
                 src="#dynamic-trailer-video"
