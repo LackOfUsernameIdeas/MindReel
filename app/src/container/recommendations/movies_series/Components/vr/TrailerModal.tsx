@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import "aframe-troika-text";
-import GoodTiming from "@/assets/fonts/GoodTiming.ttf";
 
 interface TrailerModalProps {
   isVisible: boolean;
@@ -221,7 +220,7 @@ const TrailerModal = ({
                   color="#FFFFFF"
                   width="8"
                   material={`opacity: ${modalOpacity}`}
-                  font={GoodTiming}
+                  font="#good-timing-font"
                   wrap-count="40"
                 ></a-troika-text>
                 <a-troika-text
@@ -231,7 +230,7 @@ const TrailerModal = ({
                   color="#888888"
                   width="6"
                   material={`opacity: ${modalOpacity}`}
-                  font={GoodTiming}
+                  font="#good-timing-font"
                 ></a-troika-text>
               </>
             ) : hasDirectVideo ? (
@@ -257,7 +256,7 @@ const TrailerModal = ({
                   color="#FFFFFF"
                   width="8"
                   material={`opacity: ${modalOpacity}`}
-                  font={GoodTiming}
+                  font="#good-timing-font"
                 ></a-troika-text>
               </>
             )}
@@ -391,7 +390,7 @@ const TrailerModal = ({
             color="#FFFFFF"
             width="4"
             material={`opacity: ${modalOpacity}`}
-            font={GoodTiming}
+            font="#good-timing-font"
             class="clickable"
             onClick={onClose}
           ></a-troika-text>

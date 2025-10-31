@@ -249,6 +249,13 @@ declare global {
         onClick?: (event: any) => void;
         negate?: string | boolean;
       };
+      "a-asset-item": React.DetailedHTMLProps<
+        React.HTMLAttributes<HTMLElement>,
+        HTMLElement
+      > & {
+        id?: string;
+        src?: string;
+      };
       "a-sky"?: React.DetailedHTMLProps<
         React.HTMLAttributes<HTMLElement>,
         HTMLElement

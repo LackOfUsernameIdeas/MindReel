@@ -145,6 +145,7 @@ export const VRRecommendationsList: FC<{
       ></a-entity>
 
       <a-assets>
+        <a-asset-item id="good-timing-font" src={GoodTiming}></a-asset-item>
         <video
           id="trailer-video"
           ref={videoRef}
@@ -196,7 +197,7 @@ export const VRRecommendationsList: FC<{
               color="#FFFFFF"
               width="6"
               material={`opacity: ${popupOpacity}`}
-              font={GoodTiming}
+              font="#good-timing-font"
             ></a-troika-text>
 
             <a-troika-text
@@ -208,7 +209,7 @@ export const VRRecommendationsList: FC<{
               color="#FFFFFF"
               width="5"
               material={`opacity: ${popupOpacity * 0.9}`}
-              font={GoodTiming}
+              font="#good-timing-font"
             ></a-troika-text>
           </a-entity>
 

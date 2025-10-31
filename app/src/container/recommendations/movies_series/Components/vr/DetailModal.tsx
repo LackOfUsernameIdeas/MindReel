@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import "aframe-troika-text";
-import GoodTiming from "@/assets/fonts/GoodTiming.ttf";
 
 interface DetailModalProps {
   isVisible: boolean;
@@ -74,7 +73,7 @@ const DetailModal = ({
         color="#FFFFFF"
         width="6"
         material={`opacity: ${modalOpacity}`}
-        font={GoodTiming}
+        font="#good-timing-font"
       ></a-troika-text>
 
       <a-troika-text
@@ -85,7 +84,7 @@ const DetailModal = ({
         width="4"
         wrap-count="60"
         material={`opacity: ${modalOpacity}`}
-        font={GoodTiming}
+        font="#good-timing-font"
       ></a-troika-text>
 
       <a-entity position="2.2 -1.5 0.01">
@@ -105,7 +104,7 @@ const DetailModal = ({
           color="#FFFFFF"
           width="4"
           material={`opacity: ${modalOpacity}`}
-          font={GoodTiming}
+          font="#good-timing-font"
           class="clickable"
           onClick={onClose}
         ></a-troika-text>

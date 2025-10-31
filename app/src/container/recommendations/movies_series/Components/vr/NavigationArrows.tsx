@@ -1,6 +1,5 @@
 import { FC } from "react";
 import "aframe-troika-text";
-import GoodTiming from "@/assets/fonts/GoodTiming.ttf";
 
 interface NavigationArrowsProps {
   currentIndex: number;
@@ -105,7 +104,7 @@ export const NavigationArrows: FC<NavigationArrowsProps> = ({
           color="#FFFFFF"
           width="4"
           position="0 0 0.01"
-          font={GoodTiming}
+          font="#good-timing-font"
         ></a-troika-text>
       </a-entity>
     </>
