@@ -14,16 +14,8 @@ import PopcornStand from "./vr/PopcornStand";
 import { NavigationArrows } from "./vr/NavigationArrows";
 import { Recommendation } from "@/container/recommendations/movies_series/moviesSeriesRecommendations-types.ts";
 import { handleBookmarkClick } from "@/container/recommendations/movies_series/helper_functions.ts";
+import { translate } from "@/container/helper_functions_common";
 
-// export const VRRecommendationsList: FC<RecommendationsProps> = ({
-//   recommendationList,
-//   setBookmarkedMovies,
-//   setCurrentBookmarkStatus,
-//   currentIndex,
-//   setCurrentIndex,
-//   setAlertVisible,
-//   bookmarkedMovies
-// }) => {
 export const VRRecommendationsList: FC<{
   recommendationList: Recommendation[];
   currentIndex: number;
@@ -52,6 +44,13 @@ export const VRRecommendationsList: FC<{
   const [detailModalType, setDetailModalType] = useState<
     "description" | "plot" | null
   >(null);
+
+  // Translation states
+  const [translatedDescription, setTranslatedDescription] =
+    useState<string>("");
+  const [translatedPlot, setTranslatedPlot] = useState<string>("");
+  const [isTranslating, setIsTranslating] = useState(false);
+
   const movie = recommendationList[currentIndex];
   const isBookmarked = !!bookmarkedMovies[movie.imdbID];
 
@@ -63,6 +62,32 @@ export const VRRecommendationsList: FC<{
       />
     );
   }
+
+  // Translate description and plot when movie changes
+  useEffect(() => {
+    const translateContent = async () => {
+      if (movie) {
+        setIsTranslating(true);
+        try {
+          const [desc, plt] = await Promise.all([
+            translate(movie.description, "bg", "en"),
+            translate(movie.plot, "bg", "en")
+          ]);
+          setTranslatedDescription(desc);
+          setTranslatedPlot(plt);
+        } catch (error) {
+          console.error("Translation error:", error);
+          // Fallback to original text
+          setTranslatedDescription(movie.description);
+          setTranslatedPlot(movie.plot);
+        } finally {
+          setIsTranslating(false);
+        }
+      }
+    };
+
+    translateContent();
+  }, [movie]);
 
   useEffect(() => {
     if (showPopup) {
@@ -231,8 +256,8 @@ export const VRRecommendationsList: FC<{
       <DetailModal
         isVisible={showDetailModal}
         contentType={detailModalType}
-        description="A film about a private detective who uncovers a complex intrigue of fraud and corruption in Los Angeles. Jake Gittes, a private detective, is involved in a case that turns out to be much more complex than it initially appeared, with corruption and intrigue around water rights in 1930s Los Angeles."
-        plot="In 1937 Los Angeles, private detective Jake 'J.J.' Gittes is hired in a case of adultery. The current situation leads him to Hollis Mulwray, head of the city's water department, and his wife Evelyn. As Gittes investigates further, he discovers a web of corruption involving water rights, land development, and murder that reaches the highest levels of Los Angeles society."
+        description={isTranslating ? "Translating..." : translatedDescription}
+        plot={isTranslating ? "Translating..." : translatedPlot}
         onClose={handleCloseDetailModal}
       />
 
@@ -240,10 +265,10 @@ export const VRRecommendationsList: FC<{
         isVisible={showTrailerModal}
         isTrailerPlaying={isTrailerPlaying}
         setIsTrailerPlaying={setIsTrailerPlaying}
-        title="БЪЧ КАСИДИ И СЪНДЪНС КИД"
+        title={movie.title}
         onClose={handleCloseTrailerModal}
         position="0 5 -8"
-        videoUrl="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+        videoUrl="https://storage.googleapis.com/my-public-videos/video.mp4"
       />
 
       {/* FLOOR */}
@@ -367,31 +392,31 @@ export const VRRecommendationsList: FC<{
 
       <a-entity position="0 0.3 8">
         {Array.from({ length: 8 }, (_, i) => (
-          <Seat key={`seat-3-${i}`} position={`${(i - 3.5) * 1.2} 0.5 0`} />
+          <Seat key={`seat-4-${i}`} position={`${(i - 3.5) * 1.2} 0.5 0`} />
         ))}
       </a-entity>
 
       <a-entity position="0 0.4 10">
         {Array.from({ length: 8 }, (_, i) => (
-          <Seat key={`seat-3-${i}`} position={`${(i - 3.5) * 1.2} 0.5 0`} />
+          <Seat key={`seat-5-${i}`} position={`${(i - 3.5) * 1.2} 0.5 0`} />
         ))}
       </a-entity>
 
       <a-entity position="0 0.5 12">
         {Array.from({ length: 8 }, (_, i) => (
-          <Seat key={`seat-3-${i}`} position={`${(i - 3.5) * 1.2} 0.5 0`} />
+          <Seat key={`seat-6-${i}`} position={`${(i - 3.5) * 1.2} 0.5 0`} />
         ))}
       </a-entity>
 
       <a-entity position="0 0.6 14">
         {Array.from({ length: 8 }, (_, i) => (
-          <Seat key={`seat-3-${i}`} position={`${(i - 3.5) * 1.2} 0.5 0`} />
+          <Seat key={`seat-7-${i}`} position={`${(i - 3.5) * 1.2} 0.5 0`} />
         ))}
       </a-entity>
 
       <a-entity position="0 0.7 16">
         {Array.from({ length: 8 }, (_, i) => (
-          <Seat key={`seat-3-${i}`} position={`${(i - 3.5) * 1.2} 0.5 0`} />
+          <Seat key={`seat-8-${i}`} position={`${(i - 3.5) * 1.2} 0.5 0`} />
         ))}
       </a-entity>
 
