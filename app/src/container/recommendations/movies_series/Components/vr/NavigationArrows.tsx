@@ -1,4 +1,6 @@
 import { FC } from "react";
+import "aframe-troika-text";
+import GoodTiming from "@/assets/fonts/GoodTiming.ttf";
 
 interface NavigationArrowsProps {
   currentIndex: number;
@@ -97,14 +99,14 @@ export const NavigationArrows: FC<NavigationArrowsProps> = ({
           color="#1a0a0a"
           material="shader: flat; opacity: 0.8"
         ></a-plane>
-        <a-text
+        <a-troika-text
           value={`${currentIndex + 1} / ${totalCount}`}
           align="center"
           color="#FFFFFF"
           width="4"
           position="0 0 0.01"
-          font="https://cdn.aframe.io/fonts/Exo2Bold.fnt"
-        ></a-text>
+          font={GoodTiming}
+        ></a-troika-text>
       </a-entity>
     </>
   );

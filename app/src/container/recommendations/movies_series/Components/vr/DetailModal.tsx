@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import "aframe-troika-text";
+import GoodTiming from "@/assets/fonts/GoodTiming.ttf";
 
 interface DetailModalProps {
   isVisible: boolean;
@@ -65,17 +67,17 @@ const DetailModal = ({
         position="0 0 -0.01"
       ></a-plane>
 
-      <a-text
+      <a-troika-text
         value={modalTitle}
         position="-2.8 1.6 0.01"
         align="left"
         color="#FFFFFF"
         width="6"
         material={`opacity: ${modalOpacity}`}
-        font="https://cdn.aframe.io/fonts/Exo2Bold.fnt"
-      ></a-text>
+        font={GoodTiming}
+      ></a-troika-text>
 
-      <a-text
+      <a-troika-text
         value={content}
         position="-2.8 0.1 0.01"
         align="left"
@@ -83,8 +85,8 @@ const DetailModal = ({
         width="4"
         wrap-count="60"
         material={`opacity: ${modalOpacity}`}
-        font="https://cdn.aframe.io/fonts/Exo2SemiBold.fnt"
-      ></a-text>
+        font={GoodTiming}
+      ></a-troika-text>
 
       <a-entity position="2.2 -1.5 0.01">
         <a-plane
@@ -96,17 +98,17 @@ const DetailModal = ({
           class="clickable"
           onClick={onClose}
         ></a-plane>
-        <a-text
+        <a-troika-text
           value="Close"
           position="0 0 0.01"
           align="center"
           color="#FFFFFF"
           width="4"
           material={`opacity: ${modalOpacity}`}
-          font="https://cdn.aframe.io/fonts/Exo2Bold.fnt"
+          font={GoodTiming}
           class="clickable"
           onClick={onClose}
-        ></a-text>
+        ></a-troika-text>
       </a-entity>
 
       <a-image

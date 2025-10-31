@@ -4,6 +4,7 @@ import "aframe";
 import "aframe-extras";
 import "aframe-physics-system";
 import "aframe-websurfaces";
+import "aframe-troika-text";
 import MovieCard from "./vr/MovieCard";
 import DetailModal from "./vr/DetailModal";
 import TrailerModal from "./vr/TrailerModal";
@@ -15,6 +16,7 @@ import { NavigationArrows } from "./vr/NavigationArrows";
 import { Recommendation } from "@/container/recommendations/movies_series/moviesSeriesRecommendations-types.ts";
 import { handleBookmarkClick } from "@/container/recommendations/movies_series/helper_functions.ts";
 import { translate } from "@/container/helper_functions_common";
+import GoodTiming from "@/assets/fonts/GoodTiming.ttf";
 
 export const VRRecommendationsList: FC<{
   recommendationList: Recommendation[];
@@ -216,29 +218,31 @@ export const VRRecommendationsList: FC<{
               position="0 0 0"
             ></a-image>
 
-            <a-text
+            <a-troika-text
               value={
-                isBookmarked ? "Added to watchlist" : "Removed from watchlist"
+                isBookmarked
+                  ? "Запазено в списъка ви за гледане"
+                  : "Премахнато от списъка ви за гледане"
               }
               position="0.4 0.35 0"
               align="left"
               color="#FFFFFF"
               width="6"
               material={`opacity: ${popupOpacity}`}
-              font="https://cdn.aframe.io/fonts/Exo2Bold.fnt"
-            ></a-text>
+              font={GoodTiming}
+            ></a-troika-text>
 
-            <a-text
-              value={`Your movie/series has been ${
-                isBookmarked ? "saved to" : "removed from"
-              } your watchlist!`}
+            <a-troika-text
+              value={`Този филм/сериал ${
+                isBookmarked ? "е запазен във" : "е премахнат от"
+              } списъка ви за гледане!`}
               position="0.4 -0.2 0"
               align="left"
               color="#FFFFFF"
               width="5"
               material={`opacity: ${popupOpacity * 0.9}`}
-              font="https://cdn.aframe.io/fonts/Exo2SemiBold.fnt"
-            ></a-text>
+              font={GoodTiming}
+            ></a-troika-text>
           </a-entity>
 
           <a-image

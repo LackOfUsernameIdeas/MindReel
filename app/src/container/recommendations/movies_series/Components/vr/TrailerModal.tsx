@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import "aframe-troika-text";
+import GoodTiming from "@/assets/fonts/GoodTiming.ttf";
 
 interface TrailerModalProps {
   isVisible: boolean;
@@ -212,25 +214,25 @@ const TrailerModal = ({
                   material={`shader: flat; opacity: ${modalOpacity}`}
                   position="0 1 0.01"
                 ></a-plane>
-                <a-text
+                <a-troika-text
                   value="YouTube playback not supported in VR\nPlease use a direct video file (.mp4, .webm)"
                   position="0 1.2 0.02"
                   align="center"
                   color="#FFFFFF"
                   width="8"
                   material={`opacity: ${modalOpacity}`}
-                  font="https://cdn.aframe.io/fonts/Exo2Bold.fnt"
+                  font={GoodTiming}
                   wrap-count="40"
-                ></a-text>
-                <a-text
+                ></a-troika-text>
+                <a-troika-text
                   value={`Video ID: ${videoId}`}
                   position="0 0.3 0.02"
                   align="center"
                   color="#888888"
                   width="6"
                   material={`opacity: ${modalOpacity}`}
-                  font="https://cdn.aframe.io/fonts/Exo2SemiBold.fnt"
-                ></a-text>
+                  font={GoodTiming}
+                ></a-troika-text>
               </>
             ) : hasDirectVideo ? (
               <a-video
@@ -248,15 +250,15 @@ const TrailerModal = ({
                   material={`shader: flat; opacity: ${modalOpacity}`}
                   position="0 1 0.01"
                 ></a-plane>
-                <a-text
+                <a-troika-text
                   value="No video source provided"
                   position="0 1 0.02"
                   align="center"
                   color="#FFFFFF"
                   width="8"
                   material={`opacity: ${modalOpacity}`}
-                  font="https://cdn.aframe.io/fonts/Exo2Bold.fnt"
-                ></a-text>
+                  font={GoodTiming}
+                ></a-troika-text>
               </>
             )}
 
@@ -296,7 +298,7 @@ const TrailerModal = ({
                   />
                 </a-entity>
 
-                <a-text
+                <a-troika-text
                   value={`${formatTime(currentTime)} / ${formatTime(duration)}`}
                   position="-2.5 -2.5 0.03"
                   align="left"
@@ -382,17 +384,17 @@ const TrailerModal = ({
             class="clickable"
             onClick={onClose}
           ></a-plane>
-          <a-text
+          <a-troika-text
             value="CLOSE"
             position="0 0 0.01"
             align="center"
             color="#FFFFFF"
             width="4"
             material={`opacity: ${modalOpacity}`}
-            font="https://cdn.aframe.io/fonts/Exo2Bold.fnt"
+            font={GoodTiming}
             class="clickable"
             onClick={onClose}
-          ></a-text>
+          ></a-troika-text>
         </a-entity>
 
         <a-image

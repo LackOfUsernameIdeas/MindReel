@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { Recommendation } from "@/container/recommendations/movies_series/moviesSeriesRecommendations-types.ts";
 import { translate } from "@/container/helper_functions_common.ts";
+import "aframe-troika-text";
+import GoodTiming from "@/assets/fonts/GoodTiming.ttf";
 
 interface MovieCardVRProps {
   position?: string;
@@ -203,7 +205,7 @@ const MovieCardVR = ({
               position="0 0 0"
             ></a-image>
 
-            <a-text
+            <a-troika-text
               value={
                 isBookmarked ? "Added to watchlist" : "Removed from watchlist"
               }
@@ -212,10 +214,10 @@ const MovieCardVR = ({
               color="#FFFFFF"
               width="6"
               material={`opacity: ${popupOpacity}`}
-              font="https://cdn.aframe.io/fonts/Exo2Bold.fnt"
-            ></a-text>
+              font={GoodTiming}
+            ></a-troika-text>
 
-            <a-text
+            <a-troika-text
               value={`Your ${recommendation.type} has been ${
                 isBookmarked ? "saved to" : "removed from"
               } your watchlist!`}
@@ -224,8 +226,8 @@ const MovieCardVR = ({
               color="#FFFFFF"
               width="5"
               material={`opacity: ${popupOpacity * 0.8}`}
-              font="https://cdn.aframe.io/fonts/Exo2SemiBold.fnt"
-            ></a-text>
+              font={GoodTiming}
+            ></a-troika-text>
           </a-entity>
 
           <a-image
@@ -311,46 +313,46 @@ const MovieCardVR = ({
 
       {/* text group */}
       <a-entity position={`${textX} 0 0.02`}>
-        <a-text
+        <a-troika-text
           value={recommendation.title}
           position={`0 ${textStartY} 0`}
           align="left"
           color="#FFFFFF"
           width={textContentWidth * 0.9}
           wrap-count="40"
-          font="https://cdn.aframe.io/fonts/Exo2Bold.fnt"
-        ></a-text>
+          font={GoodTiming}
+        ></a-troika-text>
 
-        <a-text
+        <a-troika-text
           value={recommendation.title}
           position={`0 ${textStartY - 0.4} 0`}
           align="left"
           color="#BBBBBB"
           width={textContentWidth * 0.8}
           wrap-count="45"
-          font="https://cdn.aframe.io/fonts/Exo2SemiBold.fnt"
-        ></a-text>
+          font={GoodTiming}
+        ></a-troika-text>
 
-        <a-text
+        <a-troika-text
           value={`${recommendation.genre} | ${runtime} | ${recommendation.year} | Rating: ${recommendation.rated}`}
           position={`0 ${textStartY - 0.7} 0`}
           align="left"
           color="#AAAAAA"
           width={textContentWidth * 0.7}
           wrap-count="70"
-          font="https://cdn.aframe.io/fonts/Exo2SemiBold.fnt"
-        ></a-text>
+          font={GoodTiming}
+        ></a-troika-text>
 
         <a-entity position={`0 ${textStartY - 1.15} 0`}>
-          <a-text
+          <a-troika-text
             value={`IMDb: ${recommendation.imdbRating} / ${recommendation.imdbVotes} votes`}
             position="0 0 0"
             align="left"
             color="#FFCC33"
             width={textContentWidth * 0.6}
             wrap-count="35"
-            font="https://cdn.aframe.io/fonts/Exo2Bold.fnt"
-          ></a-text>
+            font={GoodTiming}
+          ></a-troika-text>
 
           {isMovie && (
             <a-entity position={`4.2 0 0`}>
@@ -361,22 +363,22 @@ const MovieCardVR = ({
                 material="shader: flat"
                 position="0 -0.035 0.01"
               ></a-plane>
-              <a-text
+              <a-troika-text
                 value={recommendation.metascore}
                 position="0 0 0.02"
                 align="center"
                 color="#FFFFFF"
                 width={textContentWidth * 0.6}
-                font="https://cdn.aframe.io/fonts/Exo2Bold.fnt"
-              ></a-text>
-              <a-text
+                font={GoodTiming}
+              ></a-troika-text>
+              <a-troika-text
                 value="Metascore"
                 position="0.5 0 0"
                 align="left"
                 color="#FFFFFF"
                 width={textContentWidth * 0.6}
-                font="https://cdn.aframe.io/fonts/Exo2Bold.fnt"
-              ></a-text>
+                font={GoodTiming}
+              ></a-troika-text>
             </a-entity>
           )}
 
@@ -389,163 +391,163 @@ const MovieCardVR = ({
                 material="shader: flat"
                 position="0 -0.035 0.01"
               ></a-plane>
-              <a-text
+              <a-troika-text
                 value={rottenTomatoesRating.replace("%", "")}
                 position="0 0 0.02"
                 align="center"
                 color="#FFFFFF"
                 width={textContentWidth * 0.6}
-                font="https://cdn.aframe.io/fonts/Exo2Bold.fnt"
-              ></a-text>
-              <a-text
+                font={GoodTiming}
+              ></a-troika-text>
+              <a-troika-text
                 value="RT %"
                 position="0.5 0 0"
                 align="left"
                 color="#FFFFFF"
                 width={textContentWidth * 0.6}
-                font="https://cdn.aframe.io/fonts/Exo2Bold.fnt"
-              ></a-text>
+                font={GoodTiming}
+              ></a-troika-text>
             </a-entity>
           )}
         </a-entity>
 
         {displayReason && (
           <a-entity position={`0 ${textStartY - 1.9} 0`}>
-            <a-text
+            <a-troika-text
               value={`Why we recommend ${recommendation.title}?`}
               position="0 0.2 0"
               align="left"
               color="#FFFFFF"
               width={textContentWidth * 0.9}
               wrap-count="45"
-              font="https://cdn.aframe.io/fonts/Exo2Bold.fnt"
-            ></a-text>
-            <a-text
+              font={GoodTiming}
+            ></a-troika-text>
+            <a-troika-text
               value={displayReason}
               position="0 -0.35 0"
               align="left"
               color="#CCCCCC"
               width={textContentWidth * 0.7}
               wrap-count="65"
-              font="https://cdn.aframe.io/fonts/Exo2SemiBold.fnt"
-            ></a-text>
+              font={GoodTiming}
+            ></a-troika-text>
           </a-entity>
         )}
 
         <a-entity position={`0 ${textStartY - 2.85} 0`}>
-          <a-text
+          <a-troika-text
             value="Description"
             position="0 0.1 0"
             align="left"
             color="#FFFFFF"
             width={textContentWidth * 0.9}
             wrap-count="45"
-            font="https://cdn.aframe.io/fonts/Exo2Bold.fnt"
-          ></a-text>
-          <a-text
+            font={GoodTiming}
+          ></a-troika-text>
+          <a-troika-text
             value={displayDescription.substring(0, 120) + "..."}
             position="0 -0.35 0"
             align="left"
             color="#CCCCCC"
             width={textContentWidth * 0.7}
             wrap-count="65"
-            font="https://cdn.aframe.io/fonts/Exo2SemiBold.fnt"
-          ></a-text>
-          <a-text
+            font={GoodTiming}
+          ></a-troika-text>
+          <a-troika-text
             value="Full description"
             position="0 -0.6 0"
             align="left"
             color="#4A9EFF"
             width={textContentWidth * 0.5}
             wrap-count="45"
-            font="https://cdn.aframe.io/fonts/Exo2SemiBold.fnt"
+            font={GoodTiming}
             class="clickable"
             onClick={handleShowDescription}
-          ></a-text>
+          ></a-troika-text>
         </a-entity>
 
         <a-entity position={`0 ${textStartY - 3.85} 0`}>
-          <a-text
+          <a-troika-text
             value="Plot"
             position="0 0.05 0"
             align="left"
             color="#FFFFFF"
             width={textContentWidth * 0.9}
             wrap-count="45"
-            font="https://cdn.aframe.io/fonts/Exo2Bold.fnt"
-          ></a-text>
-          <a-text
+            font={GoodTiming}
+          ></a-troika-text>
+          <a-troika-text
             value={displayPlot.substring(0, 120) + "..."}
             position="0 -0.35 0"
             align="left"
             color="#CCCCCC"
             width={textContentWidth * 0.7}
             wrap-count="65"
-            font="https://cdn.aframe.io/fonts/Exo2SemiBold.fnt"
-          ></a-text>
-          <a-text
+            font={GoodTiming}
+          ></a-troika-text>
+          <a-troika-text
             value="Full plot"
             position="0 -0.6 0"
             align="left"
             color="#4A9EFF"
             width={textContentWidth * 0.5}
             wrap-count="45"
-            font="https://cdn.aframe.io/fonts/Exo2SemiBold.fnt"
+            font={GoodTiming}
             class="clickable"
             onClick={handleShowPlot}
-          ></a-text>
+          ></a-troika-text>
         </a-entity>
 
         <a-entity position={`0 ${textStartY - 4.75} 0`}>
-          <a-text
+          <a-troika-text
             value="Additional Information:"
             position="0 0 0"
             align="left"
             color="#FFFFFF"
             width={textContentWidth * 0.9}
             wrap-count="45"
-            font="https://cdn.aframe.io/fonts/Exo2Bold.fnt"
-          ></a-text>
+            font={GoodTiming}
+          ></a-troika-text>
 
-          <a-text
+          <a-troika-text
             value={`Director: ${recommendation.director}    Screenwriter: ${recommendation.writer}`}
             position="0 -0.35 0"
             align="left"
             color="#FF6B6B"
             width={textContentWidth * 0.7}
             wrap-count="70"
-            font="https://cdn.aframe.io/fonts/Exo2SemiBold.fnt"
-          ></a-text>
+            font={GoodTiming}
+          ></a-troika-text>
 
-          <a-text
+          <a-troika-text
             value={`Actors: ${recommendation.actors}    Production: ${recommendation.production}    Released: ${recommendation.released}`}
             position="0 -0.65 0"
             align="left"
             color="#FF6B6B"
             width={textContentWidth * 0.7}
             wrap-count="70"
-            font="https://cdn.aframe.io/fonts/Exo2SemiBold.fnt"
-          ></a-text>
+            font={GoodTiming}
+          ></a-troika-text>
 
-          <a-text
+          <a-troika-text
             value={`Language: ${recommendation.language}    Country: ${recommendation.country}    Awards: ${recommendation.awards}`}
             position="0 -1.0 0"
             align="left"
             color="#FF6B6B"
             width={textContentWidth * 0.7}
             wrap-count="70"
-            font="https://cdn.aframe.io/fonts/Exo2SemiBold.fnt"
-          ></a-text>
+            font={GoodTiming}
+          ></a-troika-text>
 
-          <a-text
+          <a-troika-text
             value={`Box Office: ${recommendation.boxOffice}    DVD: ${recommendation.DVD}    Website: ${recommendation.website}`}
             position="0 -1.3 0"
             align="left"
             color="#FF6B6B"
             width={textContentWidth * 0.7}
             wrap-count="70"
-            font="https://cdn.aframe.io/fonts/Exo2SemiBold.fnt"
-          ></a-text>
+            font={GoodTiming}
+          ></a-troika-text>
         </a-entity>
       </a-entity>
     </a-entity>
