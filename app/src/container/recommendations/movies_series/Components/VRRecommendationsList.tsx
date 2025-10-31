@@ -15,7 +15,6 @@ import PopcornStand from "./vr/PopcornStand";
 import { NavigationArrows } from "./vr/NavigationArrows";
 import { Recommendation } from "@/container/recommendations/movies_series/moviesSeriesRecommendations-types.ts";
 import { handleBookmarkClick } from "@/container/recommendations/movies_series/helper_functions.ts";
-import { translate } from "@/container/helper_functions_common";
 import GoodTiming from "@/assets/fonts/GoodTiming.ttf";
 
 export const VRRecommendationsList: FC<{
@@ -47,12 +46,6 @@ export const VRRecommendationsList: FC<{
     "description" | "plot" | null
   >(null);
 
-  // Translation states
-  const [translatedDescription, setTranslatedDescription] =
-    useState<string>("");
-  const [translatedPlot, setTranslatedPlot] = useState<string>("");
-  const [isTranslating, setIsTranslating] = useState(false);
-
   const movie = recommendationList[currentIndex];
   const isBookmarked = !!bookmarkedMovies[movie.imdbID];
 
@@ -64,32 +57,6 @@ export const VRRecommendationsList: FC<{
       />
     );
   }
-
-  // Translate description and plot when movie changes
-  useEffect(() => {
-    const translateContent = async () => {
-      if (movie) {
-        setIsTranslating(true);
-        try {
-          const [desc, plt] = await Promise.all([
-            translate(movie.description, "bg", "en"),
-            translate(movie.plot, "bg", "en")
-          ]);
-          setTranslatedDescription(desc);
-          setTranslatedPlot(plt);
-        } catch (error) {
-          console.error("Translation error:", error);
-          // Fallback to original text
-          setTranslatedDescription(movie.description);
-          setTranslatedPlot(movie.plot);
-        } finally {
-          setIsTranslating(false);
-        }
-      }
-    };
-
-    translateContent();
-  }, [movie]);
 
   useEffect(() => {
     if (showPopup) {
@@ -260,8 +227,8 @@ export const VRRecommendationsList: FC<{
       <DetailModal
         isVisible={showDetailModal}
         contentType={detailModalType}
-        description={isTranslating ? "Translating..." : translatedDescription}
-        plot={isTranslating ? "Translating..." : translatedPlot}
+        description={movie.description}
+        plot={movie.plot}
         onClose={handleCloseDetailModal}
       />
 

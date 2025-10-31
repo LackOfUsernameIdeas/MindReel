@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { Recommendation } from "@/container/recommendations/movies_series/moviesSeriesRecommendations-types.ts";
-import { translate } from "@/container/helper_functions_common.ts";
 import "aframe-troika-text";
 import GoodTiming from "@/assets/fonts/GoodTiming.ttf";
 
@@ -33,46 +32,10 @@ const MovieCardVR = ({
   const [showPopup, setShowPopup] = useState(false);
   const [popupOpacity, setPopupOpacity] = useState(0);
 
-  // Translation states
-  const [translatedReason, setTranslatedReason] = useState<string>("");
-  const [translatedDescription, setTranslatedDescription] =
-    useState<string>("");
-  const [translatedPlot, setTranslatedPlot] = useState<string>("");
-  const [isTranslating, setIsTranslating] = useState(true);
-
   const isBookmarked =
     externalIsBookmarked !== undefined
       ? externalIsBookmarked
       : internalIsBookmarked;
-
-  // Translate content when recommendation changes
-  useEffect(() => {
-    const translateContent = async () => {
-      setIsTranslating(true);
-      try {
-        const [reason, desc, plt] = await Promise.all([
-          recommendation.reason
-            ? translate(recommendation.reason, "bg", "en")
-            : Promise.resolve(""),
-          translate(recommendation.description, "bg", "en"),
-          translate(recommendation.plot, "bg", "en")
-        ]);
-        setTranslatedReason(reason);
-        setTranslatedDescription(desc);
-        setTranslatedPlot(plt);
-      } catch (error) {
-        console.error("Translation error:", error);
-        // Fallback to original text
-        setTranslatedReason(recommendation.reason || "");
-        setTranslatedDescription(recommendation.description);
-        setTranslatedPlot(recommendation.plot);
-      } finally {
-        setIsTranslating(false);
-      }
-    };
-
-    translateContent();
-  }, [recommendation]);
 
   useEffect(() => {
     if (showPopup) {
@@ -168,13 +131,6 @@ const MovieCardVR = ({
       <polygon points="10,8 16,12 10,16" fill="white"/>
     </svg>
   `)}`;
-
-  // Display text (translated or loading)
-  const displayReason = isTranslating ? "Loading..." : translatedReason;
-  const displayDescription = isTranslating
-    ? "Loading..."
-    : translatedDescription;
-  const displayPlot = isTranslating ? "Loading..." : translatedPlot;
 
   return (
     <a-entity
@@ -411,7 +367,7 @@ const MovieCardVR = ({
           )}
         </a-entity>
 
-        {displayReason && (
+        {recommendation.reason && (
           <a-entity position={`0 ${textStartY - 1.9} 0`}>
             <a-troika-text
               value={`Why we recommend ${recommendation.title}?`}
@@ -423,7 +379,7 @@ const MovieCardVR = ({
               font={GoodTiming}
             ></a-troika-text>
             <a-troika-text
-              value={displayReason}
+              value={recommendation.reason}
               position="0 -0.35 0"
               align="left"
               color="#CCCCCC"
@@ -445,7 +401,7 @@ const MovieCardVR = ({
             font={GoodTiming}
           ></a-troika-text>
           <a-troika-text
-            value={displayDescription.substring(0, 120) + "..."}
+            value={recommendation.description.substring(0, 120) + "..."}
             position="0 -0.35 0"
             align="left"
             color="#CCCCCC"
@@ -477,7 +433,7 @@ const MovieCardVR = ({
             font={GoodTiming}
           ></a-troika-text>
           <a-troika-text
-            value={displayPlot.substring(0, 120) + "..."}
+            value={recommendation.plot.substring(0, 120) + "..."}
             position="0 -0.35 0"
             align="left"
             color="#CCCCCC"

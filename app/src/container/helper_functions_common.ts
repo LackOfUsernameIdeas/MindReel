@@ -101,24 +101,17 @@ export const validateToken = async (
 };
 
 /**
- * Превежда текста между два езика, като използва Google Translate API.
- * Ако заявката е неуспешна, се връща оригиналният текст.
+ * Превежда текста от английски на български, като използва Google Translate API.
+ * Ако заявката за превод е неуспешна, се връща оригиналният текст.
  *
  * @async
  * @function translate
- * @param {string} text - Текстът, който трябва да бъде преведен.
- * @param {string} [sourceLang='en'] - Езикът на оригиналния текст.
- * @param {string} [targetLang='bg'] - Езикът, на който да се преведе.
- * @returns {Promise<string>} - Преведеният текст.
+ * @param {string} entry - Текстът, който трябва да бъде преведен.
+ * @returns {Promise<string>} - Преведеният текст на български език.
+ * @throws {Error} - Хвърля грешка, ако не успее да преведе текста.
  */
-export async function translate(
-  text: string,
-  sourceLang: string = "en",
-  targetLang: string = "bg"
-): Promise<string> {
-  const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${sourceLang}&tl=${targetLang}&dt=t&q=${encodeURIComponent(
-    text
-  )}`;
+export async function translate(entry: string): Promise<string> {
+  const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=bg&dt=t&q=${entry}`;
 
   try {
     const response = await fetch(url);
@@ -128,18 +121,20 @@ export async function translate(
       .map((item: [string]) => item[0])
       .join(" ");
 
+    // Check if the translated text contains URL-encoded sequences
     const encodedPattern = /%[0-9A-Fa-f]{2}/;
     if (encodedPattern.test(flattenedTranslation)) {
       console.error(
         `Invalid translation: Detected URL-encoded characters in response "${flattenedTranslation}"`
       );
-      return text;
+      return entry;
     }
 
-    return flattenedTranslation.replace(/\s+/g, " ").trim();
+    const mergedTranslation = flattenedTranslation.replace(/\s+/g, " ").trim();
+    return mergedTranslation;
   } catch (error) {
-    console.error(`Error translating text: ${text}`, error);
-    return text;
+    console.error(`Error translating entry: ${entry}`, error);
+    return entry;
   }
 }
 
