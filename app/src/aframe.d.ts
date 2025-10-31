@@ -111,6 +111,9 @@ declare global {
         transparent?: string | boolean;
         metalness?: string | number;
         roughness?: string | number;
+        animation__mouseenter?: string;
+        animation__mouseleave?: string;
+        animation__click?: string;
       };
       "a-box": React.DetailedHTMLProps<
         React.HTMLAttributes<HTMLElement>,

@@ -111,6 +111,7 @@ export const Quiz: FC<QuizProps> = ({
                     <VRRecommendationsList
                       recommendationList={recommendationList}
                       currentIndex={currentIndex}
+                      setCurrentIndex={setCurrentIndex}
                       setBookmarkedMovies={setBookmarkedMovies}
                       setCurrentBookmarkStatus={setCurrentBookmarkStatus}
                       bookmarkedMovies={bookmarkedMovies}

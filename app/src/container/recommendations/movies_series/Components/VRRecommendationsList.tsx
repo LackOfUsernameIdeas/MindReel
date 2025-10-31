@@ -11,6 +11,7 @@ import Projector from "./vr/Projector";
 import ExitSign from "./vr/ExitSign";
 import Seat from "./vr/Seat";
 import PopcornStand from "./vr/PopcornStand";
+import { NavigationArrows } from "./vr/NavigationArrows";
 import { Recommendation } from "@/container/recommendations/movies_series/moviesSeriesRecommendations-types.ts";
 import { handleBookmarkClick } from "@/container/recommendations/movies_series/helper_functions.ts";
 
@@ -26,6 +27,7 @@ import { handleBookmarkClick } from "@/container/recommendations/movies_series/h
 export const VRRecommendationsList: FC<{
   recommendationList: Recommendation[];
   currentIndex: number;
+  setCurrentIndex: React.Dispatch<React.SetStateAction<number>>;
   setBookmarkedMovies: React.Dispatch<
     React.SetStateAction<{
       [key: string]: any;
@@ -36,6 +38,7 @@ export const VRRecommendationsList: FC<{
 }> = ({
   recommendationList,
   currentIndex,
+  setCurrentIndex,
   setBookmarkedMovies,
   setCurrentBookmarkStatus,
   bookmarkedMovies
@@ -94,6 +97,25 @@ export const VRRecommendationsList: FC<{
   const handleCloseTrailerModal = () => {
     setShowTrailerModal(false);
   };
+
+  const handleNext = () => {
+    setCurrentIndex((prevIndex) =>
+      prevIndex === recommendationList.length - 1 ? 0 : prevIndex + 1
+    );
+    setShowDetailModal(false);
+    setShowTrailerModal(false);
+    setIsTrailerPlaying(false);
+  };
+
+  const handlePrevious = () => {
+    setCurrentIndex((prevIndex) =>
+      prevIndex === 0 ? recommendationList.length - 1 : prevIndex - 1
+    );
+    setShowDetailModal(false);
+    setShowTrailerModal(false);
+    setIsTrailerPlaying(false);
+  };
+
   const infoIconSvg = `data:image/svg+xml;base64,${btoa(`
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="white">
       <path d="M11 7h2v2h-2zm0 4h2v6h-2zm1-9C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/>
@@ -298,21 +320,29 @@ export const VRRecommendationsList: FC<{
         ></a-plane>
       </a-entity>
       {!showTrailerModal && (
-        <MovieCard
-          position="0 2.5 -8"
-          handleBookmarkClick={() =>
-            handleBookmarkClick(
-              movie,
-              setBookmarkedMovies,
-              setCurrentBookmarkStatus,
-              setShowPopup
-            )
-          }
-          recommendation={movie}
-          isBookmarked={isBookmarked}
-          onShowDetail={handleShowDetail}
-          onShowTrailer={handleShowTrailer}
-        />
+        <>
+          <MovieCard
+            position="0 2.5 -8"
+            handleBookmarkClick={() =>
+              handleBookmarkClick(
+                movie,
+                setBookmarkedMovies,
+                setCurrentBookmarkStatus,
+                setShowPopup
+              )
+            }
+            recommendation={movie}
+            isBookmarked={isBookmarked}
+            onShowDetail={handleShowDetail}
+            onShowTrailer={handleShowTrailer}
+          />
+          <NavigationArrows
+            currentIndex={currentIndex}
+            totalCount={recommendationList.length}
+            onPrevious={handlePrevious}
+            onNext={handleNext}
+          />
+        </>
       )}
 
       <Projector position="0 4 0" rotation="-15 0 0" />
