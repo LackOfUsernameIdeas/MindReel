@@ -77,7 +77,7 @@ const DetailModal = ({
 
       <a-text
         value={content}
-        position="-2.8 1 0.01"
+        position="-2.8 0.1 0.01"
         align="left"
         color="#CCCCCC"
         width="4"

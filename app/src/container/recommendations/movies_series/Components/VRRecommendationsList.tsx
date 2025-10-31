@@ -265,7 +265,6 @@ export const VRRecommendationsList: FC<{
         isVisible={showTrailerModal}
         isTrailerPlaying={isTrailerPlaying}
         setIsTrailerPlaying={setIsTrailerPlaying}
-        title={movie.title}
         onClose={handleCloseTrailerModal}
         position="0 5 -8"
         videoUrl="https://storage.googleapis.com/my-public-videos/video.mp4"

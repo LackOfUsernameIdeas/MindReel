@@ -4,7 +4,6 @@ interface TrailerModalProps {
   isVisible: boolean;
   isTrailerPlaying: boolean;
   setIsTrailerPlaying: React.Dispatch<React.SetStateAction<boolean>>;
-  title: string;
   onClose: () => void;
   position?: string;
   videoUrl?: string; // Direct video URL to play
@@ -15,7 +14,6 @@ const TrailerModal = ({
   isVisible,
   isTrailerPlaying,
   setIsTrailerPlaying,
-  title,
   onClose,
   position = "0 3.5 -4",
   videoUrl,
@@ -202,16 +200,6 @@ const TrailerModal = ({
           material={`shader: flat; opacity: ${modalOpacity * 0.6}`}
           position="0 0.5 -0.01"
         ></a-plane>
-
-        <a-text
-          value={`${title.toUpperCase()}`}
-          position="-6.8 4.2 0.01"
-          align="left"
-          color="#FFFFFF"
-          width="6"
-          material={`opacity: ${modalOpacity}`}
-          font="https://cdn.aframe.io/fonts/Exo2Bold.fnt"
-        ></a-text>
 
         {isTrailerPlaying ? (
           <>
