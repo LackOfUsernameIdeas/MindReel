@@ -1,5 +1,6 @@
 const express = require("express");
 const bodyParser = require("body-parser");
+const cors = require("cors");
 const YTDlpWrap = require("yt-dlp-wrap").default;
 const { Storage } = require("@google-cloud/storage");
 const fs = require("fs");
@@ -9,6 +10,29 @@ const app = express();
 const ytDlpWrap = new YTDlpWrap("yt-dlp");
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
+
+const whitelist = [
+  "http://localhost:5174",
+  "http://localhost:5175",
+  "https://mindreel.noit.eu",
+  "http://mindreel.noit.eu"
+];
+const corsOptions = {
+  origin: function (origin, callback) {
+    if (!origin || whitelist.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+  allowedHeaders: ["Content-Type", "Authorization"],
+  credentials: true,
+  optionSuccessStatus: 204
+};
+
+app.use(cors(corsOptions));
+app.options("*", cors(corsOptions)); // Handle preflight requests
 
 // Initialize Google Cloud Storage
 const storage = new Storage({

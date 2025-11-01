@@ -234,7 +234,7 @@ export const downloadYouTubeTrailer = async (
 
     const response = await fetch(
       `${
-        import.meta.env.VITE_API_BASE_URL
+        import.meta.env.VITE_CLOUDRUN_BASE_URL
       }/download/youtube-video?url=${encodeURIComponent(
         youtubeUrl
       )}&outputDir=${encodeURIComponent(
