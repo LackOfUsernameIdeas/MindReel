@@ -18,9 +18,6 @@ RUN npm install --production
 # Copy the rest of the project files
 COPY . .
 
-# Copy cookies file
-COPY cookies.txt ./cookies.txt
-
 # Expose the port your app uses
 EXPOSE 8080
 

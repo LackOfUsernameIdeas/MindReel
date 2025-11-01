@@ -11,6 +11,15 @@ const ytDlpWrap = new YTDlpWrap("yt-dlp");
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
 
+// Write cookies from environment variable on startup
+const COOKIES_PATH = path.join(__dirname, "cookies.txt");
+if (process.env.YOUTUBE_COOKIES) {
+  fs.writeFileSync(COOKIES_PATH, process.env.YOUTUBE_COOKIES);
+  console.log("✅ Cookies file created from environment variable");
+} else {
+  console.warn("⚠️ No YOUTUBE_COOKIES environment variable found");
+}
+
 const whitelist = [
   "http://localhost:5174",
   "http://localhost:5175",
@@ -32,11 +41,11 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
-app.options("*", cors(corsOptions)); // Handle preflight requests
+app.options("*", cors(corsOptions));
 
 // Initialize Google Cloud Storage
 const storage = new Storage({
-  keyFilename: "service-account.json" // path to your JSON key
+  keyFilename: "service-account.json"
 });
 const bucketName = "my-public-videos";
 const bucket = storage.bucket(bucketName);
@@ -57,7 +66,6 @@ app.get("/download/youtube-video", (req, res) => {
     const safeOutputDir = outputDir;
     const fullPath = path.join(safeOutputDir, fileName);
 
-    // Ensure output directory exists
     if (!fs.existsSync(safeOutputDir)) {
       fs.mkdirSync(safeOutputDir, { recursive: true });
     }
@@ -73,7 +81,7 @@ app.get("/download/youtube-video", (req, res) => {
       "--merge-output-format",
       "mp4",
       "--cookies",
-      path.join(__dirname, "cookies.txt")
+      COOKIES_PATH
     ];
 
     const ytDlpEventEmitter = ytDlpWrap.exec(args);
@@ -106,7 +114,6 @@ app.get("/download/youtube-video", (req, res) => {
           });
         }
 
-        // Check if file exists
         if (!fs.existsSync(fullPath)) {
           return res.status(404).json({
             status: "error",
@@ -115,7 +122,6 @@ app.get("/download/youtube-video", (req, res) => {
         }
 
         try {
-          // Upload to Google Cloud Storage
           console.log(`☁️ Uploading ${fileName} to GCS...`);
           await bucket.upload(fullPath, {
             destination: fileName,
@@ -125,11 +131,9 @@ app.get("/download/youtube-video", (req, res) => {
           const publicUrl = `https://storage.googleapis.com/${bucketName}/${fileName}`;
           console.log(`✅ Uploaded successfully: ${publicUrl}`);
 
-          // Get file info
           const stats = fs.statSync(fullPath);
           const fileSizeMB = (stats.size / (1024 * 1024)).toFixed(2);
 
-          // Optionally delete local file after upload
           fs.unlinkSync(fullPath);
 
           res.json({
