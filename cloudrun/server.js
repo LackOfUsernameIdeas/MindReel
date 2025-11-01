@@ -47,7 +47,9 @@ app.get("/download/youtube-video", (req, res) => {
       "-o",
       fullPath,
       "--merge-output-format",
-      "mp4"
+      "mp4",
+      "--cookies",
+      path.join(__dirname, "cookies.txt")
     ];
 
     const ytDlpEventEmitter = ytDlpWrap.exec(args);

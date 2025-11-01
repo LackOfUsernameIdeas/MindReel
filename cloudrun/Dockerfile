@@ -5,7 +5,7 @@ FROM node:20
 WORKDIR /usr/src/app
 
 # Install Python3 and pip (required for yt-dlp)
-RUN apt-get update && apt-get install -y python3 python3-pip curl \
+RUN apt-get update && apt-get install -y python3 python3-pip ffmpeg curl \
     && rm -rf /var/lib/apt/lists/*
 
 # Install yt-dlp via pip
@@ -17,6 +17,9 @@ RUN npm install --production
 
 # Copy the rest of the project files
 COPY . .
+
+# Copy cookies file
+COPY cookies.txt ./cookies.txt
 
 # Expose the port your app uses
 EXPOSE 8080
