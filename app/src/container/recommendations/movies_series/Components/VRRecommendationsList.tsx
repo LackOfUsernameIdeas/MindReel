@@ -14,7 +14,10 @@ import Seat from "./vr/Seat";
 import PopcornStand from "./vr/PopcornStand";
 import { NavigationArrows } from "./vr/NavigationArrows";
 import { Recommendation } from "@/container/recommendations/movies_series/moviesSeriesRecommendations-types.ts";
-import { handleBookmarkClick } from "@/container/recommendations/movies_series/helper_functions.ts";
+import {
+  downloadMultipleTrailers,
+  handleBookmarkClick
+} from "@/container/recommendations/movies_series/helper_functions.ts";
 import GoodTiming from "@/assets/fonts/GoodTiming.ttf";
 
 export const VRRecommendationsList: FC<{
@@ -46,8 +49,14 @@ export const VRRecommendationsList: FC<{
     "description" | "plot" | null
   >(null);
 
+  // State for downloaded trailer URLs mapped to imdbID
+  const [trailerUrls, setTrailerUrls] = useState<Record<string, string>>({});
+
   const movie = recommendationList[currentIndex];
   const isBookmarked = !!bookmarkedMovies[movie.imdbID];
+
+  // Get the video URL for current movie
+  const currentVideoUrl = trailerUrls[movie.imdbID] || null;
 
   if (!recommendationList.length) {
     return (
@@ -57,6 +66,18 @@ export const VRRecommendationsList: FC<{
       />
     );
   }
+
+  // Pre-download trailers for 5 recommendations on mount
+  useEffect(() => {
+    const downloadInitialTrailers = async () => {
+      const urls = await downloadMultipleTrailers(recommendationList);
+      setTrailerUrls(urls);
+    };
+
+    if (recommendationList.length > 0) {
+      downloadInitialTrailers();
+    }
+  }, [recommendationList]);
 
   useEffect(() => {
     if (showPopup) {
@@ -90,6 +111,7 @@ export const VRRecommendationsList: FC<{
 
   const handleCloseTrailerModal = () => {
     setShowTrailerModal(false);
+    setIsTrailerPlaying(false);
   };
 
   const handleNext = () => {
@@ -239,7 +261,8 @@ export const VRRecommendationsList: FC<{
         setIsTrailerPlaying={setIsTrailerPlaying}
         onClose={handleCloseTrailerModal}
         position="0 5 -8"
-        videoUrl="https://storage.googleapis.com/my-public-videos/video.mp4"
+        videoUrl={currentVideoUrl || undefined}
+        youtubeUrl={!currentVideoUrl ? movie.youtubeTrailerUrl : undefined}
       />
 
       {/* FLOOR */}

@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Recommendation } from "@/container/recommendations/movies_series/moviesSeriesRecommendations-types.ts";
-import "aframe-troika-text";
+import { translate } from "@/container/helper_functions_common.ts";
 
 interface MovieCardVRProps {
   position?: string;
@@ -28,27 +28,47 @@ const MovieCardVR = ({
   onShowTrailer
 }: MovieCardVRProps) => {
   const [internalIsBookmarked, setInternalIsBookmarked] = useState(false);
-  const [loadedSections, setLoadedSections] = useState(0);
 
-  // Progressively load sections to prevent memory overload
-  useEffect(() => {
-    const timers: NodeJS.Timeout[] = [];
-
-    // Load sections with small delays
-    for (let i = 1; i <= 6; i++) {
-      const timer = setTimeout(() => {
-        setLoadedSections(i);
-      }, i * 50); // 50ms between each section
-      timers.push(timer);
-    }
-
-    return () => timers.forEach(clearTimeout);
-  }, [recommendation.imdbID]); // Reset when movie changes
+  // Translation states
+  const [translatedReason, setTranslatedReason] = useState<string>("");
+  const [translatedDescription, setTranslatedDescription] =
+    useState<string>("");
+  const [translatedPlot, setTranslatedPlot] = useState<string>("");
+  const [isTranslating, setIsTranslating] = useState(true);
 
   const isBookmarked =
     externalIsBookmarked !== undefined
       ? externalIsBookmarked
       : internalIsBookmarked;
+
+  // Translate content when recommendation changes
+  useEffect(() => {
+    const translateContent = async () => {
+      setIsTranslating(true);
+      try {
+        const [reason, desc, plt] = await Promise.all([
+          recommendation.reason
+            ? translate(recommendation.reason)
+            : Promise.resolve(""),
+          translate(recommendation.description),
+          translate(recommendation.plot)
+        ]);
+        setTranslatedReason(reason);
+        setTranslatedDescription(desc);
+        setTranslatedPlot(plt);
+      } catch (error) {
+        console.error("Translation error:", error);
+        // Fallback to original text
+        setTranslatedReason(recommendation.reason || "");
+        setTranslatedDescription(recommendation.description);
+        setTranslatedPlot(recommendation.plot);
+      } finally {
+        setIsTranslating(false);
+      }
+    };
+
+    translateContent();
+  }, [recommendation]);
 
   const handleInternalBookmarkClick = () => {
     if (handleBookmarkClick) {
@@ -115,6 +135,13 @@ const MovieCardVR = ({
       <polygon points="10,8 16,12 10,16" fill="white"/>
     </svg>
   `)}`;
+
+  // Display text (translated or loading)
+  const displayReason = isTranslating ? "Loading..." : translatedReason;
+  const displayDescription = isTranslating
+    ? "Loading..."
+    : translatedDescription;
+  const displayPlot = isTranslating ? "Loading..." : translatedPlot;
 
   return (
     <a-entity
@@ -195,264 +222,244 @@ const MovieCardVR = ({
         </a-entity>
       </a-entity>
 
-      {/* text group - progressively loaded */}
+      {/* text group */}
       <a-entity position={`${textX} 0 0.02`}>
-        {/* Section 1: Title and basic info */}
-        {loadedSections >= 1 && (
-          <>
-            <a-troika-text
-              value={recommendation.title}
-              position={`0 ${textStartY} 0`}
-              align="left"
-              color="#FFFFFF"
-              width={textContentWidth * 0.9}
-              max-width={textContentWidth * 0.9}
-              font="#good-timing-font"
-            ></a-troika-text>
+        <a-text
+          value={recommendation.title}
+          position={`0 ${textStartY} 0`}
+          align="left"
+          color="#FFFFFF"
+          width={textContentWidth * 0.9}
+          wrap-count="40"
+          font="https://cdn.aframe.io/fonts/Exo2Bold.fnt"
+        ></a-text>
 
-            <a-troika-text
-              value={recommendation.title}
-              position={`0 ${textStartY - 0.4} 0`}
-              align="left"
-              color="#BBBBBB"
-              width={textContentWidth * 0.8}
-              max-width={textContentWidth * 0.8}
-              font="#good-timing-font"
-            ></a-troika-text>
-          </>
-        )}
+        <a-text
+          value={recommendation.title}
+          position={`0 ${textStartY - 0.4} 0`}
+          align="left"
+          color="#BBBBBB"
+          width={textContentWidth * 0.8}
+          wrap-count="45"
+          font="https://cdn.aframe.io/fonts/Exo2SemiBold.fnt"
+        ></a-text>
 
-        {/* Section 2: Genre and runtime */}
-        {loadedSections >= 2 && (
-          <a-troika-text
-            value={`${recommendation.genre} | ${runtime} | ${recommendation.year} | Rating: ${recommendation.rated}`}
-            position={`0 ${textStartY - 0.7} 0`}
+        <a-text
+          value={`${recommendation.genre} | ${runtime} | ${recommendation.year} | Rating: ${recommendation.rated}`}
+          position={`0 ${textStartY - 0.7} 0`}
+          align="left"
+          color="#AAAAAA"
+          width={textContentWidth * 0.7}
+          wrap-count="70"
+          font="https://cdn.aframe.io/fonts/Exo2SemiBold.fnt"
+        ></a-text>
+
+        <a-entity position={`0 ${textStartY - 1.15} 0`}>
+          <a-text
+            value={`IMDb: ${recommendation.imdbRating} / ${recommendation.imdbVotes} votes`}
+            position="0 0 0"
             align="left"
-            color="#AAAAAA"
-            width={textContentWidth * 0.7}
-            max-width={textContentWidth * 0.7}
-            font="#good-timing-font"
-          ></a-troika-text>
-        )}
+            color="#FFCC33"
+            width={textContentWidth * 0.6}
+            wrap-count="35"
+            font="https://cdn.aframe.io/fonts/Exo2Bold.fnt"
+          ></a-text>
 
-        {/* Section 3: Ratings */}
-        {loadedSections >= 3 && (
-          <a-entity position={`0 ${textStartY - 1.15} 0`}>
-            <a-troika-text
-              value={`IMDb: ${recommendation.imdbRating} / ${recommendation.imdbVotes} votes`}
-              position="0 0 0"
-              align="left"
-              color="#FFCC33"
-              width={textContentWidth * 0.6}
-              max-width={textContentWidth * 0.6}
-              font="#good-timing-font"
-            ></a-troika-text>
+          {isMovie && (
+            <a-entity position={`4.2 0 0`}>
+              <a-plane
+                width="0.8"
+                height="0.35"
+                color={getMetascoreColor(recommendation.metascore)}
+                material="shader: flat"
+                position="0 -0.035 0.01"
+              ></a-plane>
+              <a-text
+                value={recommendation.metascore}
+                position="0 0 0.02"
+                align="center"
+                color="#FFFFFF"
+                width={textContentWidth * 0.6}
+                font="https://cdn.aframe.io/fonts/Exo2Bold.fnt"
+              ></a-text>
+              <a-text
+                value="Metascore"
+                position="0.5 0 0"
+                align="left"
+                color="#FFFFFF"
+                width={textContentWidth * 0.6}
+                font="https://cdn.aframe.io/fonts/Exo2Bold.fnt"
+              ></a-text>
+            </a-entity>
+          )}
 
-            {isMovie && (
-              <a-entity position={`4.2 0 0`}>
-                <a-plane
-                  width="0.8"
-                  height="0.35"
-                  color={getMetascoreColor(recommendation.metascore)}
-                  material="shader: flat"
-                  position="0 -0.035 0.01"
-                ></a-plane>
-                <a-troika-text
-                  value={recommendation.metascore}
-                  position="0 0 0.02"
-                  align="center"
-                  color="#FFFFFF"
-                  width={textContentWidth * 0.6}
-                  font="#good-timing-font"
-                ></a-troika-text>
-                <a-troika-text
-                  value="Metascore"
-                  position="0.5 0 0"
-                  align="left"
-                  color="#FFFFFF"
-                  width={textContentWidth * 0.6}
-                  font="#good-timing-font"
-                ></a-troika-text>
-              </a-entity>
-            )}
+          {isMovie && (
+            <a-entity position={`6.8 0 0`}>
+              <a-plane
+                width="0.8"
+                height="0.35"
+                color="#FF0000"
+                material="shader: flat"
+                position="0 -0.035 0.01"
+              ></a-plane>
+              <a-text
+                value={rottenTomatoesRating.replace("%", "")}
+                position="0 0 0.02"
+                align="center"
+                color="#FFFFFF"
+                width={textContentWidth * 0.6}
+                font="https://cdn.aframe.io/fonts/Exo2Bold.fnt"
+              ></a-text>
+              <a-text
+                value="RT %"
+                position="0.5 0 0"
+                align="left"
+                color="#FFFFFF"
+                width={textContentWidth * 0.6}
+                font="https://cdn.aframe.io/fonts/Exo2Bold.fnt"
+              ></a-text>
+            </a-entity>
+          )}
+        </a-entity>
 
-            {isMovie && (
-              <a-entity position={`6.8 0 0`}>
-                <a-plane
-                  width="0.8"
-                  height="0.35"
-                  color="#FF0000"
-                  material="shader: flat"
-                  position="0 -0.035 0.01"
-                ></a-plane>
-                <a-troika-text
-                  value={rottenTomatoesRating.replace("%", "")}
-                  position="0 0 0.02"
-                  align="center"
-                  color="#FFFFFF"
-                  width={textContentWidth * 0.6}
-                  font="#good-timing-font"
-                ></a-troika-text>
-                <a-troika-text
-                  value="RT %"
-                  position="0.5 0 0"
-                  align="left"
-                  color="#FFFFFF"
-                  width={textContentWidth * 0.6}
-                  font="#good-timing-font"
-                ></a-troika-text>
-              </a-entity>
-            )}
-          </a-entity>
-        )}
-
-        {/* Section 4: Reason */}
-        {loadedSections >= 4 && recommendation.reason && (
+        {displayReason && (
           <a-entity position={`0 ${textStartY - 1.9} 0`}>
-            <a-troika-text
+            <a-text
               value={`Why we recommend ${recommendation.title}?`}
               position="0 0.2 0"
               align="left"
               color="#FFFFFF"
               width={textContentWidth * 0.9}
-              max-width={textContentWidth * 0.9}
-              font="#good-timing-font"
-            ></a-troika-text>
-            <a-troika-text
-              value={recommendation.reason}
+              wrap-count="45"
+              font="https://cdn.aframe.io/fonts/Exo2Bold.fnt"
+            ></a-text>
+            <a-text
+              value={displayReason}
               position="0 -0.35 0"
               align="left"
               color="#CCCCCC"
               width={textContentWidth * 0.7}
-              max-width={textContentWidth * 0.7}
-              font="#good-timing-font"
-            ></a-troika-text>
+              wrap-count="65"
+              font="https://cdn.aframe.io/fonts/Exo2SemiBold.fnt"
+            ></a-text>
           </a-entity>
         )}
 
-        {/* Section 5: Description and Plot */}
-        {loadedSections >= 5 && (
-          <>
-            <a-entity position={`0 ${textStartY - 2.85} 0`}>
-              <a-troika-text
-                value="Description"
-                position="0 0.1 0"
-                align="left"
-                color="#FFFFFF"
-                width={textContentWidth * 0.9}
-                max-width={textContentWidth * 0.9}
-                font="#good-timing-font"
-              ></a-troika-text>
-              <a-troika-text
-                value={recommendation.description.substring(0, 120) + "..."}
-                position="0 -0.35 0"
-                align="left"
-                color="#CCCCCC"
-                width={textContentWidth * 0.7}
-                max-width={textContentWidth * 0.7}
-                font="#good-timing-font"
-              ></a-troika-text>
-              <a-troika-text
-                value="Full description"
-                position="0 -0.6 0"
-                align="left"
-                color="#4A9EFF"
-                width={textContentWidth * 0.5}
-                max-width={textContentWidth * 0.5}
-                font="#good-timing-font"
-                class="clickable"
-                onClick={handleShowDescription}
-              ></a-troika-text>
-            </a-entity>
+        <a-entity position={`0 ${textStartY - 2.85} 0`}>
+          <a-text
+            value="Description"
+            position="0 0.1 0"
+            align="left"
+            color="#FFFFFF"
+            width={textContentWidth * 0.9}
+            wrap-count="45"
+            font="https://cdn.aframe.io/fonts/Exo2Bold.fnt"
+          ></a-text>
+          <a-text
+            value={displayDescription.substring(0, 120) + "..."}
+            position="0 -0.35 0"
+            align="left"
+            color="#CCCCCC"
+            width={textContentWidth * 0.7}
+            wrap-count="65"
+            font="https://cdn.aframe.io/fonts/Exo2SemiBold.fnt"
+          ></a-text>
+          <a-text
+            value="Full description"
+            position="0 -0.6 0"
+            align="left"
+            color="#4A9EFF"
+            width={textContentWidth * 0.5}
+            wrap-count="45"
+            font="https://cdn.aframe.io/fonts/Exo2SemiBold.fnt"
+            class="clickable"
+            onClick={handleShowDescription}
+          ></a-text>
+        </a-entity>
 
-            <a-entity position={`0 ${textStartY - 3.85} 0`}>
-              <a-troika-text
-                value="Plot"
-                position="0 0.05 0"
-                align="left"
-                color="#FFFFFF"
-                width={textContentWidth * 0.9}
-                max-width={textContentWidth * 0.9}
-                font="#good-timing-font"
-              ></a-troika-text>
-              <a-troika-text
-                value={recommendation.plot.substring(0, 120) + "..."}
-                position="0 -0.35 0"
-                align="left"
-                color="#CCCCCC"
-                width={textContentWidth * 0.7}
-                max-width={textContentWidth * 0.7}
-                font="#good-timing-font"
-              ></a-troika-text>
-              <a-troika-text
-                value="Full plot"
-                position="0 -0.6 0"
-                align="left"
-                color="#4A9EFF"
-                width={textContentWidth * 0.5}
-                max-width={textContentWidth * 0.5}
-                font="#good-timing-font"
-                class="clickable"
-                onClick={handleShowPlot}
-              ></a-troika-text>
-            </a-entity>
-          </>
-        )}
+        <a-entity position={`0 ${textStartY - 3.85} 0`}>
+          <a-text
+            value="Plot"
+            position="0 0.05 0"
+            align="left"
+            color="#FFFFFF"
+            width={textContentWidth * 0.9}
+            wrap-count="45"
+            font="https://cdn.aframe.io/fonts/Exo2Bold.fnt"
+          ></a-text>
+          <a-text
+            value={displayPlot.substring(0, 120) + "..."}
+            position="0 -0.35 0"
+            align="left"
+            color="#CCCCCC"
+            width={textContentWidth * 0.7}
+            wrap-count="65"
+            font="https://cdn.aframe.io/fonts/Exo2SemiBold.fnt"
+          ></a-text>
+          <a-text
+            value="Full plot"
+            position="0 -0.6 0"
+            align="left"
+            color="#4A9EFF"
+            width={textContentWidth * 0.5}
+            wrap-count="45"
+            font="https://cdn.aframe.io/fonts/Exo2SemiBold.fnt"
+            class="clickable"
+            onClick={handleShowPlot}
+          ></a-text>
+        </a-entity>
 
-        {/* Section 6: Additional Information */}
-        {loadedSections >= 6 && (
-          <a-entity position={`0 ${textStartY - 4.75} 0`}>
-            <a-troika-text
-              value="Additional Information:"
-              position="0 0 0"
-              align="left"
-              color="#FFFFFF"
-              width={textContentWidth * 0.9}
-              max-width={textContentWidth * 0.9}
-              font="#good-timing-font"
-            ></a-troika-text>
+        <a-entity position={`0 ${textStartY - 4.75} 0`}>
+          <a-text
+            value="Additional Information:"
+            position="0 0 0"
+            align="left"
+            color="#FFFFFF"
+            width={textContentWidth * 0.9}
+            wrap-count="45"
+            font="https://cdn.aframe.io/fonts/Exo2Bold.fnt"
+          ></a-text>
 
-            <a-troika-text
-              value={`Director: ${recommendation.director}    Screenwriter: ${recommendation.writer}`}
-              position="0 -0.35 0"
-              align="left"
-              color="#FF6B6B"
-              width={textContentWidth * 0.7}
-              max-width={textContentWidth * 0.7}
-              font="#good-timing-font"
-            ></a-troika-text>
+          <a-text
+            value={`Director: ${recommendation.director}    Screenwriter: ${recommendation.writer}`}
+            position="0 -0.35 0"
+            align="left"
+            color="#FF6B6B"
+            width={textContentWidth * 0.7}
+            wrap-count="70"
+            font="https://cdn.aframe.io/fonts/Exo2SemiBold.fnt"
+          ></a-text>
 
-            <a-troika-text
-              value={`Actors: ${recommendation.actors}    Production: ${recommendation.production}    Released: ${recommendation.released}`}
-              position="0 -0.65 0"
-              align="left"
-              color="#FF6B6B"
-              width={textContentWidth * 0.7}
-              max-width={textContentWidth * 0.7}
-              font="#good-timing-font"
-            ></a-troika-text>
+          <a-text
+            value={`Actors: ${recommendation.actors}    Production: ${recommendation.production}    Released: ${recommendation.released}`}
+            position="0 -0.65 0"
+            align="left"
+            color="#FF6B6B"
+            width={textContentWidth * 0.7}
+            wrap-count="70"
+            font="https://cdn.aframe.io/fonts/Exo2SemiBold.fnt"
+          ></a-text>
 
-            <a-troika-text
-              value={`Language: ${recommendation.language}    Country: ${recommendation.country}    Awards: ${recommendation.awards}`}
-              position="0 -1.0 0"
-              align="left"
-              color="#FF6B6B"
-              width={textContentWidth * 0.7}
-              max-width={textContentWidth * 0.7}
-              font="#good-timing-font"
-            ></a-troika-text>
+          <a-text
+            value={`Language: ${recommendation.language}    Country: ${recommendation.country}    Awards: ${recommendation.awards}`}
+            position="0 -1.0 0"
+            align="left"
+            color="#FF6B6B"
+            width={textContentWidth * 0.7}
+            wrap-count="70"
+            font="https://cdn.aframe.io/fonts/Exo2SemiBold.fnt"
+          ></a-text>
 
-            <a-troika-text
-              value={`Box Office: ${recommendation.boxOffice}    DVD: ${recommendation.DVD}    Website: ${recommendation.website}`}
-              position="0 -1.3 0"
-              align="left"
-              color="#FF6B6B"
-              width={textContentWidth * 0.7}
-              max-width={textContentWidth * 0.7}
-              font="#good-timing-font"
-            ></a-troika-text>
-          </a-entity>
-        )}
+          <a-text
+            value={`Box Office: ${recommendation.boxOffice}    DVD: ${recommendation.DVD}    Website: ${recommendation.website}`}
+            position="0 -1.3 0"
+            align="left"
+            color="#FF6B6B"
+            width={textContentWidth * 0.7}
+            wrap-count="70"
+            font="https://cdn.aframe.io/fonts/Exo2SemiBold.fnt"
+          ></a-text>
+        </a-entity>
       </a-entity>
     </a-entity>
   );

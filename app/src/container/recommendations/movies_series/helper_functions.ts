@@ -211,6 +211,108 @@ const fetchYouTubeEmbedTrailer = async (
 };
 
 /**
+ * Изтегля YouTube видео за трейлър чрез API заявка с ротация на файлове.
+ * Използва фиксирани имена на файлове (video1.mp4 - video5.mp4) които се заменят циклично.
+ * При успех връща публичния URL на видеото, а при грешка хвърля изключение.
+ *
+ * @async
+ * @function downloadYouTubeTrailer
+ * @param {string} youtubeUrl - URL адресът на YouTube видеото за изтегляне.
+ * @param {number} videoIndex - Индексът на видео файла (1-5) който да се използва.
+ * @returns {Promise<string>} - Връща публичния URL на изтегленото видео.
+ * @throws {Error} - Хвърля грешка, ако заявката не е успешна или ако качването се провали.
+ */
+export const downloadYouTubeTrailer = async (
+  youtubeUrl: string,
+  videoIndex: number
+): Promise<string> => {
+  try {
+    // Ensures videoIndex is between 1-5
+    const safeVideoIndex = ((videoIndex - 1) % 5) + 1;
+    const fileName = `video${safeVideoIndex}.mp4`;
+    const outputDir = `${import.meta.env.VITE_PUBLIC_DIR}`;
+
+    const response = await fetch(
+      `${
+        import.meta.env.VITE_API_BASE_URL
+      }/download/youtube-video?url=${encodeURIComponent(
+        youtubeUrl
+      )}&outputDir=${encodeURIComponent(
+        outputDir
+      )}&fileName=${encodeURIComponent(fileName)}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json"
+        }
+      }
+    );
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(
+        errorData.message || "Failed to download YouTube trailer"
+      );
+    }
+
+    const result = await response.json();
+
+    if (result.status === "success" && result.videoUrl) {
+      console.log(
+        `Trailer downloaded successfully as ${fileName}:`,
+        result.videoUrl,
+        `(${result.fileSizeMB} MB)`
+      );
+      return result.videoUrl;
+    } else {
+      throw new Error("Download completed but no video URL returned");
+    }
+  } catch (error) {
+    console.error("Error downloading YouTube trailer:", error);
+    throw error;
+  }
+};
+
+/**
+ * Изтегля трейлъри за до 5 препоръки едновременно.
+ * Всяка препоръка използва ротационен файл (video1-5.mp4).
+ * Връща обект с IMDb идентификатори като ключове и URL адреси на трейлърите като стойности.
+ *
+ * @async
+ * @function downloadMultipleTrailers
+ * @param {Recommendation[]} recommendations - Масив с препоръки, съдържащи youtubeTrailerUrl и imdbID.
+ * @returns {Promise<Record<string, string>>} - Обект с успешно изтеглените трейлъри (imdbID: videoUrl).
+ */
+export const downloadMultipleTrailers = async (
+  recommendations: Recommendation[]
+): Promise<Record<string, string>> => {
+  const trailerUrls: Record<string, string> = {};
+
+  const downloadPromises = recommendations.map(async (movie, index) => {
+    if (movie.youtubeTrailerUrl) {
+      try {
+        const videoIndex = index + 1; // Will be cycled 1-5
+        const videoUrl = await downloadYouTubeTrailer(
+          movie.youtubeTrailerUrl,
+          videoIndex
+        );
+        trailerUrls[movie.imdbID] = videoUrl;
+      } catch (error) {
+        console.error(
+          `Failed to download trailer for ${movie.title} (${movie.imdbID}):`,
+          error
+        );
+        // Запазваме оригиналния YouTube URL като fallback
+        trailerUrls[movie.imdbID] = movie.youtubeTrailerUrl;
+      }
+    }
+  });
+
+  await Promise.all(downloadPromises);
+  return trailerUrls;
+};
+
+/**
  * Генерира препоръки за филми или сериали, базирани на предпочитанията на потребителя,
  * като използва OpenAI API за създаване на списък с препоръки.
  * Връща списък с препоръки в JSON формат.
