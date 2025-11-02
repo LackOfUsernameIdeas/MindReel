@@ -213,10 +213,9 @@ export const VRRecommendationsList: FC<{
     <a-scene
       webxr="optionalFeatures: local-floor, bounded-floor, hand-tracking"
       vr-mode-ui="enabled: false"
-      renderer="antialias: true; colorManagement: true; physicallyCorrectLights: true; logarithmicDepthBuffer: true; precision: mediump"
+      renderer="antialias: true; colorManagement: true; physicallyCorrectLights: true"
       embedded
       fog="type: linear; color: #0a0a15; near: 10; far: 40"
-      stats="false"
     >
       <a-camera position="0 1.6 5"></a-camera>
       <a-entity cursor="rayOrigin:mouse"></a-entity>
