@@ -39,8 +39,6 @@ export const VRRecommendationsList: FC<{
   setCurrentBookmarkStatus,
   bookmarkedMovies
 }) => {
-  const videoRef = useRef<HTMLVideoElement>(null);
-
   // A ref to track if trailers have been downloaded
   const trailersDownloadedRef = useRef(false);
 
@@ -233,16 +231,6 @@ export const VRRecommendationsList: FC<{
 
       <a-assets>
         <a-asset-item id="good-timing-font" src={GoodTiming}></a-asset-item>
-        <video
-          id="trailer-video"
-          ref={videoRef}
-          src="/video.mp4"
-          autoPlay
-          muted
-          playsInline
-          crossOrigin="anonymous"
-          preload="metadata"
-        />
       </a-assets>
 
       <a-sky color="#0a0a15" />
@@ -328,7 +316,6 @@ export const VRRecommendationsList: FC<{
         onClose={handleCloseTrailerModal}
         position="0 5 -8"
         videoUrl={currentVideoUrl || undefined}
-        youtubeUrl={!currentVideoUrl ? movie.youtubeTrailerUrl : undefined}
       />
 
       {/* FLOOR */}

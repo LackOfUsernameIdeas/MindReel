@@ -7,8 +7,7 @@ interface TrailerModalProps {
   setIsTrailerPlaying: React.Dispatch<React.SetStateAction<boolean>>;
   onClose: () => void;
   position?: string;
-  videoUrl?: string; // Direct video URL to play
-  youtubeUrl?: string; // YouTube URL (will show not supported message)
+  videoUrl?: string; // Direct Cloud Run video URL to play
 }
 
 const TrailerModal = ({
@@ -17,8 +16,7 @@ const TrailerModal = ({
   setIsTrailerPlaying,
   onClose,
   position = "0 3.5 -4",
-  videoUrl,
-  youtubeUrl
+  videoUrl
 }: TrailerModalProps) => {
   const [modalOpacity, setModalOpacity] = useState(0);
   const [progress, setProgress] = useState(0);
@@ -28,18 +26,6 @@ const TrailerModal = ({
   const [videoElement, setVideoElement] = useState<HTMLVideoElement | null>(
     null
   );
-
-  // Extract YouTube video ID from URL
-  const getYouTubeVideoId = (url: string): string | null => {
-    const regExp =
-      /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
-    const match = url.match(regExp);
-    return match && match[2].length === 11 ? match[2] : null;
-  };
-
-  const videoId = youtubeUrl ? getYouTubeVideoId(youtubeUrl) : null;
-  const isYouTube = !!videoId;
-  const hasDirectVideo = !!videoUrl;
 
   useEffect(() => {
     if (isVisible) {
@@ -66,7 +52,7 @@ const TrailerModal = ({
       setVideoElement(video);
 
       // Set video source if provided
-      if (hasDirectVideo && videoUrl) {
+      if (videoUrl) {
         video.src = videoUrl;
         video.load();
       }
@@ -78,10 +64,10 @@ const TrailerModal = ({
         videoElement.currentTime = 0;
       }
     }
-  }, [isVisible, videoUrl, hasDirectVideo]);
+  }, [isVisible, videoUrl]);
 
   useEffect(() => {
-    if (!videoElement || isYouTube) return;
+    if (!videoElement) return;
 
     const updateProgress = () => {
       if (videoElement.duration > 0) {
@@ -98,23 +84,23 @@ const TrailerModal = ({
       videoElement.removeEventListener("timeupdate", updateProgress);
       videoElement.removeEventListener("loadedmetadata", updateProgress);
     };
-  }, [videoElement, isYouTube]);
+  }, [videoElement]);
 
   useEffect(() => {
-    if (isTrailerPlaying && !isYouTube && videoElement) {
+    if (isTrailerPlaying && videoElement) {
       videoElement.muted = false;
       videoElement
         .play()
         .catch((err) => console.warn("Autoplay blocked:", err));
     }
-  }, [isTrailerPlaying, isYouTube, videoElement]);
+  }, [isTrailerPlaying, videoElement]);
 
   const handlePlayClick = () => {
     setIsTrailerPlaying(true);
   };
 
   const togglePlayPause = () => {
-    if (isYouTube || !videoElement) return;
+    if (!videoElement) return;
     if (videoElement.paused) {
       videoElement.play();
     } else {
@@ -123,13 +109,13 @@ const TrailerModal = ({
   };
 
   const restartVideo = () => {
-    if (isYouTube || !videoElement) return;
+    if (!videoElement) return;
     videoElement.currentTime = 0;
     videoElement.play();
   };
 
   const seekTo = (fraction: number) => {
-    if (isYouTube || !videoElement || !videoElement.duration) return;
+    if (!videoElement || !videoElement.duration) return;
     videoElement.currentTime = videoElement.duration * fraction;
   };
 
@@ -204,145 +190,91 @@ const TrailerModal = ({
 
         {isTrailerPlaying ? (
           <>
-            {isYouTube ? (
-              <>
-                <a-plane
-                  width="12"
-                  height="6.75"
-                  color="#000000"
-                  material={`shader: flat; opacity: ${modalOpacity}`}
-                  position="0 1 0.01"
-                ></a-plane>
-                <a-troika-text
-                  value="YouTube playback not supported in VR\nPlease use a direct video file (.mp4, .webm)"
-                  position="0 1.2 0.02"
-                  align="center"
-                  color="#FFFFFF"
-                  width="8"
-                  material={`opacity: ${modalOpacity}`}
-                  font="#good-timing-font"
-                  wrap-count="40"
-                ></a-troika-text>
-                <a-troika-text
-                  value={`Video ID: ${videoId}`}
-                  position="0 0.3 0.02"
-                  align="center"
-                  color="#888888"
-                  width="6"
-                  material={`opacity: ${modalOpacity}`}
-                  font="#good-timing-font"
-                ></a-troika-text>
-              </>
-            ) : hasDirectVideo ? (
-              <a-video
-                src="#dynamic-trailer-video"
-                position="0 1 0.02"
-                width="12"
-                height="6.75"
+            <a-video
+              src="#dynamic-trailer-video"
+              position="0 1 0.02"
+              width="12"
+              height="6.75"
+            />
+
+            <a-plane
+              width="12"
+              height="1.5"
+              color="#000000"
+              material={`shader: flat; opacity: ${modalOpacity * 0.8}`}
+              position="0 -2.5 0.02"
+            />
+
+            <a-entity
+              position="-4.5 -2.5 0.03"
+              class="clickable"
+              onClick={togglePlayPause}
+            >
+              <a-image
+                src={isPlaying ? pauseIconSvg : playIconSvg}
+                width="0.8"
+                height="0.8"
+                material={`shader: flat; transparent: true; opacity: ${modalOpacity}`}
               />
-            ) : (
-              <>
-                <a-plane
-                  width="12"
-                  height="6.75"
-                  color="#000000"
-                  material={`shader: flat; opacity: ${modalOpacity}`}
-                  position="0 1 0.01"
-                ></a-plane>
-                <a-troika-text
-                  value="No video source provided"
-                  position="0 1 0.02"
-                  align="center"
-                  color="#FFFFFF"
-                  width="8"
-                  material={`opacity: ${modalOpacity}`}
-                  font="#good-timing-font"
-                ></a-troika-text>
-              </>
-            )}
+            </a-entity>
 
-            {!isYouTube && hasDirectVideo && (
-              <>
-                <a-plane
-                  width="12"
-                  height="1.5"
-                  color="#000000"
-                  material={`shader: flat; opacity: ${modalOpacity * 0.8}`}
-                  position="0 -2.5 0.02"
-                />
+            <a-entity
+              position="-3.5 -2.5 0.03"
+              class="clickable"
+              onClick={restartVideo}
+            >
+              <a-image
+                src={restartIconSvg}
+                width="0.7"
+                height="0.7"
+                material={`shader: flat; transparent: true; opacity: ${modalOpacity}`}
+              />
+            </a-entity>
 
-                <a-entity
-                  position="-4.5 -2.5 0.03"
-                  class="clickable"
-                  onClick={togglePlayPause}
-                >
-                  <a-image
-                    src={isPlaying ? pauseIconSvg : playIconSvg}
-                    width="0.8"
-                    height="0.8"
-                    material={`shader: flat; transparent: true; opacity: ${modalOpacity}`}
-                  />
-                </a-entity>
+            <a-troika-text
+              value={`${formatTime(currentTime)} / ${formatTime(duration)}`}
+              position="-2.5 -2.5 0.03"
+              align="left"
+              color="#FFFFFF"
+              width="4"
+              material={`opacity: ${modalOpacity}`}
+            />
 
-                <a-entity
-                  position="-3.5 -2.5 0.03"
-                  class="clickable"
-                  onClick={restartVideo}
-                >
-                  <a-image
-                    src={restartIconSvg}
-                    width="0.7"
-                    height="0.7"
-                    material={`shader: flat; transparent: true; opacity: ${modalOpacity}`}
-                  />
-                </a-entity>
+            <a-entity position="1.5 -2.5 0.03">
+              <a-plane
+                width="6"
+                height="0.15"
+                color="#444444"
+                material={`shader: flat; opacity: ${modalOpacity}`}
+              />
 
-                <a-troika-text
-                  value={`${formatTime(currentTime)} / ${formatTime(duration)}`}
-                  position="-2.5 -2.5 0.03"
-                  align="left"
-                  color="#FFFFFF"
-                  width="4"
-                  material={`opacity: ${modalOpacity}`}
-                />
+              <a-plane
+                width={6 * progress}
+                height="0.15"
+                color="#ff4444"
+                material={`shader: flat; opacity: ${modalOpacity}`}
+                position={`${-3 + (6 * progress) / 2} 0 0.01`}
+              />
 
-                <a-entity position="1.5 -2.5 0.03">
-                  <a-plane
-                    width="6"
-                    height="0.15"
-                    color="#444444"
-                    material={`shader: flat; opacity: ${modalOpacity}`}
-                  />
+              <a-sphere
+                radius="0.08"
+                color="#ffffff"
+                material={`shader: flat; opacity: ${modalOpacity}`}
+                position={`${-3 + 6 * progress} 0 0.02`}
+              />
 
-                  <a-plane
-                    width={6 * progress}
-                    height="0.15"
-                    color="#ff4444"
-                    material={`shader: flat; opacity: ${modalOpacity}`}
-                    position={`${-3 + (6 * progress) / 2} 0 0.01`}
-                  />
-
-                  <a-sphere
-                    radius="0.08"
-                    color="#ffffff"
-                    material={`shader: flat; opacity: ${modalOpacity}`}
-                    position={`${-3 + 6 * progress} 0 0.02`}
-                  />
-
-                  <a-plane
-                    width="6"
-                    height="0.4"
-                    color="#000"
-                    opacity="0"
-                    class="clickable"
-                    onClick={(e: any) => {
-                      const uv = e.detail.intersection.uv;
-                      if (uv) seekTo(uv.x);
-                    }}
-                  />
-                </a-entity>
-              </>
-            )}
+              <a-plane
+                width="6"
+                height="0.4"
+                color="#000"
+                opacity="0"
+                class="clickable"
+                onClick={(e: any) => {
+                  const uv = e.detail.intersection.uv;
+                  if (uv) seekTo(uv.x);
+                }}
+              />
+            </a-entity>
           </>
         ) : (
           <>
