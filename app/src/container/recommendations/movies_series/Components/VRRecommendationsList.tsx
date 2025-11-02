@@ -40,6 +40,10 @@ export const VRRecommendationsList: FC<{
   bookmarkedMovies
 }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
+
+  // A ref to track if trailers have been downloaded
+  const trailersDownloadedRef = useRef(false);
+
   const [showPopup, setShowPopup] = useState(false);
   const [popupOpacity, setPopupOpacity] = useState(0);
   const [showDetailModal, setShowDetailModal] = useState(false);
@@ -111,9 +115,17 @@ export const VRRecommendationsList: FC<{
     );
   }
 
-  // Pre-download trailers for 5 recommendations on mount
+  // Download trailers for all of the recommendations
   useEffect(() => {
+    // Skip if already downloaded during this session
+    if (trailersDownloadedRef.current) {
+      return;
+    }
+
     const downloadInitialTrailers = async () => {
+      // Mark as downloaded at the start
+      trailersDownloadedRef.current = true;
+
       // Mark all as loading initially
       const initialLoadingStatus: Record<string, "loading"> = {};
       recommendationList.forEach((rec) => {
