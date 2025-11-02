@@ -422,13 +422,14 @@ export const VRRecommendationsList: FC<{
 
       <Projector position="0 4 0" rotation="-15 0 0" />
 
-      {/* Seat rows using memoized data */}
+      {/* Optimized seat rows with LOD */}
       {seatRows.map((row, rowIndex) => (
         <a-entity key={`row-${rowIndex}`} position={row.position}>
           {Array.from({ length: 8 }, (_, i) => (
             <Seat
               key={`seat-${rowIndex}-${i}`}
               position={`${(i - 3.5) * 1.2} ${row.yOffset} 0`}
+              rowIndex={rowIndex}
             />
           ))}
         </a-entity>
