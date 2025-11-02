@@ -16,6 +16,7 @@ declare global {
         embedded?: boolean;
         style?: React.CSSProperties;
         fog?: string;
+        stats?: string;
       };
       "a-assets": React.DetailedHTMLProps<
         React.HTMLAttributes<HTMLElement>,
