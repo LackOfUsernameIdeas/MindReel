@@ -53,10 +53,10 @@ const MovieCardVR = ({
       try {
         const [reason, desc, plt] = await Promise.all([
           recommendation.reason
-            ? translate(recommendation.reason)
+            ? translate(recommendation.reason, "bg", "en")
             : Promise.resolve(""),
-          translate(recommendation.description),
-          translate(recommendation.plot)
+          translate(recommendation.description, "bg", "en"),
+          translate(recommendation.plot, "bg", "en")
         ]);
         setTranslatedReason(reason);
         setTranslatedDescription(desc);
