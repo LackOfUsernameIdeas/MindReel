@@ -70,8 +70,16 @@ export const VRRecommendationsList: FC<{
   // Pre-download trailers for 5 recommendations on mount
   useEffect(() => {
     const downloadInitialTrailers = async () => {
-      const urls = await downloadMultipleTrailers(recommendationList);
-      setTrailerUrls(urls);
+      await downloadMultipleTrailers(
+        recommendationList,
+        // Callback fires immediately when each trailer is ready
+        (imdbID, videoUrl) => {
+          setTrailerUrls((prev) => ({
+            ...prev,
+            [imdbID]: videoUrl
+          }));
+        }
+      );
     };
 
     if (recommendationList.length > 0) {

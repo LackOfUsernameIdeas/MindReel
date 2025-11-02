@@ -276,35 +276,41 @@ export const downloadYouTubeTrailer = async (
 /**
  * Изтегля трейлъри за до 5 препоръки едновременно.
  * Всяка препоръка използва ротационен файл (video1-5.mp4).
- * Връща обект с IMDb идентификатори като ключове и URL адреси на трейлърите като стойности.
+ * Извиква callback веднага щом всеки трейлър е готов.
  *
  * @async
  * @function downloadMultipleTrailers
  * @param {Recommendation[]} recommendations - Масив с препоръки, съдържащи youtubeTrailerUrl и imdbID.
- * @returns {Promise<Record<string, string>>} - Обект с успешно изтеглените трейлъри (imdbID: videoUrl).
+ * @param {Function} onTrailerReady - Optional callback, извиква се веднага с всеки готов трейлър.
+ * @returns {Promise<Record<string, string>>} - Обект с всички изтеглени трейлъри.
  */
 export const downloadMultipleTrailers = async (
-  recommendations: Recommendation[]
+  recommendations: Recommendation[],
+  onTrailerReady?: (imdbID: string, videoUrl: string) => void
 ): Promise<Record<string, string>> => {
   const trailerUrls: Record<string, string> = {};
 
   const downloadPromises = recommendations.map(async (movie, index) => {
-    if (movie.youtubeTrailerUrl) {
-      try {
-        const videoIndex = index + 1; // Will be cycled 1-5
-        const videoUrl = await downloadYouTubeTrailer(
-          movie.youtubeTrailerUrl,
-          videoIndex
-        );
-        trailerUrls[movie.imdbID] = videoUrl;
-      } catch (error) {
-        console.error(
-          `Failed to download trailer for ${movie.title} (${movie.imdbID}):`,
-          error
-        );
-        // Запазваме оригиналния YouTube URL като fallback
-        trailerUrls[movie.imdbID] = movie.youtubeTrailerUrl;
-      }
+    if (!movie.youtubeTrailerUrl) return;
+
+    try {
+      const videoIndex = index + 1;
+      const videoUrl = await downloadYouTubeTrailer(
+        movie.youtubeTrailerUrl,
+        videoIndex
+      );
+      trailerUrls[movie.imdbID] = videoUrl;
+
+      // Веднага съобщи че трейлърът е готов
+      onTrailerReady?.(movie.imdbID, videoUrl);
+    } catch (error) {
+      console.error(
+        `Failed to download trailer for ${movie.title} (${movie.imdbID}):`,
+        error
+      );
+      const fallbackUrl = movie.youtubeTrailerUrl;
+      trailerUrls[movie.imdbID] = fallbackUrl;
+      onTrailerReady?.(movie.imdbID, fallbackUrl);
     }
   });
 

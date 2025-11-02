@@ -73,6 +73,7 @@ app.get("/download/youtube-video", (req, res) => {
     console.log(`🎬 Starting download for ${url} → ${fullPath}`);
 
     const args = [
+      "-vU",
       url,
       "-f",
       "bestvideo[ext=mp4]+bestaudio[ext=m4a]/mp4",
