@@ -1,5 +1,4 @@
 import { FC } from "react";
-import "aframe-troika-text";
 
 interface NavigationArrowsProps {
   currentIndex: number;
@@ -98,14 +97,13 @@ export const NavigationArrows: FC<NavigationArrowsProps> = ({
           color="#1a0a0a"
           material="shader: flat; opacity: 0.8"
         ></a-plane>
-        <a-troika-text
+        <a-text
           value={`${currentIndex + 1} / ${totalCount}`}
           align="center"
           color="#FFFFFF"
           width="4"
           position="0 0 0.01"
-          font="#good-timing-font"
-        ></a-troika-text>
+        ></a-text>
       </a-entity>
     </>
   );

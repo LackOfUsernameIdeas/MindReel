@@ -4,7 +4,6 @@ import "aframe";
 import "aframe-extras";
 import "aframe-physics-system";
 import "aframe-websurfaces";
-import "aframe-troika-text";
 import MovieCard from "./vr/MovieCard";
 import DetailModal from "./vr/DetailModal";
 import TrailerModal from "./vr/TrailerModal";
@@ -19,6 +18,7 @@ import {
   handleBookmarkClick
 } from "@/container/recommendations/movies_series/helper_functions.ts";
 import GoodTiming from "@/assets/fonts/GoodTiming.ttf";
+import { translate } from "@/container/helper_functions_common";
 
 export const VRRecommendationsList: FC<{
   recommendationList: Recommendation[];
@@ -50,6 +50,12 @@ export const VRRecommendationsList: FC<{
   const [detailModalType, setDetailModalType] = useState<
     "description" | "plot" | null
   >(null);
+
+  // Translation states
+  const [translatedDescription, setTranslatedDescription] =
+    useState<string>("");
+  const [translatedPlot, setTranslatedPlot] = useState<string>("");
+  const [isTranslating, setIsTranslating] = useState(false);
 
   // State for downloaded trailer URLs mapped to imdbID
   const [trailerUrls, setTrailerUrls] = useState<Record<string, string>>({});
@@ -165,6 +171,32 @@ export const VRRecommendationsList: FC<{
     }
   }, [showPopup]);
 
+  // Translate description and plot when movie changes
+  useEffect(() => {
+    const translateContent = async () => {
+      if (movie) {
+        setIsTranslating(true);
+        try {
+          const [desc, plt] = await Promise.all([
+            translate(movie.description, "bg", "en"),
+            translate(movie.plot, "bg", "en")
+          ]);
+          setTranslatedDescription(desc);
+          setTranslatedPlot(plt);
+        } catch (error) {
+          console.error("Translation error:", error);
+          // Fallback to original text
+          setTranslatedDescription(movie.description);
+          setTranslatedPlot(movie.plot);
+        } finally {
+          setIsTranslating(false);
+        }
+      }
+    };
+
+    translateContent();
+  }, [movie]);
+
   const handlePopupDismiss = () => {
     setPopupOpacity(0);
     setTimeout(() => setShowPopup(false), 500);
@@ -262,7 +294,7 @@ export const VRRecommendationsList: FC<{
               position="0 0 0"
             ></a-image>
 
-            <a-troika-text
+            <a-text
               value={
                 isBookmarked
                   ? "Запазено в списъка ви за гледане"
@@ -273,10 +305,9 @@ export const VRRecommendationsList: FC<{
               color="#FFFFFF"
               width="6"
               material={`opacity: ${popupOpacity}`}
-              font="#good-timing-font"
-            ></a-troika-text>
+            ></a-text>
 
-            <a-troika-text
+            <a-text
               value={`Този филм/сериал ${
                 isBookmarked ? "е запазен във" : "е премахнат от"
               } списъка ви за гледане!`}
@@ -285,8 +316,7 @@ export const VRRecommendationsList: FC<{
               color="#FFFFFF"
               width="5"
               material={`opacity: ${popupOpacity * 0.9}`}
-              font="#good-timing-font"
-            ></a-troika-text>
+            ></a-text>
           </a-entity>
 
           <a-image
@@ -304,8 +334,8 @@ export const VRRecommendationsList: FC<{
       <DetailModal
         isVisible={showDetailModal}
         contentType={detailModalType}
-        description={movie.description}
-        plot={movie.plot}
+        description={isTranslating ? "Translating..." : translatedDescription}
+        plot={isTranslating ? "Translating..." : translatedPlot}
         onClose={handleCloseDetailModal}
       />
 

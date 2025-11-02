@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import "aframe-troika-text";
 
 interface DetailModalProps {
   isVisible: boolean;
@@ -66,17 +65,16 @@ const DetailModal = ({
         position="0 0 -0.01"
       ></a-plane>
 
-      <a-troika-text
+      <a-text
         value={modalTitle}
         position="-2.8 1.6 0.01"
         align="left"
         color="#FFFFFF"
         width="6"
         material={`opacity: ${modalOpacity}`}
-        font="#good-timing-font"
-      ></a-troika-text>
+      ></a-text>
 
-      <a-troika-text
+      <a-text
         value={content}
         position="-2.8 0.1 0.01"
         align="left"
@@ -84,8 +82,7 @@ const DetailModal = ({
         width="4"
         wrap-count="60"
         material={`opacity: ${modalOpacity}`}
-        font="#good-timing-font"
-      ></a-troika-text>
+      ></a-text>
 
       <a-entity position="2.2 -1.5 0.01">
         <a-plane
@@ -97,17 +94,16 @@ const DetailModal = ({
           class="clickable"
           onClick={onClose}
         ></a-plane>
-        <a-troika-text
+        <a-text
           value="Close"
           position="0 0 0.01"
           align="center"
           color="#FFFFFF"
           width="4"
           material={`opacity: ${modalOpacity}`}
-          font="#good-timing-font"
           class="clickable"
           onClick={onClose}
-        ></a-troika-text>
+        ></a-text>
       </a-entity>
 
       <a-image

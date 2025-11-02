@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import "aframe-troika-text";
 
 interface TrailerModalProps {
   isVisible: boolean;
@@ -231,7 +230,7 @@ const TrailerModal = ({
               />
             </a-entity>
 
-            <a-troika-text
+            <a-text
               value={`${formatTime(currentTime)} / ${formatTime(duration)}`}
               position="-2.5 -2.5 0.03"
               align="left"
@@ -315,17 +314,16 @@ const TrailerModal = ({
             class="clickable"
             onClick={onClose}
           ></a-plane>
-          <a-troika-text
+          <a-text
             value="CLOSE"
             position="0 0 0.01"
             align="center"
             color="#FFFFFF"
             width="4"
             material={`opacity: ${modalOpacity}`}
-            font="#good-timing-font"
             class="clickable"
             onClick={onClose}
-          ></a-troika-text>
+          ></a-text>
         </a-entity>
 
         <a-image

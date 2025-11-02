@@ -232,24 +232,6 @@ declare global {
         onClick?: (event: any) => void;
         negate?: string | boolean;
       };
-      "a-troika-text": React.DetailedHTMLProps<
-        React.HTMLAttributes<HTMLElement>,
-        HTMLElement
-      > & {
-        value?: string;
-        align?: string;
-        color?: string;
-        width?: number | string;
-        "wrap-count"?: string | number;
-        font?: string;
-        position?: string;
-        rotation?: string;
-        class?: string;
-        material?: string;
-        shader?: string;
-        onClick?: (event: any) => void;
-        negate?: string | boolean;
-      };
       "a-asset-item": React.DetailedHTMLProps<
         React.HTMLAttributes<HTMLElement>,
         HTMLElement
