@@ -286,7 +286,7 @@ export const downloadYouTubeTrailer = async (
  */
 export const downloadMultipleTrailers = async (
   recommendations: Recommendation[],
-  onTrailerReady?: (imdbID: string, videoUrl: string) => void
+  onTrailerReady?: (imdbID: string, videoUrl: string, isError?: boolean) => void
 ): Promise<Record<string, string>> => {
   const trailerUrls: Record<string, string> = {};
 
@@ -302,7 +302,7 @@ export const downloadMultipleTrailers = async (
       trailerUrls[movie.imdbID] = videoUrl;
 
       // Веднага съобщи че трейлърът е готов
-      onTrailerReady?.(movie.imdbID, videoUrl);
+      onTrailerReady?.(movie.imdbID, videoUrl, false);
     } catch (error) {
       console.error(
         `Failed to download trailer for ${movie.title} (${movie.imdbID}):`,
@@ -310,14 +310,13 @@ export const downloadMultipleTrailers = async (
       );
       const fallbackUrl = movie.youtubeTrailerUrl;
       trailerUrls[movie.imdbID] = fallbackUrl;
-      onTrailerReady?.(movie.imdbID, fallbackUrl);
+      onTrailerReady?.(movie.imdbID, fallbackUrl, true);
     }
   });
 
   await Promise.all(downloadPromises);
   return trailerUrls;
 };
-
 /**
  * Генерира препоръки за филми или сериали, базирани на предпочитанията на потребителя,
  * като използва OpenAI API за създаване на списък с препоръки.

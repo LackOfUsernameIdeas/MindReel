@@ -260,6 +260,17 @@ declare global {
         React.HTMLAttributes<HTMLElement>,
         HTMLElement
       >;
+      "a-ring": React.DetailedHTMLProps<
+        React.HTMLAttributes<HTMLElement>,
+        HTMLElement
+      > & {
+        position?: string;
+        animation?: string;
+        radiusInner?: string | number;
+        radiusOuter?: string | number;
+        color?: string;
+        material?: string;
+      };
     }
   }
 }

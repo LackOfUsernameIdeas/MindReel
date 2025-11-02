@@ -9,6 +9,7 @@ interface MovieCardVRProps {
   isBookmarked?: boolean;
   onShowDetail?: (type: "description" | "plot") => void;
   onShowTrailer?: () => void;
+  trailerStatus?: "loading" | "success" | "error";
 }
 
 function getMetascoreColor(metascore: string): string {
@@ -25,7 +26,8 @@ const MovieCardVR = ({
   handleBookmarkClick,
   isBookmarked: externalIsBookmarked,
   onShowDetail,
-  onShowTrailer
+  onShowTrailer,
+  trailerStatus
 }: MovieCardVRProps) => {
   const [internalIsBookmarked, setInternalIsBookmarked] = useState(false);
 
@@ -40,6 +42,9 @@ const MovieCardVR = ({
     externalIsBookmarked !== undefined
       ? externalIsBookmarked
       : internalIsBookmarked;
+
+  // Determine trailer button state
+  const isTrailerLoading = trailerStatus === "loading";
 
   // Translate content when recommendation changes
   useEffect(() => {
@@ -91,7 +96,7 @@ const MovieCardVR = ({
   };
 
   const handleShowTrailer = () => {
-    if (onShowTrailer) {
+    if (!isTrailerLoading && onShowTrailer) {
       onShowTrailer();
     }
   };
@@ -187,25 +192,46 @@ const MovieCardVR = ({
           material="shader: flat"
         ></a-image>
 
+        {/* Overlay with loading indicator or play button */}
         <a-plane
           width={posterWidth}
           height={posterHeight}
           color="#000000"
-          material="shader: flat; opacity: 0.3"
+          material={`shader: flat; opacity: ${isTrailerLoading ? 0.5 : 0.3}`}
           position="0 0 0.02"
-          class="clickable"
-          onClick={handleShowTrailer}
+          class={isTrailerLoading ? "" : "clickable"}
+          onClick={isTrailerLoading ? undefined : handleShowTrailer}
         ></a-plane>
 
-        <a-image
-          src={playButtonSvg}
-          position="0 0 0.03"
-          width="0.8"
-          height="0.8"
-          material="shader: flat; transparent: true"
-          class="clickable"
-          onClick={handleShowTrailer}
-        ></a-image>
+        {isTrailerLoading ? (
+          <a-entity position="0 0 0.03">
+            <a-ring
+              radius-inner="0.3"
+              radius-outer="0.35"
+              color="#ffffff"
+              material="shader: flat; opacity: 0.8"
+              animation="property: rotation; to: 0 0 360; loop: true; dur: 1000; easing: linear"
+            />
+            <a-text
+              value="Loading..."
+              position="0 -0.6 0"
+              align="center"
+              color="#FFFFFF"
+              width="2"
+              font="https://cdn.aframe.io/fonts/Exo2Bold.fnt"
+            ></a-text>
+          </a-entity>
+        ) : (
+          <a-image
+            src={playButtonSvg}
+            position="0 0 0.03"
+            width="0.8"
+            height="0.8"
+            material="shader: flat; transparent: true"
+            class="clickable"
+            onClick={handleShowTrailer}
+          ></a-image>
+        )}
 
         <a-entity
           position={`${-posterWidth / 2 + 0.3} ${posterHeight / 2 - 0.3} 0.04`}

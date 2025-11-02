@@ -52,11 +52,19 @@ export const VRRecommendationsList: FC<{
   // State for downloaded trailer URLs mapped to imdbID
   const [trailerUrls, setTrailerUrls] = useState<Record<string, string>>({});
 
+  // State for tracking loading status of trailers
+  const [trailerLoadingStatus, setTrailerLoadingStatus] = useState<
+    Record<string, "loading" | "success" | "error">
+  >({});
+
   const movie = recommendationList[currentIndex];
   const isBookmarked = !!bookmarkedMovies[movie.imdbID];
 
   // Get the video URL for current movie
   const currentVideoUrl = trailerUrls[movie.imdbID] || null;
+
+  // Get the trailer status for current movie
+  const currentTrailerStatus = trailerLoadingStatus[movie.imdbID];
 
   if (!recommendationList.length) {
     return (
@@ -70,13 +78,26 @@ export const VRRecommendationsList: FC<{
   // Pre-download trailers for 5 recommendations on mount
   useEffect(() => {
     const downloadInitialTrailers = async () => {
+      // Mark all as loading initially
+      const initialLoadingStatus: Record<string, "loading"> = {};
+      recommendationList.forEach((rec) => {
+        if (rec.youtubeTrailerUrl) {
+          initialLoadingStatus[rec.imdbID] = "loading";
+        }
+      });
+      setTrailerLoadingStatus(initialLoadingStatus);
+
       await downloadMultipleTrailers(
         recommendationList,
         // Callback fires immediately when each trailer is ready
-        (imdbID, videoUrl) => {
+        (imdbID, videoUrl, isError) => {
           setTrailerUrls((prev) => ({
             ...prev,
             [imdbID]: videoUrl
+          }));
+          setTrailerLoadingStatus((prev) => ({
+            ...prev,
+            [imdbID]: isError ? "error" : "success"
           }));
         }
       );
@@ -346,6 +367,7 @@ export const VRRecommendationsList: FC<{
           material="roughness: 0.8; metalness: 0.1"
         ></a-plane>
       </a-entity>
+
       {!showTrailerModal && (
         <>
           <MovieCard
@@ -362,6 +384,7 @@ export const VRRecommendationsList: FC<{
             isBookmarked={isBookmarked}
             onShowDetail={handleShowDetail}
             onShowTrailer={handleShowTrailer}
+            trailerStatus={currentTrailerStatus}
           />
           <NavigationArrows
             currentIndex={currentIndex}
