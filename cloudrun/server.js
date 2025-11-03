@@ -88,7 +88,18 @@ app.get("/download/youtube-video", (req, res) => {
     const ytDlpEventEmitter = ytDlpWrap.exec(args);
 
     let progressData = {};
-    let errorOccurred = null;
+    let responseSent = false;
+
+    const sendErrorResponse = (statusCode, message, error) => {
+      if (!responseSent) {
+        responseSent = true;
+        res.status(statusCode).json({
+          status: "error",
+          message,
+          error: error || message
+        });
+      }
+    };
 
     ytDlpEventEmitter
       .on("progress", (progress) => {
@@ -102,24 +113,48 @@ app.get("/download/youtube-video", (req, res) => {
       })
       .on("error", (error) => {
         console.error("❌ Download error:", error);
-        errorOccurred = error;
+
+        const errorMsg = error.message || error.toString();
+        const stderr = error.stderr || "";
+
+        // Check for cookie/authentication errors
+        if (
+          errorMsg.includes("cookies") ||
+          errorMsg.includes("Sign in") ||
+          errorMsg.includes("LOGIN_REQUIRED") ||
+          stderr.includes("cookies are no longer valid") ||
+          stderr.includes("Sign in to confirm")
+        ) {
+          sendErrorResponse(
+            401,
+            "YouTube authentication failed - cookies are invalid or expired",
+            "Please update YOUTUBE_COOKIES environment variable with fresh cookies"
+          );
+        } else {
+          sendErrorResponse(500, "Download failed", errorMsg);
+        }
       })
       .on("close", async (code) => {
         console.log("\n✅ Download process finished with code:", code);
 
-        if (errorOccurred) {
-          return res.status(500).json({
-            status: "error",
-            message: "Download failed",
-            error: errorOccurred.message || errorOccurred
-          });
+        if (responseSent) {
+          return;
+        }
+
+        if (code !== 0) {
+          return sendErrorResponse(
+            500,
+            "Download failed",
+            `Process exited with code ${code}`
+          );
         }
 
         if (!fs.existsSync(fullPath)) {
-          return res.status(404).json({
-            status: "error",
-            message: "File not found after download"
-          });
+          return sendErrorResponse(
+            404,
+            "File not found after download",
+            "Video file was not created"
+          );
         }
 
         try {
@@ -137,25 +172,33 @@ app.get("/download/youtube-video", (req, res) => {
 
           fs.unlinkSync(fullPath);
 
-          res.json({
-            status: "success",
-            message: "Download and upload completed successfully",
-            videoUrl: publicUrl,
-            fileSizeMB,
-            progress: progressData
-          });
+          if (!responseSent) {
+            responseSent = true;
+            res.json({
+              status: "success",
+              message: "Download and upload completed successfully",
+              videoUrl: publicUrl,
+              fileSizeMB,
+              progress: progressData
+            });
+          }
         } catch (uploadError) {
           console.error("☁️ Upload failed:", uploadError);
-          res.status(500).json({
-            status: "error",
-            message: "Upload to Google Cloud Storage failed",
-            error: uploadError.message || uploadError
-          });
+          sendErrorResponse(
+            500,
+            "Upload to Google Cloud Storage failed",
+            uploadError.message || uploadError
+          );
         }
       });
   } catch (error) {
     console.error("Error:", error);
-    res.status(500).json({ error: error.message });
+    if (!res.headersSent) {
+      res.status(500).json({
+        status: "error",
+        error: error.message
+      });
+    }
   }
 });
 
