@@ -276,6 +276,7 @@ export const downloadYouTubeTrailer = async (
 /**
  * Изтегля трейлъри за до 5 препоръки едновременно.
  * Всяка препоръка използва ротационен файл (video1-5.mp4).
+ * При грешка зарежда съответния локален fallback видео файл (video1-fallback.mp4 - video5-fallback.mp4).
  * Извиква callback веднага щом всеки трейлър е готов.
  *
  * @async
@@ -291,32 +292,50 @@ export const downloadMultipleTrailers = async (
   const trailerUrls: Record<string, string> = {};
 
   const downloadPromises = recommendations.map(async (movie, index) => {
-    if (!movie.youtubeTrailerUrl) return;
+    const videoIndex = (index % 5) + 1; // 1-5
+    const fallbackVideoPath = `/video${videoIndex}-fallback.mp4`;
+
+    if (!movie.youtubeTrailerUrl) {
+      // Няма YouTube URL - използваме fallback директно
+      trailerUrls[movie.imdbID] = fallbackVideoPath;
+      onTrailerReady?.(movie.imdbID, fallbackVideoPath, true);
+      console.log(
+        `⚠ No YouTube URL for ${movie.title}, using ${fallbackVideoPath}`
+      );
+      return;
+    }
 
     try {
-      const videoIndex = index + 1;
       const videoUrl = await downloadYouTubeTrailer(
         movie.youtubeTrailerUrl,
         videoIndex
       );
-      trailerUrls[movie.imdbID] = videoUrl;
 
-      // Веднага съобщи че трейлърът е готов
+      // Успешно изтегляне
+      trailerUrls[movie.imdbID] = videoUrl;
       onTrailerReady?.(movie.imdbID, videoUrl, false);
+
+      console.log(`✓ Trailer ready for ${movie.title}: ${videoUrl}`);
     } catch (error) {
+      // Грешка при изтегляне - използваме съответния локален fallback
       console.error(
-        `Failed to download trailer for ${movie.title} (${movie.imdbID}):`,
+        `✗ Failed to download trailer for ${movie.title} (${movie.imdbID}):`,
         error
       );
-      const fallbackUrl = movie.youtubeTrailerUrl;
-      trailerUrls[movie.imdbID] = fallbackUrl;
-      onTrailerReady?.(movie.imdbID, fallbackUrl, true);
+
+      trailerUrls[movie.imdbID] = fallbackVideoPath;
+      onTrailerReady?.(movie.imdbID, fallbackVideoPath, true);
+
+      console.log(
+        `→ Using fallback video for ${movie.title}: ${fallbackVideoPath}`
+      );
     }
   });
 
   await Promise.all(downloadPromises);
   return trailerUrls;
 };
+
 /**
  * Генерира препоръки за филми или сериали, базирани на предпочитанията на потребителя,
  * като използва OpenAI API за създаване на списък с препоръки.
