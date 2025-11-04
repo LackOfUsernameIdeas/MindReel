@@ -1,5 +1,3 @@
-"use client"
-
 import type React from "react"
 import {useEffect, useState} from "react"
 
@@ -7,7 +5,7 @@ interface TrailerModalProps {
     isVisible: boolean
     isTrailerPlaying: boolean
     setIsTrailerPlaying: React.Dispatch<React.SetStateAction<boolean>>
-    onClose: () => void
+    onClose: (qclose: boolean) => void
     position?: string
     videoUrl?: string // Direct Cloud Run video URL to play
 }
@@ -126,38 +124,38 @@ const TrailerModal = ({
     if (!isVisible) return null
 
     const closeIconSvg = `data:image/svg+xml;base64,${btoa(`
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="white" viewBox="0 0 24 24">
-      <path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 
-               5 17.59 6.41 19 12 13.41 17.59 19 
-               19 17.59 13.41 12z"/>
-    </svg>
-  `)}`
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="white" viewBox="0 0 24 24">
+          <path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 
+                   5 17.59 6.41 19 12 13.41 17.59 19 
+                   19 17.59 13.41 12z"/>
+        </svg>
+      `)}`
 
     const playButtonSvg = `data:image/svg+xml;base64,${btoa(`
-    <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" fill="white" viewBox="0 0 80 80">
-      <circle cx="40" cy="40" r="35" fill="rgba(0,0,0,0.7)" stroke="rgba(255,255,255,0.3)" strokeWidth="2"/>
-      <polygon points="32,25 32,55 55,40" fill="white"/>
-    </svg>
-  `)}`
+        <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" fill="white" viewBox="0 0 80 80">
+          <circle cx="40" cy="40" r="35" fill="rgba(0,0,0,0.7)" stroke="rgba(255,255,255,0.3)" strokeWidth="2"/>
+          <polygon points="32,25 32,55 55,40" fill="white"/>
+        </svg>
+      `)}`
 
     const pauseIconSvg = `data:image/svg+xml;base64,${btoa(`
-    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="white" viewBox="0 0 32 32">
-      <rect x="8" y="6" width="4" height="20" rx="1"/>
-      <rect x="20" y="6" width="4" height="20" rx="1"/>
-    </svg>
-  `)}`
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="white" viewBox="0 0 32 32">
+          <rect x="8" y="6" width="4" height="20" rx="1"/>
+          <rect x="20" y="6" width="4" height="20" rx="1"/>
+        </svg>
+      `)}`
 
     const playIconSvg = `data:image/svg+xml;base64,${btoa(`
-    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="white" viewBox="0 0 32 32">
-      <polygon points="10,6 10,26 24,16" fill="white"/>
-    </svg>
-  `)}`
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="white" viewBox="0 0 32 32">
+          <polygon points="10,6 10,26 24,16" fill="white"/>
+        </svg>
+      `)}`
 
     const restartIconSvg = `data:image/svg+xml;base64,${btoa(`
-    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="white" viewBox="0 0 32 32">
-      <path d="M16 4 L12 8 L16 12 L16 9 C20.4 9 24 12.6 24 17 C24 21.4 20.4 25 16 25 C11.6 25 8 21.4 8 17 L6 17 C6 22.5 10.5 27 16 27 C21.5 27 26 22.5 26 17 C26 11.5 21.5 7 16 7 L16 4 Z"/>
-    </svg>
-  `)}`
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="white" viewBox="0 0 32 32">
+          <path d="M16 4 L12 8 L16 12 L16 9 C20.4 9 24 12.6 24 17 C24 21.4 20.4 25 16 25 C11.6 25 8 21.4 8 17 L6 17 C6 22.5 10.5 27 16 27 C21.5 27 26 22.5 26 17 C26 11.5 21.5 7 16 7 L16 4 Z"/>
+        </svg>
+      `)}`
 
     return (
         <>
@@ -173,21 +171,14 @@ const TrailerModal = ({
                             rotation="-2 138 2"
                         />
                     ) : (
-                        <>
+                        <a-entity position="0 -2 1">
                             <a-plane
-                                width="12"
-                                height="6.75"
+                                width="8"
+                                height="4.5"
                                 color="#000000"
                                 material={`shader: flat; opacity: ${modalOpacity}`}
                                 position="0 0 -0.01"
                             ></a-plane>
-                            <a-image
-                                src="/youtube-video-player-interface-with-butch-cassidy-.png"
-                                width="12"
-                                height="6.75"
-                                material={`shader: flat; opacity: ${modalOpacity}`}
-                                position="0 0 0"
-                            ></a-image>
                             <a-image
                                 src={playButtonSvg}
                                 width="1.5"
@@ -197,7 +188,18 @@ const TrailerModal = ({
                                 class="clickable"
                                 onClick={handlePlayClick}
                             ></a-image>
-                        </>
+                            <a-image
+                                src={closeIconSvg}
+                                width="0.2"
+                                height="0.2"
+                                material={`shader: flat; transparent: true; opacity: ${modalOpacity}`}
+                                position="3.75 2 0.01"
+                                class="clickable"
+                                onClick={() => {
+                                    onClose(true)
+                                }}
+                            ></a-image>
+                        </a-entity>
                     )}
                 </a-entity>
 
@@ -287,7 +289,9 @@ const TrailerModal = ({
                                 color="#ff4444"
                                 material={`shader: flat; opacity: ${modalOpacity * 0.85}`}
                                 class="clickable"
-                                onClick={onClose}
+                                onClick={() => {
+                                    onClose(false)
+                                }}
                                 radius="0.1"
                             ></a-plane>
                             <a-text
@@ -298,7 +302,9 @@ const TrailerModal = ({
                                 width="4"
                                 material={`opacity: ${modalOpacity}`}
                                 class="clickable"
-                                onClick={onClose}
+                                onClick={() => {
+                                    onClose(false)
+                                }}
                             ></a-text>
                         </a-entity>
                     </a-entity>
