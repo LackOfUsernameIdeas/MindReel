@@ -1,4 +1,4 @@
-import { FC, useEffect, useMemo, useRef, useState } from "react";
+import { FC, useEffect, useMemo, useRef, useState, useCallback } from "react";
 import ErrorCard from "../../../../components/common/error/error";
 import "aframe";
 import "aframe-extras";
@@ -41,8 +41,10 @@ export const VRRecommendationsList: FC<{
   setCurrentBookmarkStatus,
   bookmarkedMovies
 }) => {
-  // A ref to track if trailers have been downloaded
   const trailersDownloadedRef = useRef(false);
+  const translationCacheRef = useRef<
+    Map<string, { desc: string; plot: string }>
+  >(new Map());
 
   const [showPopup, setShowPopup] = useState(false);
   const [showDetailModal, setShowDetailModal] = useState(false);
@@ -52,30 +54,23 @@ export const VRRecommendationsList: FC<{
     "description" | "plot" | null
   >(null);
 
-  // Translation states
   const [translatedDescription, setTranslatedDescription] =
     useState<string>("");
   const [translatedPlot, setTranslatedPlot] = useState<string>("");
   const [isTranslating, setIsTranslating] = useState(false);
 
-  // State for downloaded trailer URLs mapped to imdbID
   const [trailerUrls, setTrailerUrls] = useState<Record<string, string>>({});
-
-  // State for tracking loading status of trailers
   const [trailerLoadingStatus, setTrailerLoadingStatus] = useState<
     Record<string, "loading" | "success" | "error">
   >({});
 
   const movie = recommendationList[currentIndex];
-  const isBookmarked = !!bookmarkedMovies[movie.imdbID];
+  const isBookmarked = !!bookmarkedMovies[movie?.imdbID];
 
-  // Get the video URL for current movie
-  const currentVideoUrl = trailerUrls[movie.imdbID] || null;
+  const currentVideoUrl = trailerUrls[movie?.imdbID] || null;
+  const currentTrailerStatus = trailerLoadingStatus[movie?.imdbID];
 
-  // Get the trailer status for current movie
-  const currentTrailerStatus = trailerLoadingStatus[movie.imdbID];
-
-  // Memoize seat rows to prevent recreation
+  // Memoize static scene elements
   const seatRows = useMemo(
     () => [
       { position: "0 0 2", yOffset: 0.5 },
@@ -84,6 +79,32 @@ export const VRRecommendationsList: FC<{
       { position: "0 0.3 8", yOffset: 0.5 },
       { position: "0 0.4 10", yOffset: 0.5 },
       { position: "0 0.5 12", yOffset: 0.5 }
+    ],
+    []
+  );
+
+  // Memoize platform rows to prevent recreation
+  const platformRows = useMemo(
+    () => [
+      { z: 2, y: 0.025, height: 0.05, planeY: 0.051 },
+      { z: 4, y: 0.075, height: 0.15, planeY: 0.151 },
+      { z: 6, y: 0.125, height: 0.25, planeY: 0.251 },
+      { z: 8, y: 0.175, height: 0.35, planeY: 0.351 },
+      { z: 10, y: 0.225, height: 0.45, planeY: 0.451 },
+      { z: 12, y: 0.275, height: 0.55, planeY: 0.551 }
+    ],
+    []
+  );
+
+  // Memoize light positions
+  const floorLights = useMemo(
+    () => [
+      { position: "-6 0.3 0" },
+      { position: "6 0.3 0" },
+      { position: "-6 0.3 6" },
+      { position: "6 0.3 6" },
+      { position: "-6 0.3 12" },
+      { position: "6 0.3 12" }
     ],
     []
   );
@@ -97,18 +118,15 @@ export const VRRecommendationsList: FC<{
     );
   }
 
-  // Download trailers for all of the recommendations
+  // Download trailers once
   useEffect(() => {
-    // Skip if already downloaded during this session
-    if (trailersDownloadedRef.current) {
+    if (trailersDownloadedRef.current || recommendationList.length === 0) {
       return;
     }
 
     const downloadInitialTrailers = async () => {
-      // Mark as downloaded at the start
       trailersDownloadedRef.current = true;
 
-      // Mark all as loading initially
       const initialLoadingStatus: Record<string, "loading"> = {};
       recommendationList.forEach((rec) => {
         if (rec.youtubeTrailerUrl) {
@@ -119,7 +137,6 @@ export const VRRecommendationsList: FC<{
 
       await downloadMultipleTrailers(
         recommendationList,
-        // Callback fires immediately when each trailer is ready
         (imdbID, videoUrl, isError) => {
           setTrailerUrls((prev) => ({
             ...prev,
@@ -133,73 +150,94 @@ export const VRRecommendationsList: FC<{
       );
     };
 
-    if (recommendationList.length > 0) {
-      downloadInitialTrailers();
-    }
+    downloadInitialTrailers();
   }, [recommendationList]);
 
-  // Translate description and plot when movie changes
+  // Translation with caching
   useEffect(() => {
+    if (!movie) return;
+
     const translateContent = async () => {
-      if (movie) {
-        setIsTranslating(true);
-        try {
-          const [desc, plt] = await Promise.all([
-            translate(movie.description, "bg", "en"),
-            translate(movie.plot, "bg", "en")
-          ]);
-          setTranslatedDescription(desc);
-          setTranslatedPlot(plt);
-        } catch (error) {
-          console.error("Translation error:", error);
-          // Fallback to original text
-          setTranslatedDescription(movie.description);
-          setTranslatedPlot(movie.plot);
-        } finally {
-          setIsTranslating(false);
-        }
+      const cacheKey = movie.imdbID;
+      const cached = translationCacheRef.current.get(cacheKey);
+
+      if (cached) {
+        setTranslatedDescription(cached.desc);
+        setTranslatedPlot(cached.plot);
+        setIsTranslating(false);
+        return;
+      }
+
+      setIsTranslating(true);
+      try {
+        const [desc, plt] = await Promise.all([
+          translate(movie.description, "bg", "en"),
+          translate(movie.plot, "bg", "en")
+        ]);
+
+        translationCacheRef.current.set(cacheKey, { desc, plot: plt });
+        setTranslatedDescription(desc);
+        setTranslatedPlot(plt);
+      } catch (error) {
+        console.error("Translation error:", error);
+        setTranslatedDescription(movie.description);
+        setTranslatedPlot(movie.plot);
+      } finally {
+        setIsTranslating(false);
       }
     };
 
     translateContent();
-  }, [movie]);
+  }, [movie?.imdbID]); // Only depend on ID, not entire object
 
-  const handleShowDetail = (type: "description" | "plot") => {
+  // Memoize event handlers
+  const handleShowDetail = useCallback((type: "description" | "plot") => {
     setDetailModalType(type);
     setShowDetailModal(true);
-  };
+  }, []);
 
-  const handleCloseDetailModal = () => {
+  const handleCloseDetailModal = useCallback(() => {
     setShowDetailModal(false);
     setDetailModalType(null);
-  };
+  }, []);
 
-  const handleShowTrailer = () => {
+  const handleShowTrailer = useCallback(() => {
     setShowTrailerModal(true);
-  };
+  }, []);
 
-  const handleCloseTrailerModal = (quickClose: boolean) => {
+  const handleCloseTrailerModal = useCallback((quickClose: boolean) => {
     setShowTrailerModal(false);
-    !quickClose && setIsTrailerPlaying(false);
-  };
+    if (!quickClose) {
+      setIsTrailerPlaying(false);
+    }
+  }, []);
 
-  const handleNext = () => {
+  const handleNext = useCallback(() => {
     setCurrentIndex((prevIndex) =>
       prevIndex === recommendationList.length - 1 ? 0 : prevIndex + 1
     );
     setShowDetailModal(false);
     setShowTrailerModal(false);
     setIsTrailerPlaying(false);
-  };
+  }, [recommendationList.length, setCurrentIndex]);
 
-  const handlePrevious = () => {
+  const handlePrevious = useCallback(() => {
     setCurrentIndex((prevIndex) =>
       prevIndex === 0 ? recommendationList.length - 1 : prevIndex - 1
     );
     setShowDetailModal(false);
     setShowTrailerModal(false);
     setIsTrailerPlaying(false);
-  };
+  }, [recommendationList.length, setCurrentIndex]);
+
+  const handleBookmark = useCallback(() => {
+    handleBookmarkClick(
+      movie,
+      setBookmarkedMovies,
+      setCurrentBookmarkStatus,
+      setShowPopup
+    );
+  }, [movie, setBookmarkedMovies, setCurrentBookmarkStatus]);
 
   return (
     <a-scene
@@ -263,7 +301,7 @@ export const VRRecommendationsList: FC<{
           color="#1a0a0a"
           material="roughness: 0.95; metalness: 0.05"
           position="0 0 0"
-        ></a-plane>
+        />
         <a-plane
           rotation="-90 0 0"
           width="46"
@@ -271,110 +309,30 @@ export const VRRecommendationsList: FC<{
           color="#4a1515"
           material="roughness: 0.98; opacity: 0.6"
           position="0 0.01 0"
-        ></a-plane>
-        {/* SEAT ROWS PLATFORM */}
-        {/* ROW 1 - Z: 2 */}
-        <a-box
-          position="0 0.025 2"
-          width="10"
-          height="0.05"
-          depth="1.5"
-          color="#2a1010"
-          material="roughness: 0.95"
-        ></a-box>
-        <a-plane
-          rotation="-90 0 0"
-          width="9.5"
-          height="1.4"
-          color="#4a1515"
-          material="roughness: 0.98; opacity: 0.8"
-          position="0 0.051 2"
-        ></a-plane>
-        {/* ROW 2 - Z: 4, Y: 0.1 */}
-        <a-box
-          position="0 0.075 4"
-          width="10"
-          height="0.15"
-          depth="1.5"
-          color="#2a1010"
-          material="roughness: 0.95"
-        ></a-box>
-        <a-plane
-          rotation="-90 0 0"
-          width="9.5"
-          height="1.4"
-          color="#4a1515"
-          material="roughness: 0.98; opacity: 0.8"
-          position="0 0.151 4"
-        ></a-plane>
-        {/* ROW 3 - Z: 6, Y: 0.2 */}
-        <a-box
-          position="0 0.125 6"
-          width="10"
-          height="0.25"
-          depth="1.5"
-          color="#2a1010"
-          material="roughness: 0.95"
-        ></a-box>
-        <a-plane
-          rotation="-90 0 0"
-          width="9.5"
-          height="1.4"
-          color="#4a1515"
-          material="roughness: 0.98; opacity: 0.8"
-          position="0 0.251 6"
-        ></a-plane>
-        {/* ROW 4 - Z: 8, Y: 0.3 */}
-        <a-box
-          position="0 0.175 8"
-          width="10"
-          height="0.35"
-          depth="1.5"
-          color="#2a1010"
-          material="roughness: 0.95"
-        ></a-box>
-        <a-plane
-          rotation="-90 0 0"
-          width="9.5"
-          height="1.4"
-          color="#4a1515"
-          material="roughness: 0.98; opacity: 0.8"
-          position="0 0.351 8"
-        ></a-plane>
-        {/* ROW 5 - Z: 10, Y: 0.4 */}
-        <a-box
-          position="0 0.225 10"
-          width="10"
-          height="0.45"
-          depth="1.5"
-          color="#2a1010"
-          material="roughness: 0.95"
-        ></a-box>
-        <a-plane
-          rotation="-90 0 0"
-          width="9.5"
-          height="1.4"
-          color="#4a1515"
-          material="roughness: 0.98; opacity: 0.8"
-          position="0 0.451 10"
-        ></a-plane>
-        {/* ROW 6 - Z: 12, Y: 0.5 */}
-        <a-box
-          position="0 0.275 12"
-          width="10"
-          height="0.55"
-          depth="1.5"
-          color="#2a1010"
-          material="roughness: 0.95"
-        ></a-box>
-        <a-plane
-          rotation="-90 0 0"
-          width="9.5"
-          height="1.4"
-          color="#4a1515"
-          material="roughness: 0.98; opacity: 0.8"
-          position="0 0.551 12"
-        ></a-plane>
+        />
+
+        {/* SEAT ROWS PLATFORMS */}
+        {platformRows.map((row, idx) => (
+          <a-entity key={`platform-${idx}`}>
+            <a-box
+              position={`0 ${row.y} ${row.z}`}
+              width="10"
+              height={`${row.height}`}
+              depth="1.5"
+              color="#2a1010"
+              material="roughness: 0.95"
+            />
+            <a-plane
+              rotation="-90 0 0"
+              width="9.5"
+              height="1.4"
+              color="#4a1515"
+              material="roughness: 0.98; opacity: 0.8"
+              position={`0 ${row.planeY} ${row.z}`}
+            />
+          </a-entity>
+        ))}
+
         {/* CARPETS */}
         <a-plane
           rotation="-90 0 0"
@@ -383,7 +341,7 @@ export const VRRecommendationsList: FC<{
           color="#8b2020"
           material="roughness: 0.9"
           position="-6 0.03 6"
-        ></a-plane>
+        />
         <a-plane
           rotation="-90 0 0"
           width="1.8"
@@ -391,7 +349,7 @@ export const VRRecommendationsList: FC<{
           color="#8b2020"
           material="roughness: 0.9"
           position="6 0.03 6"
-        ></a-plane>
+        />
         <a-plane
           rotation="-90 -90 0"
           width="1.8"
@@ -399,7 +357,8 @@ export const VRRecommendationsList: FC<{
           color="#8b2020"
           material="roughness: 0.9"
           position="0 0.02 -0.1"
-        ></a-plane>
+        />
+
         {/* CARPET LIGHT STRIPS */}
         <a-box
           position="-5.1 0.03 6.9"
@@ -408,7 +367,7 @@ export const VRRecommendationsList: FC<{
           depth="12.2"
           color="#ff6b35"
           material="emissive: #ff6b35; emissiveIntensity: 0.6; roughness: 0.3"
-        ></a-box>
+        />
         <a-box
           position="5.1 0.03 6.9"
           width="0.08"
@@ -416,58 +375,20 @@ export const VRRecommendationsList: FC<{
           depth="12.2"
           color="#ff6b35"
           material="emissive: #ff6b35; emissiveIntensity: 0.6; roughness: 0.3"
-        ></a-box>
+        />
 
-        {/*LIGHTING*/}
-
-        <a-light
-          type="point"
-          position="-6 0.3 0"
-          color="#ff4d1a"
-          intensity="1.8"
-          distance="35"
-          decay="2"
-        ></a-light>
-        <a-light
-          type="point"
-          position="6 0.3 0"
-          color="#ff4d1a"
-          intensity="1.8"
-          distance="35"
-          decay="2"
-        ></a-light>
-        <a-light
-          type="point"
-          position="-6 0.3 6"
-          color="#ff4d1a"
-          intensity="1.8"
-          distance="35"
-          decay="2"
-        ></a-light>
-        <a-light
-          type="point"
-          position="6 0.3 6"
-          color="#ff4d1a"
-          intensity="1.8"
-          distance="35"
-          decay="2"
-        ></a-light>
-        <a-light
-          type="point"
-          position="-6 0.3 12"
-          color="#ff4d1a"
-          intensity="1.8"
-          distance="35"
-          decay="2"
-        ></a-light>
-        <a-light
-          type="point"
-          position="6 0.3 12"
-          color="#ff4d1a"
-          intensity="1.8"
-          distance="35"
-          decay="2"
-        ></a-light>
+        {/* FLOOR LIGHTING */}
+        {floorLights.map((light, idx) => (
+          <a-light
+            key={`floor-light-${idx}`}
+            type="point"
+            position={light.position}
+            color="#ff4d1a"
+            intensity="1.8"
+            distance="35"
+            decay="2"
+          />
+        ))}
 
         {/* SEAT ROWS */}
         {seatRows.map((row, rowIndex) => (
@@ -491,7 +412,7 @@ export const VRRecommendationsList: FC<{
           height="20"
           color="#0a0a0a"
           material="shader: flat; emissive: #1a1a2e; emissiveIntensity: 0.3"
-        ></a-plane>
+        />
         <a-box
           position="0 3 -11.9"
           width="21"
@@ -499,7 +420,7 @@ export const VRRecommendationsList: FC<{
           depth="0.3"
           color="#3d2817"
           material="metalness: 0.4; roughness: 0.6; emissive: #1a0f08; emissiveIntensity: 0.1"
-        ></a-box>
+        />
         <a-plane
           position="-10 5 -11.5"
           rotation="0 45 0"
@@ -507,7 +428,7 @@ export const VRRecommendationsList: FC<{
           height="16"
           color="#6b1a1a"
           material="roughness: 0.8; metalness: 0.1"
-        ></a-plane>
+        />
         <a-plane
           position="10 5 -11.5"
           rotation="0 335 0"
@@ -515,21 +436,14 @@ export const VRRecommendationsList: FC<{
           height="16"
           color="#6b1a1a"
           material="roughness: 0.8; metalness: 0.1"
-        ></a-plane>
+        />
       </a-entity>
 
       {!showTrailerModal && (
         <>
           <MovieCard
             position="0 2.5 -8"
-            handleBookmarkClick={() =>
-              handleBookmarkClick(
-                movie,
-                setBookmarkedMovies,
-                setCurrentBookmarkStatus,
-                setShowPopup
-              )
-            }
+            handleBookmarkClick={handleBookmark}
             recommendation={movie}
             isBookmarked={isBookmarked}
             onShowDetail={handleShowDetail}
@@ -554,8 +468,7 @@ export const VRRecommendationsList: FC<{
           height="16"
           color="#1a0f0a"
           material="roughness: 0.95; metalness: 0.05"
-        ></a-plane>
-
+        />
         <a-box
           position="-9.9 10.5 -5"
           rotation="0 90 0"
@@ -564,7 +477,7 @@ export const VRRecommendationsList: FC<{
           depth="0.2"
           color="#3d2817"
           material="metalness: 0.3; roughness: 0.6"
-        ></a-box>
+        />
         <a-box
           position="-9.9 6.5 -5"
           rotation="0 90 0"
@@ -573,7 +486,7 @@ export const VRRecommendationsList: FC<{
           depth="0.2"
           color="#3d2817"
           material="metalness: 0.3; roughness: 0.6"
-        ></a-box>
+        />
       </a-entity>
 
       {/* WALL RIGHT */}
@@ -585,8 +498,7 @@ export const VRRecommendationsList: FC<{
           height="16"
           color="#1a0f0a"
           material="roughness: 0.95; metalness: 0.05"
-        ></a-plane>
-
+        />
         <a-box
           position="9.9 10.5 -5"
           rotation="0 -90 0"
@@ -595,7 +507,7 @@ export const VRRecommendationsList: FC<{
           depth="0.2"
           color="#3d2817"
           material="metalness: 0.3; roughness: 0.6"
-        ></a-box>
+        />
         <a-box
           position="9.9 6.5 -5"
           rotation="0 -90 0"
@@ -604,7 +516,7 @@ export const VRRecommendationsList: FC<{
           depth="0.2"
           color="#3d2817"
           material="metalness: 0.3; roughness: 0.6"
-        ></a-box>
+        />
       </a-entity>
 
       <ExitSign position="-6 4 12" />
@@ -623,7 +535,7 @@ export const VRRecommendationsList: FC<{
           depth="1"
           color="#3d2817"
           material="metalness: 0.4; roughness: 0.6; emissive: #1a0f08; emissiveIntensity: 0.1"
-        ></a-box>
+        />
         <a-box
           position="0 8 13"
           width="21"
@@ -631,14 +543,14 @@ export const VRRecommendationsList: FC<{
           depth="2.5"
           color="#3d2817"
           material="metalness: 0.4; roughness: 0.6; emissive: #1a0f08; emissiveIntensity: 0.1"
-        ></a-box>
+        />
         <a-plane
           position="0 3 14"
           width="16"
           height="20"
           color="#0a0a0a"
           material="shader: flat; emissive: #1a1a2e; emissiveIntensity: 0.3"
-        ></a-plane>
+        />
         <a-box
           position="0 3 13.9"
           width="21"
@@ -646,7 +558,7 @@ export const VRRecommendationsList: FC<{
           depth="0.3"
           color="#3d2817"
           material="metalness: 0.4; roughness: 0.6; emissive: #1a0f08; emissiveIntensity: 0.1"
-        ></a-box>
+        />
         <a-plane
           position="-10 5 13.5"
           rotation="0 45 0"
@@ -654,7 +566,7 @@ export const VRRecommendationsList: FC<{
           height="16"
           color="#6b1a1a"
           material="roughness: 0.8; metalness: 0.1"
-        ></a-plane>
+        />
         <a-plane
           position="10 5 13.5"
           rotation="0 335 0"
@@ -662,7 +574,7 @@ export const VRRecommendationsList: FC<{
           height="16"
           color="#6b1a1a"
           material="roughness: 0.8; metalness: 0.1"
-        ></a-plane>
+        />
       </a-entity>
 
       {/* COLUMN LEFT */}
@@ -673,23 +585,21 @@ export const VRRecommendationsList: FC<{
           height="12"
           color="#3d2817"
           material="metalness: 0.3; roughness: 0.7"
-        ></a-cylinder>
-        {/* base */}
+        />
         <a-cylinder
           position="-8 0.3 -2"
           radius="0.8"
           height="0.6"
           color="#2d1810"
           material="metalness: 0.4; roughness: 0.6"
-        ></a-cylinder>
-        {/* top */}
+        />
         <a-cylinder
           position="-8 11.7 -2"
           radius="0.8"
           height="0.6"
           color="#2d1810"
           material="metalness: 0.4; roughness: 0.6"
-        ></a-cylinder>
+        />
       </a-entity>
 
       {/* COLUMN RIGHT */}
@@ -700,27 +610,26 @@ export const VRRecommendationsList: FC<{
           height="12"
           color="#3d2817"
           material="metalness: 0.3; roughness: 0.7"
-        ></a-cylinder>
+        />
         <a-cylinder
           position="8 0.3 -2"
           radius="0.8"
           height="0.6"
           color="#2d1810"
           material="metalness: 0.4; roughness: 0.6"
-        ></a-cylinder>
+        />
         <a-cylinder
           position="8 11.7 -2"
           radius="0.8"
           height="0.6"
           color="#2d1810"
           material="metalness: 0.4; roughness: 0.6"
-        ></a-cylinder>
+        />
       </a-entity>
 
       {/* LIGHTING */}
-      <a-light type="ambient" color="#0f0f1a" intensity="0.7"></a-light>
+      <a-light type="ambient" color="#0f0f1a" intensity="0.7" />
 
-      {/* Movie card spotlights */}
       <a-light
         type="spot"
         position="-5 7 0"
@@ -729,7 +638,7 @@ export const VRRecommendationsList: FC<{
         angle="40"
         penumbra="0.3"
         target="#moviecard"
-      ></a-light>
+      />
       <a-light
         type="spot"
         position="5 7 0"
@@ -738,7 +647,7 @@ export const VRRecommendationsList: FC<{
         angle="40"
         penumbra="0.3"
         target="#moviecard"
-      ></a-light>
+      />
 
       <PopcornStand position="-8 0 6" rotation="0 90 0" />
       <PopcornStand position="8 0 6" rotation="0 270 0" />
@@ -752,30 +661,28 @@ export const VRRecommendationsList: FC<{
           color="#0a0a0a"
           material="roughness: 0.9; side: double"
           position="0 11 -5"
-        ></a-plane>
-
+        />
         <a-cylinder
           position="-5 10.9 -5"
           radius="0.5"
           height="0.4"
           color="#2a2a2a"
           material="emissive: #ffcc99; emissiveIntensity: 0.4"
-        ></a-cylinder>
+        />
         <a-cylinder
           position="5 10.9 -5"
           radius="0.5"
           height="0.4"
           color="#2a2a2a"
           material="emissive: #ffcc99; emissiveIntensity: 0.4"
-        ></a-cylinder>
+        />
         <a-cylinder
           position="0 10.9 0"
           radius="0.5"
           height="0.4"
           color="#2a2a2a"
           material="emissive: #ffcc99; emissiveIntensity: 0.4"
-        ></a-cylinder>
-
+        />
         <ProjectorHousing position="0 6.05 4" rotation="-15 0 0" />
       </a-entity>
     </a-scene>
