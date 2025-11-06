@@ -115,6 +115,11 @@ export const Quiz: FC<QuizProps> = ({
                       setBookmarkedMovies={setBookmarkedMovies}
                       setCurrentBookmarkStatus={setCurrentBookmarkStatus}
                       bookmarkedMovies={bookmarkedMovies}
+                      recommendationsAnalysis={
+                        recommendationList.length && isAnalysisUpdated()
+                          ? recommendationsAnalysis
+                          : undefined
+                      }
                     />
                   </div>
                 ) : (

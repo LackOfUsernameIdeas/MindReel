@@ -248,6 +248,7 @@ declare global {
         class?: string;
         material?: string;
         shader?: string;
+        scale?: string;
         onClick?: (event: any) => void;
         negate?: string | boolean;
       };

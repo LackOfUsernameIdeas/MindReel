@@ -11,6 +11,8 @@ import ExitSign from "./vr/ExitSign";
 import Seat from "./vr/Seat";
 import PopcornStand from "./vr/PopcornStand";
 import { NavigationArrows } from "./vr/NavigationArrows";
+import AnalysisPoster from "./vr/AnalysisPoster.tsx";
+import RelevancePoster from "./vr/RelevancePoster";
 import { Recommendation } from "@/container/recommendations/movies_series/moviesSeriesRecommendations-types.ts";
 import {
   downloadMultipleTrailers,
@@ -33,13 +35,20 @@ export const VRRecommendationsList: FC<{
   >;
   setCurrentBookmarkStatus: React.Dispatch<React.SetStateAction<boolean>>;
   bookmarkedMovies: { [key: string]: Recommendation };
+  recommendationsAnalysis?: {
+    relevantCount: number;
+    totalCount: number;
+    precisionPercentage: number;
+    relevantRecommendations: any[];
+  };
 }> = ({
   recommendationList,
   currentIndex,
   setCurrentIndex,
   setBookmarkedMovies,
   setCurrentBookmarkStatus,
-  bookmarkedMovies
+  bookmarkedMovies,
+  recommendationsAnalysis
 }) => {
   const trailersDownloadedRef = useRef(false);
   const translationCacheRef = useRef<
@@ -626,6 +635,55 @@ export const VRRecommendationsList: FC<{
           material="metalness: 0.4; roughness: 0.6"
         />
       </a-entity>
+
+      {/* ANALYSIS POSTERS */}
+      {recommendationsAnalysis &&
+        (() => {
+          const avgRelevance =
+            recommendationsAnalysis.relevantRecommendations.length > 0
+              ? (
+                  recommendationsAnalysis.relevantRecommendations.reduce(
+                    (acc: number, rec: any) => acc + rec.relevanceScore,
+                    0
+                  ) / recommendationsAnalysis.relevantRecommendations.length
+                ).toFixed(2)
+              : "0.00";
+
+          // Convert precisionPercentage to string if it's a number
+          const precisionStr =
+            typeof recommendationsAnalysis.precisionPercentage === "number"
+              ? recommendationsAnalysis.precisionPercentage.toFixed(2)
+              : recommendationsAnalysis.precisionPercentage;
+
+          // Find current recommendation's analysis data
+          const currentRecommendationAnalysis =
+            recommendationsAnalysis.relevantRecommendations.find(
+              (rec: any) => rec.imdbID === movie.imdbID
+            );
+
+          return (
+            <>
+              {/* Left wall - Overall Analysis Poster */}
+              <AnalysisPoster
+                position="-9.85 3.5 2"
+                rotation="0 90 0"
+                relevantCount={recommendationsAnalysis.relevantCount}
+                totalCount={recommendationsAnalysis.totalCount}
+                precisionPercentage={precisionStr}
+                averageRelevance={avgRelevance}
+              />
+
+              {/* Right wall - Current Recommendation Relevance Poster */}
+              {currentRecommendationAnalysis && (
+                <RelevancePoster
+                  position="9.85 3.5 2"
+                  rotation="0 -90 0"
+                  recommendation={currentRecommendationAnalysis}
+                />
+              )}
+            </>
+          );
+        })()}
 
       {/* LIGHTING */}
       <a-light type="ambient" color="#0f0f1a" intensity="0.7" />

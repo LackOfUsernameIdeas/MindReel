@@ -34,7 +34,7 @@ const DetailModal = ({
     contentType === "description" ? "Full Description" : "Full Plot";
 
   const infoIconSvg = `data:image/svg+xml;base64,${btoa(`
-    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 50 50" fill="#56ab91">
+    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 50 50" fill="#db1303">
       <path d="M 25 2 C 12.309295 2 2 12.309295 2 25 C 2 37.690705 12.309295 48 25 48 C 37.690705 48 48 37.690705 48 25 C 48 12.309295 37.690705 2 25 2 z M 25 4 C 36.609824 4 46 13.390176 46 25 C 46 36.609824 36.609824 46 25 46 C 13.390176 46 4 36.609824 4 25 C 4 13.390176 13.390176 4 25 4 z M 25 11 A 3 3 0 0 0 22 14 A 3 3 0 0 0 25 17 A 3 3 0 0 0 28 14 A 3 3 0 0 0 25 11 z M 21 21 L 21 23 L 22 23 L 23 23 L 23 36 L 22 36 L 21 36 L 21 38 L 22 38 L 23 38 L 27 38 L 28 38 L 29 38 L 29 36 L 28 36 L 27 36 L 27 21 L 26 21 L 22 21 L 21 21 z"></path>
     </svg>`)}`;
 
@@ -53,7 +53,7 @@ const DetailModal = ({
       <a-plane
         width="11.2"
         height="7.2"
-        color="#56ab91"
+        color="#db1303"
         material={`shader: flat; opacity: ${modalOpacity * 0.2}`}
         position="0 0 -0.04"
       />
@@ -89,10 +89,10 @@ const DetailModal = ({
       <a-plane
         width="10.8"
         height="0.2"
-        color="#56ab91"
+        color="#db1303"
         material={`shader: flat; opacity: ${
           modalOpacity * 0.9
-        }; emissive: #56ab91; emissiveIntensity: 0.5`}
+        }; emissive: #db1303; emissiveIntensity: 0.5`}
         position="0 3.3 0.01"
       />
 
@@ -100,18 +100,18 @@ const DetailModal = ({
       <a-plane
         width="10.8"
         height="0.08"
-        color="#56ab91"
+        color="#db1303"
         material={`shader: flat; opacity: ${modalOpacity * 0.5}`}
         position="0 -3.36 0.01"
       />
 
       {/* Header section background */}
       <a-plane
-        width="10.4"
+        width="10"
         height="0.9"
         color="#1a1a1a"
         material={`shader: flat; opacity: ${modalOpacity * 0.8}`}
-        position="0 2.7 0.01"
+        position="0 2.5 0.01"
       />
 
       {/* Info icon */}
@@ -120,13 +120,13 @@ const DetailModal = ({
         width="0.4"
         height="0.4"
         material={`shader: flat; transparent: true; opacity: ${modalOpacity}`}
-        position="-4.8 2.67 0.02"
+        position="-4.7 2.52 0.02"
       />
 
       {/* Title */}
       <a-text
         value={modalTitle}
-        position="-4.4 2.7 0.02"
+        position="-4.4 2.55 0.02"
         align="left"
         color="#FFFFFF"
         width="7"
@@ -138,9 +138,9 @@ const DetailModal = ({
       <a-plane
         width="10"
         height="0.03"
-        color="#56ab91"
+        color="#db1303"
         material={`shader: flat; opacity: ${modalOpacity * 0.4}`}
-        position="0 2.2 0.02"
+        position="0 2.05 0.02"
       />
 
       {/* Content background with subtle gradient effect */}
@@ -166,7 +166,7 @@ const DetailModal = ({
       />
 
       {/* Close button with hover effect styling */}
-      <a-entity position="3.8 -2.7 0.02">
+      <a-entity position="4.25 -2.7 0.02">
         {/* Button shadow */}
         <a-plane
           width="1.5"
@@ -211,37 +211,6 @@ const DetailModal = ({
           onClick={onClose}
         />
       </a-entity>
-
-      {/* Decorative corner elements */}
-      <a-plane
-        width="0.6"
-        height="0.05"
-        color="#56ab91"
-        material={`shader: flat; opacity: ${modalOpacity * 0.6}`}
-        position="-5.1 -3.15 0.02"
-      />
-      <a-plane
-        width="0.05"
-        height="0.6"
-        color="#56ab91"
-        material={`shader: flat; opacity: ${modalOpacity * 0.6}`}
-        position="-5.375 -2.85 0.02"
-      />
-
-      <a-plane
-        width="0.6"
-        height="0.05"
-        color="#56ab91"
-        material={`shader: flat; opacity: ${modalOpacity * 0.6}`}
-        position="5.1 -3.15 0.02"
-      />
-      <a-plane
-        width="0.05"
-        height="0.6"
-        color="#56ab91"
-        material={`shader: flat; opacity: ${modalOpacity * 0.6}`}
-        position="5.375 -2.85 0.02"
-      />
     </a-entity>
   );
 };
