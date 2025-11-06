@@ -1,5 +1,5 @@
 import type React from "react";
-import { useEffect, useState, useRef, useCallback } from "react";
+import { useEffect, useState, useRef } from "react";
 
 interface TrailerModalProps {
   isVisible: boolean;
@@ -57,29 +57,17 @@ const TrailerModal = ({
     `)}`
   }).current;
 
-  // Memoized format time function
-  const formatTime = useCallback((seconds: number) => {
+  const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
     const secs = Math.floor(seconds % 60);
     return `${mins}:${secs.toString().padStart(2, "0")}`;
-  }, []);
+  };
 
-  // Memoized event handlers
-  const updateProgress = useCallback(() => {
-    const video = videoElementRef.current;
-    if (video && video.duration > 0) {
-      setProgress(video.currentTime / video.duration);
-      setCurrentTime(video.currentTime);
-      setDuration(video.duration);
-      setIsPlaying(!video.paused);
-    }
-  }, []);
-
-  const handlePlayClick = useCallback(() => {
+  const handlePlayClick = () => {
     setIsTrailerPlaying(true);
-  }, [setIsTrailerPlaying]);
+  };
 
-  const togglePlayPause = useCallback(() => {
+  const togglePlayPause = () => {
     const video = videoElementRef.current;
     if (!video) return;
 
@@ -88,20 +76,20 @@ const TrailerModal = ({
     } else {
       video.pause();
     }
-  }, []);
+  };
 
-  const restartVideo = useCallback(() => {
+  const restartVideo = () => {
     const video = videoElementRef.current;
     if (!video) return;
     video.currentTime = 0;
     video.play().catch((err) => console.warn("Play failed:", err));
-  }, []);
+  };
 
-  const seekTo = useCallback((fraction: number) => {
+  const seekTo = (fraction: number) => {
     const video = videoElementRef.current;
     if (!video || !video.duration) return;
     video.currentTime = video.duration * fraction;
-  }, []);
+  };
 
   // Video element setup and cleanup
   useEffect(() => {
@@ -133,17 +121,13 @@ const TrailerModal = ({
       }
     }
 
-    setTimeout(() => {
-      videoElementRef.current = video;
-    }, 0);
+    videoElementRef.current = video;
 
     if (videoUrl) {
       video.src = videoUrl;
-      video.onloadedmetadata = () => updateProgress();
       video.load();
     }
 
-    // Cleanup function
     return () => {
       if (animationFrameRef.current) {
         cancelAnimationFrame(animationFrameRef.current);
@@ -151,19 +135,40 @@ const TrailerModal = ({
     };
   }, [isVisible, videoUrl, setIsTrailerPlaying]);
 
-  // Event listeners setup
+  // Event listeners setup - NOT memoized to ensure proper state updates
   useEffect(() => {
     const video = videoElementRef.current;
     if (!video) return;
 
+    const updateProgress = () => {
+      if (video.duration > 0) {
+        setProgress(video.currentTime / video.duration);
+        setCurrentTime(video.currentTime);
+        setDuration(video.duration);
+        setIsPlaying(!video.paused);
+      }
+    };
+
+    const handleLoadedMetadata = () => {
+      setDuration(video.duration);
+      updateProgress();
+    };
+
+    const handlePlay = () => setIsPlaying(true);
+    const handlePause = () => setIsPlaying(false);
+
     video.addEventListener("timeupdate", updateProgress);
-    video.addEventListener("loadedmetadata", updateProgress);
+    video.addEventListener("loadedmetadata", handleLoadedMetadata);
+    video.addEventListener("play", handlePlay);
+    video.addEventListener("pause", handlePause);
 
     return () => {
       video.removeEventListener("timeupdate", updateProgress);
-      video.removeEventListener("loadedmetadata", updateProgress);
+      video.removeEventListener("loadedmetadata", handleLoadedMetadata);
+      video.removeEventListener("play", handlePlay);
+      video.removeEventListener("pause", handlePause);
     };
-  }, [updateProgress]);
+  }, [isVisible, videoUrl]);
 
   // Handle trailer playing state
   useEffect(() => {
@@ -173,7 +178,7 @@ const TrailerModal = ({
     if (isTrailerPlaying) {
       video.muted = false;
       video.play().catch((err) => console.warn("Autoplay blocked:", err));
-    } else if (!isTrailerPlaying) {
+    } else {
       video.pause();
       video.currentTime = 0;
     }
