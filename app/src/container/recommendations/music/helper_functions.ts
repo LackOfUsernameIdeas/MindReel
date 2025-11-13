@@ -354,7 +354,9 @@ export const generateMusicRecommendations = async (
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          requestBody
+          provider: "openai",
+          modelOpenAI: requestBody?.model, // Use the model from the prompt function
+          messages: requestBody?.messages || []
         })
       }
     );

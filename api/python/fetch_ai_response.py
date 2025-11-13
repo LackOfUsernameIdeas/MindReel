@@ -22,7 +22,7 @@ def fetch_openai_response(messages, provider, modelOpenAI, api_key=None):
         # Ако доставчикът е Gemini, извикваме Gemini
         if provider == "gemini":
             # Инициализиране на Gemini с предоставения API ключ
-            llmGemini = ChatGoogleGenerativeAI(model="gemini-1.5-pro", api_key=api_key)
+            llmGemini = ChatGoogleGenerativeAI(model="gemini-2.5-pro", api_key=api_key)
             response = llmGemini.invoke(messages)
 
         # Ако доставчикът е OpenAI, извикваме OpenAI
