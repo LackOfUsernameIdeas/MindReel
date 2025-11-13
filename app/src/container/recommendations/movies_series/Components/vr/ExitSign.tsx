@@ -4,6 +4,11 @@ const ExitSign = ({
   position = "0 0 0",
   rotation = "0 180 0"
 }: DefaultVrComponentProps) => {
+  // SVG arrow pointing down
+  const arrowDownSvg = `data:image/svg+xml;base64,${btoa(`
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="m19 12-7 7-7-7"/></svg>
+  `)}`;
+
   return (
     <a-entity position={position} rotation={rotation}>
       {/* main box */}
@@ -54,7 +59,7 @@ const ExitSign = ({
 
       <a-text
         value="EXIT"
-        position="-0.15 0 0.045"
+        position="-0.07 0 0.045"
         align="center"
         width="4"
         color="#ffffff"
@@ -62,14 +67,13 @@ const ExitSign = ({
         shader="flat"
       />
 
-      <a-text
-        value=">>>"
-        position="0.2 0 0.045"
-        align="center"
-        width="4"
-        color="#ffffff"
-        font="roboto"
-        shader="flat"
+      {/* Arrow pointing down */}
+      <a-image
+        src={arrowDownSvg}
+        position="0.21 0 0.045"
+        width="0.15"
+        height="0.15"
+        material="shader: flat; transparent: true"
       />
 
       {/* mounting bracket - top */}
