@@ -363,9 +363,7 @@ export const generateMoviesSeriesRecommendations = async (
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          provider: "openai",
-          modelOpenAI: requestBody?.model, // Use the model from the prompt function
-          messages: requestBody?.messages || []
+          requestBody
         })
       }
     );

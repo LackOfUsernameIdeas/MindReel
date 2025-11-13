@@ -20,7 +20,12 @@ if (process.env.YOUTUBE_COOKIES) {
   console.warn("⚠️ No YOUTUBE_COOKIES environment variable found");
 }
 
-const whitelist = ["https://mindreel.noit.eu", "http://mindreel.noit.eu"];
+const whitelist = [
+  "http://localhost:5174",
+  "http://localhost:5175",
+  "https://mindreel.noit.eu",
+  "http://mindreel.noit.eu"
+];
 const corsOptions = {
   origin: function (origin, callback) {
     if (!origin || whitelist.includes(origin)) {
