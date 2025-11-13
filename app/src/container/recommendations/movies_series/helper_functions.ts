@@ -293,14 +293,14 @@ export const downloadMultipleTrailers = async (
 
   const downloadPromises = recommendations.map(async (movie, index) => {
     const videoIndex = (index % 5) + 1; // 1-5
-    const fallbackVideoPath = `/video${videoIndex}-fallback.mp4`;
+    const fallbackVideoUrl = `https://storage.googleapis.com/my-public-videos/video${videoIndex}.mp4`;
 
     if (!movie.youtubeTrailerUrl) {
       // Няма YouTube URL - използваме fallback директно
-      trailerUrls[movie.imdbID] = fallbackVideoPath;
-      onTrailerReady?.(movie.imdbID, fallbackVideoPath, true);
+      trailerUrls[movie.imdbID] = fallbackVideoUrl;
+      onTrailerReady?.(movie.imdbID, fallbackVideoUrl, true);
       console.log(
-        `⚠ No YouTube URL for ${movie.title}, using ${fallbackVideoPath}`
+        `⚠ No YouTube URL for ${movie.title}, using ${fallbackVideoUrl}`
       );
       return;
     }
@@ -323,11 +323,11 @@ export const downloadMultipleTrailers = async (
         error
       );
 
-      trailerUrls[movie.imdbID] = fallbackVideoPath;
-      onTrailerReady?.(movie.imdbID, fallbackVideoPath, true);
+      trailerUrls[movie.imdbID] = fallbackVideoUrl;
+      onTrailerReady?.(movie.imdbID, fallbackVideoUrl, true);
 
       console.log(
-        `→ Using fallback video for ${movie.title}: ${fallbackVideoPath}`
+        `→ Using fallback video for ${movie.title}: ${fallbackVideoUrl}`
       );
     }
   });
