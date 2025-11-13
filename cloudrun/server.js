@@ -50,8 +50,18 @@ const storage = new Storage({
 const bucketName = "my-public-videos";
 const bucket = storage.bucket(bucketName);
 
+// Health check endpoint (important for Cloud Run)
+app.get("/", (req, res) => {
+  res.status(200).json({
+    status: "ok",
+    message: "Video download service is running",
+    timestamp: new Date().toISOString()
+  });
+});
+
+// Additional health check endpoint
 app.get("/health", (req, res) => {
-  res.json({ status: "ok", service: "video-download-service" });
+  res.status(200).json({ status: "healthy" });
 });
 
 // 📥 Изтегляне на YouTube видео в съответната директория
