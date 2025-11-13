@@ -251,6 +251,7 @@ declare global {
         scale?: string;
         onClick?: (event: any) => void;
         negate?: string | boolean;
+        baseline?: string;
       };
       "a-asset-item": React.DetailedHTMLProps<
         React.HTMLAttributes<HTMLElement>,
