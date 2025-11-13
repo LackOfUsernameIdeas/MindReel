@@ -12,6 +12,7 @@ import {
 } from "../../types_common";
 import {
   moviesSeriesBrainAnalysisPrompt,
+  moviesSeriesBrainAnalysisPrompt2,
   moviesSeriesStandardPreferencesPrompt
 } from "./moviesSeriesRecommendations-data";
 import { moviesSeriesGenreOptions } from "../../data_common";
@@ -275,6 +276,7 @@ export const downloadYouTubeTrailer = async (
 /**
  * Изтегля трейлъри за до 5 препоръки едновременно.
  * Всяка препоръка използва ротационен файл (video1-5.mp4).
+ * При грешка зарежда съответния локален fallback видео файл (video1-fallback.mp4 - video5-fallback.mp4).
  * Извиква callback веднага щом всеки трейлър е готов.
  *
  * @async
@@ -291,6 +293,17 @@ export const downloadMultipleTrailers = async (
 
   const downloadPromises = recommendations.map(async (movie, index) => {
     const videoIndex = (index % 5) + 1; // 1-5
+    const fallbackVideoPath = `/video${videoIndex}-fallback.mp4`;
+
+    if (!movie.youtubeTrailerUrl) {
+      // Няма YouTube URL - използваме fallback директно
+      trailerUrls[movie.imdbID] = fallbackVideoPath;
+      onTrailerReady?.(movie.imdbID, fallbackVideoPath, true);
+      console.log(
+        `⚠ No YouTube URL for ${movie.title}, using ${fallbackVideoPath}`
+      );
+      return;
+    }
 
     try {
       const videoUrl = await downloadYouTubeTrailer(
@@ -304,9 +317,17 @@ export const downloadMultipleTrailers = async (
 
       console.log(`✓ Trailer ready for ${movie.title}: ${videoUrl}`);
     } catch (error) {
+      // Грешка при изтегляне - използваме съответния локален fallback
       console.error(
         `✗ Failed to download trailer for ${movie.title} (${movie.imdbID}):`,
         error
+      );
+
+      trailerUrls[movie.imdbID] = fallbackVideoPath;
+      onTrailerReady?.(movie.imdbID, fallbackVideoPath, true);
+
+      console.log(
+        `→ Using fallback video for ${movie.title}: ${fallbackVideoPath}`
       );
     }
   });
@@ -349,11 +370,28 @@ export const generateMoviesSeriesRecommendations = async (
 ) => {
   try {
     console.log("brainData", brainData);
-    const requestBody =
-      renderBrainAnalysis && brainData
-        ? moviesSeriesBrainAnalysisPrompt(brainData)
-        : moviesSeriesUserPreferences &&
-          moviesSeriesStandardPreferencesPrompt(moviesSeriesUserPreferences);
+    let requestBody;
+
+    if (renderBrainAnalysis && brainData) {
+      const savedCounter = parseInt(
+        localStorage.getItem("promptCounter") || "0"
+      );
+
+      // Alternate between the two prompts
+      if (savedCounter % 2 === 0) {
+        requestBody = moviesSeriesBrainAnalysisPrompt(brainData);
+        console.log("Using moviesSeriesBrainAnalysisPrompt");
+      } else {
+        requestBody = moviesSeriesBrainAnalysisPrompt2(brainData);
+        console.log("Using moviesSeriesBrainAnalysisPrompt2");
+      }
+
+      localStorage.setItem("promptCounter", (savedCounter + 1).toString());
+    } else if (moviesSeriesUserPreferences) {
+      requestBody = moviesSeriesStandardPreferencesPrompt(
+        moviesSeriesUserPreferences
+      );
+    }
 
     const response = await fetch(
       `${import.meta.env.VITE_API_BASE_URL}/get-model-response`,
