@@ -1346,6 +1346,10 @@ app.post("/get-model-response", async (req, res) => {
   try {
     const { requestBody } = req.body;
 
+    console.log(
+      `✨ ПРОМПТ ОТ ГЕНЕРИРАНЕ: ✨\n SYSTEM CONTENT: ${requestBody.messages[0].content}\n USER CONTENT: ${requestBody.messages[1].content}`
+    );
+
     // Call OpenAI API
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
@@ -1365,6 +1369,8 @@ app.post("/get-model-response", async (req, res) => {
     }
 
     const responseData = await response.json();
+
+    console.log(`✨ Успешно генериране от промпта! ✨`);
 
     // Return the response
     res.json(responseData);
