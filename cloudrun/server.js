@@ -112,12 +112,6 @@ app.get("/download/youtube-video", (req, res) => {
     };
 
     ytDlpEventEmitter
-      .on("progress", (progress) => {
-        progressData = progress;
-        process.stdout.write(
-          `\rDownloading: ${progress.percent}% (${progress.currentSpeed}) ETA: ${progress.eta}s`
-        );
-      })
       .on("ytDlpEvent", (eventType, eventData) => {
         console.log(eventType, eventData);
       })
