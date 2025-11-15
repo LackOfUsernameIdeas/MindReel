@@ -61,6 +61,7 @@ declare global {
         class?: string;
         transparent?: boolean;
         crossorigin?: string;
+        animation?: string;
         onClick?: (event: any) => void;
       };
       "a-curvedimage": React.DetailedHTMLProps<
@@ -111,6 +112,7 @@ declare global {
           material?: string;
           position?: string;
           rotation?: string;
+          animation?: string;
           "static-body"?: boolean;
           onClick?: (event: any) => void;
         };
@@ -249,6 +251,8 @@ declare global {
         material?: string;
         shader?: string;
         scale?: string;
+        opacity?: string;
+        animation?: string;
         onClick?: (event: any) => void;
         negate?: string | boolean;
         baseline?: string;

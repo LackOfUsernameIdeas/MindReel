@@ -211,25 +211,23 @@ const fetchYouTubeEmbedTrailer = async (
 };
 
 /**
- * Изтегля YouTube видео за трейлър чрез API заявка с ротация на файлове.
- * Използва фиксирани имена на файлове (video1.mp4 - video5.mp4) които се заменят циклично.
+ * Изтегля YouTube видео за трейлър чрез API заявка.
+ * Използва уникално име на файла базирано на imdbID (video-{imdbID}.mp4).
  * При успех връща публичния URL на видеото, а при грешка хвърля изключение.
  *
  * @async
  * @function downloadYouTubeTrailer
  * @param {string} youtubeUrl - URL адресът на YouTube видеото за изтегляне.
- * @param {number} videoIndex - Индексът на видео файла (1-5) който да се използва.
+ * @param {string} imdbID - IMDB ID на филма за създаване на уникално име.
  * @returns {Promise<string>} - Връща публичния URL на изтегленото видео.
  * @throws {Error} - Хвърля грешка, ако заявката не е успешна или ако качването се провали.
  */
 export const downloadYouTubeTrailer = async (
   youtubeUrl: string,
-  videoIndex: number
+  imdbID: string
 ): Promise<string> => {
   try {
-    // Ensures videoIndex is between 1-5
-    const safeVideoIndex = ((videoIndex - 1) % 5) + 1;
-    const fileName = `video${safeVideoIndex}.mp4`;
+    const fileName = `video-${imdbID}.mp4`;
     const outputDir = `${import.meta.env.VITE_PUBLIC_DIR}`;
 
     const response = await fetch(
@@ -275,8 +273,8 @@ export const downloadYouTubeTrailer = async (
 
 /**
  * Изтегля трейлъри за до 5 препоръки едновременно.
- * Всяка препоръка използва ротационен файл (video1-5.mp4).
- * При грешка зарежда съответния локален fallback видео файл (video1-fallback.mp4 - video5-fallback.mp4).
+ * Новите видеа се съхраняват с уникални имена (video-{imdbID}.mp4).
+ * При грешка зарежда съответния локален fallback видео файл (video1.mp4 - video5.mp4).
  * Извиква callback веднага щом всеки трейлър е готов.
  *
  * @async
@@ -306,9 +304,10 @@ export const downloadMultipleTrailers = async (
     }
 
     try {
+      // Pass imdbID to create unique filename
       const videoUrl = await downloadYouTubeTrailer(
         movie.youtubeTrailerUrl,
-        videoIndex
+        movie.imdbID
       );
 
       // Успешно изтегляне
