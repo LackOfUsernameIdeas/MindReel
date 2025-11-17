@@ -51,11 +51,12 @@ const VRControlsInfo: FC = () => {
               </div>
               <div className="flex justify-center gap-2">
                 <kbd className="px-3 py-1.5 text-sm font-semibold bg-gray-800 dark:bg-transparent text-white rounded border border-gray-600">
-                  ←
-                </kbd>
-                <kbd className="px-3 py-1.5 text-sm font-semibold bg-gray-800 dark:bg-transparent text-white rounded border border-gray-600">
                   ↑
                 </kbd>
+                <kbd className="px-3 py-1.5 text-sm font-semibold bg-gray-800 dark:bg-transparent text-white rounded border border-gray-600">
+                  ←
+                </kbd>
+
                 <kbd className="px-3 py-1.5 text-sm font-semibold bg-gray-800 dark:bg-transparent text-white rounded border border-gray-600">
                   ↓
                 </kbd>
@@ -64,7 +65,7 @@ const VRControlsInfo: FC = () => {
                 </kbd>
               </div>
               <p className="text-sm text-defaulttextcolor/70 dark:text-white/50">
-                Напред / Назад / Наляво / Надясно
+                Напред / Наляво / Назад / Надясно
               </p>
             </div>
           </div>
