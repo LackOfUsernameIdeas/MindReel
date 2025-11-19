@@ -21,10 +21,10 @@ const BookmarkModal = ({
       const timer = setTimeout(() => {
         setPopupOpacity(0);
         setTimeout(() => setIsVisible(false), 500);
-      }, 5000);
+      }, 2500);
       return () => clearTimeout(timer);
     }
-  }, [isVisible]);
+  }, [isVisible, setIsVisible]);
 
   const handlePopupDismiss = () => {
     setPopupOpacity(0);
@@ -59,6 +59,7 @@ const BookmarkModal = ({
         color={isBookmarked ? "#10b981" : "#ef4444"}
         material={`shader: flat; opacity: ${popupOpacity}; side: double`}
         position="0 0 0.01"
+        animation={`property: material.opacity; from: ${popupOpacity}; to: ${popupOpacity}; dur: 500`}
       ></a-plane>
 
       <a-plane
@@ -67,6 +68,9 @@ const BookmarkModal = ({
         color="#000000"
         material={`shader: flat; opacity: ${popupOpacity * 0.3}`}
         position="0.05 -0.05 0"
+        animation={`property: material.opacity; from: ${
+          popupOpacity * 0.3
+        }; to: ${popupOpacity * 0.3}; dur: 500`}
       ></a-plane>
 
       <a-entity position="-3.5 0 0.02">
@@ -76,6 +80,7 @@ const BookmarkModal = ({
           height="0.3"
           material={`shader: flat; transparent: true; opacity: ${popupOpacity}`}
           position="0 0 0"
+          animation={`property: material.opacity; from: ${popupOpacity}; to: ${popupOpacity}; dur: 500`}
         ></a-image>
 
         <a-text
@@ -84,18 +89,22 @@ const BookmarkModal = ({
           align="left"
           color="#FFFFFF"
           width="6"
-          material={`opacity: ${popupOpacity}`}
+          opacity={`${popupOpacity}`}
+          animation={`property: opacity; from: ${popupOpacity}; to: ${popupOpacity}; dur: 500`}
         ></a-text>
 
         <a-text
           value={`This film/series ${
-            isBookmarked ? "has been saved" : "has been removed"
-          } from your watchlist!`}
+            isBookmarked ? "has been saved to" : "has been removed from"
+          } your watchlist!`}
           position="0.4 -0.2 0"
           align="left"
           color="#FFFFFF"
           width="5"
-          material={`opacity: ${popupOpacity * 0.9}`}
+          opacity={`${popupOpacity * 0.9}`}
+          animation={`property: opacity; from: ${popupOpacity * 0.9}; to: ${
+            popupOpacity * 0.9
+          }; dur: 500`}
         ></a-text>
       </a-entity>
 
@@ -107,6 +116,7 @@ const BookmarkModal = ({
         position="3.7 0.4 0.02"
         class="clickable"
         onClick={handlePopupDismiss}
+        animation={`property: material.opacity; from: ${popupOpacity}; to: ${popupOpacity}; dur: 500`}
       ></a-image>
     </a-entity>
   );

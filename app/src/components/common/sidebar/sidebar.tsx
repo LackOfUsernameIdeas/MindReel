@@ -10,8 +10,8 @@ import Menuloop from "../../ui/menuloop";
 import gradientDark from "../../../assets/images/menu-bg-images/layered-waves-haikei-dark.svg";
 import gradientLight from "../../../assets/images/menu-bg-images/layered-waves-haikei-light.svg";
 
-import logo from "../../../assets/images/brand-logos/logo_large.png";
-import logoPink from "../../../assets/images/brand-logos/logo_large_pink.png";
+import logo from "../../../assets/images/brand-logos/logo_large.svg";
+import logoDark from "../../../assets/images/brand-logos/logo_large_dark.svg";
 
 interface SidebarProps {}
 
@@ -455,7 +455,7 @@ const Sidebar: FC<SidebarProps> = ({ local_varaiable, ThemeChanger }: any) => {
         }}
       >
         <div
-          className="main-sidebar-header"
+          className="main-sidebar-header !pr-10"
           style={{ boxSizing: "border-box" }}
         >
           <Link
@@ -463,14 +463,14 @@ const Sidebar: FC<SidebarProps> = ({ local_varaiable, ThemeChanger }: any) => {
             className="header-logo group relative inline-block"
           >
             <img
-              src={local_varaiable.class === "dark" ? logoPink : logo}
+              src={local_varaiable.class === "dark" ? logoDark : logo}
               alt="logo"
-              className="transition-all duration-100 transform opacity-100 scale-90 group-hover:scale-110 group-hover:opacity-0"
+              className="transition-all duration-100 transform opacity-100 scale-110 group-hover:scale-125 group-hover:opacity-0"
             />
             <img
-              src={local_varaiable.class === "dark" ? logoPink : logo}
+              src={local_varaiable.class === "dark" ? logoDark : logo}
               alt="logo-hover"
-              className="absolute top-0 left-0 transition-all duration-100 transform opacity-0 group-hover:scale-100 group-hover:opacity-100"
+              className="absolute top-0 left-0 transition-all duration-100 transform opacity-0 scale-110 group-hover:scale-125 group-hover:opacity-100"
             />
           </Link>
         </div>
