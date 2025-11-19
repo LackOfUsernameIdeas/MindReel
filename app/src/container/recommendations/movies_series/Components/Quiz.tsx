@@ -80,7 +80,7 @@ export const Quiz: FC<QuizProps> = ({
           <>
             {loading ? (
               <div className="flex items-center justify-center">
-                <Loader />
+                <Loader vrExperience={renderVrScene} />
               </div>
             ) : submitted ? (
               <div>

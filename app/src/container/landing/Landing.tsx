@@ -14,8 +14,8 @@ import { DataType } from "./landing-types";
 import { fetchData } from "./helper_functions";
 import AIStatsWidgetCardsComponent from "./components/AIStatsWidgetCardsComponents";
 import { getAverageMetrics } from "../helper_functions_common";
-import logo from "../../assets/images/brand-logos/logo_large_head.png";
-import logoPink from "../../assets/images/brand-logos/logo_large_head_pink.png";
+import logo from "../../assets/images/brand-logos/logo_large.svg";
+import logoDark from "../../assets/images/brand-logos/logo_large_dark.svg";
 import BookAdaptations from "./components/BookAdaptations";
 import MusicStats from "./components/MusicStats";
 
@@ -207,25 +207,22 @@ const Landing: FC<{}> = () => {
       </aside>
       <div className="main-content !p-0 landing-main dark:text-defaulttextcolor/70">
         <section className="section bg-light !pb-0 text-[0.813rem]" id="home">
-          <div className="container flex flex-col items-center h-full">
-            {/* Лого за светъл режим */}
-            <img
-              src={logo}
-              alt="Logo"
-              className="dark:hidden mb-[3rem] mt-[-0.5rem]"
-              style={{ width: "50%", height: "auto" }}
-            />
+          <div className="container flex justify-center items-center h-full">
+            <div className="w-full max-w-4xl px-4 sm:px-8 md:px-12 lg:pr-16 lg:pl-0">
+              {/* Лого за светъл режим */}
+              <img
+                src={logo}
+                alt="Logo"
+                className="dark:hidden w-full h-auto mb-[3rem] mt-[-0.5rem] mx-auto"
+              />
 
-            {/* Лого за тъмен режим */}
-            <img
-              src={logoPink}
-              alt="Logo"
-              className="hidden dark:block mb-[3rem] mt-[-0.5rem]"
-              style={{
-                width: "50%",
-                height: "auto"
-              }}
-            />
+              {/* Лого за тъмен режим */}
+              <img
+                src={logoDark}
+                alt="Logo"
+                className="hidden dark:block w-full h-auto mb-[3rem] mt-[-0.5rem] mx-auto"
+              />
+            </div>
           </div>
         </section>
         <section
