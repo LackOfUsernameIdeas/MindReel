@@ -111,29 +111,55 @@ export const BrainAnalysisSteps: FC<{
     if (!submitted) setLoading(false);
 
     setSeriesData((prevData) => {
-      const newData = [...prevData, { ...chartData }];
+      // Създаваме нов обект, копирайки само ненулевите стойности
+      const filteredChartData: any = {
+        time: chartData.time,
+        delta: chartData.delta,
+        theta: chartData.theta,
+        lowAlpha: chartData.lowAlpha,
+        highAlpha: chartData.highAlpha,
+        lowBeta: chartData.lowBeta,
+        highBeta: chartData.highBeta,
+        lowGamma: chartData.lowGamma,
+        highGamma: chartData.highGamma
+      };
 
-      // Филтриране на данните – изключва обекти, в които ВСИЧКИ стойности са 0
-      const filteredData = newData.filter(
-        (data) =>
-          !(
-            data.attention === 0 &&
-            data.meditation === 0 &&
-            data.delta === 0 &&
-            data.theta === 0 &&
-            data.lowAlpha === 0 &&
-            data.highAlpha === 0 &&
-            data.lowBeta === 0 &&
-            data.highBeta === 0 &&
-            data.lowGamma === 0 &&
-            data.highGamma === 0
-          )
-      );
+      // Добавяме attention и meditation само ако не са 0
+      if (chartData.attention !== 0) {
+        filteredChartData.attention = chartData.attention;
+      }
+      if (chartData.meditation !== 0) {
+        filteredChartData.meditation = chartData.meditation;
+      }
+
+      const newData = [...prevData, filteredChartData];
+
+      // Филтриране на данните – изключва само обекти, в които ВСИЧКИ brain wave стойности са 0
+      const filteredData = newData.filter((data) => {
+        const hasWaveData =
+          data.delta !== 0 ||
+          data.theta !== 0 ||
+          data.lowAlpha !== 0 ||
+          data.highAlpha !== 0 ||
+          data.lowBeta !== 0 ||
+          data.highBeta !== 0 ||
+          data.lowGamma !== 0 ||
+          data.highGamma !== 0;
+
+        const hasAttentionMeditation =
+          (data.attention !== undefined && data.attention !== 0) ||
+          (data.meditation !== undefined && data.meditation !== 0);
+
+        // Включва данни ако има brain waves ИЛИ attention/meditation
+        return hasWaveData || hasAttentionMeditation;
+      });
+
       return filteredData.length > MAX_DATA_POINTS
         ? filteredData.slice(-MAX_DATA_POINTS)
         : filteredData;
     });
 
+    // Актуализира attention/meditation графиката само ако и двете не са нулеви
     if (chartData.attention === 0 || chartData.meditation === 0) return;
 
     setAttentionMeditation((prevData) =>
