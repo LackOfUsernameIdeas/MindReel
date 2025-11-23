@@ -23,6 +23,8 @@ const BrainActivityCard: React.FC<BrainActivityCardProps> = ({
   const [brainWaveValues, setBrainWaveValues] = useState<
     Record<string, { value: number; key: number }>
   >({});
+  const [hasEverHadValidData, setHasEverHadValidData] =
+    useState<boolean>(false);
 
   // Конфигурация на мозъчните вълни с цветове и ключове
   const brainWaveConfig: Array<{
@@ -44,16 +46,25 @@ const BrainActivityCard: React.FC<BrainActivityCardProps> = ({
   useEffect(() => {
     if (!data) return;
 
-    // Актуализиране на стойността за Attention
+    // Проверка дали attention и meditation са валидни (не са нули)
+    const isValidAttentionMeditation =
+      data.attention !== 0 || data.meditation !== 0;
+
+    // Ако има валидни данни за първи път, маркираме че са се появили
+    if (isValidAttentionMeditation && !hasEverHadValidData) {
+      setHasEverHadValidData(true);
+    }
+
+    // Актуализиране на стойността за Attention (само ако не е 0)
     const newAttention = Math.round(Number(data.attention) || 0);
-    if (newAttention !== currentAttention) {
+    if (newAttention !== 0 && newAttention !== currentAttention) {
       setCurrentAttention(newAttention);
       setAttentionKey((prev) => prev + 1);
     }
 
-    // Актуализиране на стойността за Meditation
+    // Актуализиране на стойността за Meditation (само ако не е 0)
     const newMeditation = Math.round(Number(data.meditation) || 0);
-    if (newMeditation !== currentMeditation) {
+    if (newMeditation !== 0 && newMeditation !== currentMeditation) {
       setCurrentMeditation(newMeditation);
       setMeditationKey((prev) => prev + 1);
     }
@@ -101,94 +112,101 @@ const BrainActivityCard: React.FC<BrainActivityCardProps> = ({
       </h3>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="bg-gray-50 dark:bg-black dark:bg-opacity-30 rounded-lg p-3 border border-gray-200 dark:border-transparent">
-          <div className="grid grid-cols-2 gap-4">
-            <div className="flex flex-col items-center justify-center">
-              <div className="text-xs text-gray-600 dark:text-gray-400 mb-1">
-                Attention
-              </div>
-              <div className="relative w-16 h-16 flex items-center justify-center">
-                <svg className="w-full h-full" viewBox="0 0 100 100">
-                  <circle
-                    cx="50"
-                    cy="50"
-                    r="45"
-                    fill="transparent"
-                    stroke="#e5e7eb"
-                    className="dark:stroke-[#374151]"
-                    strokeWidth="8"
-                  />
-                  <circle
-                    cx="50"
-                    cy="50"
-                    r="45"
-                    fill="transparent"
-                    stroke="#f59e0b"
-                    strokeWidth="8"
-                    strokeDasharray={`${2.83 * (currentAttention || 0)} 283`}
-                    strokeDashoffset="0"
-                    transform="rotate(-90 50 50)"
-                    className="transition-all duration-300"
-                  />
-                </svg>
-                <div className="absolute text-lg font-semibold">
-                  <AnimatedValue
-                    key={attentionKey}
-                    value={currentAttention}
-                    color="#f59e0b"
-                  />
+        {/* Рендерира Attention и Meditation само ако е имало валидни стойности поне веднъж */}
+        {hasEverHadValidData && (
+          <div className="bg-gray-50 dark:bg-black dark:bg-opacity-30 rounded-lg p-3 border border-gray-200 dark:border-transparent">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="flex flex-col items-center justify-center">
+                <div className="text-xs text-gray-600 dark:text-gray-400 mb-1">
+                  Attention
+                </div>
+                <div className="relative w-16 h-16 flex items-center justify-center">
+                  <svg className="w-full h-full" viewBox="0 0 100 100">
+                    <circle
+                      cx="50"
+                      cy="50"
+                      r="45"
+                      fill="transparent"
+                      stroke="#e5e7eb"
+                      className="dark:stroke-[#374151]"
+                      strokeWidth="8"
+                    />
+                    <circle
+                      cx="50"
+                      cy="50"
+                      r="45"
+                      fill="transparent"
+                      stroke="#f59e0b"
+                      strokeWidth="8"
+                      strokeDasharray={`${2.83 * (currentAttention || 0)} 283`}
+                      strokeDashoffset="0"
+                      transform="rotate(-90 50 50)"
+                      className="transition-all duration-300"
+                    />
+                  </svg>
+                  <div className="absolute text-lg font-semibold">
+                    <AnimatedValue
+                      key={attentionKey}
+                      value={currentAttention}
+                      color="#f59e0b"
+                    />
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <div className="flex flex-col items-center justify-center">
-              <div className="text-xs text-gray-600 dark:text-gray-400 mb-1">
-                Meditation
-              </div>
-              <div className="relative w-16 h-16 flex items-center justify-center">
-                <svg className="w-full h-full" viewBox="0 0 100 100">
-                  <circle
-                    cx="50"
-                    cy="50"
-                    r="45"
-                    fill="transparent"
-                    stroke="#e5e7eb"
-                    className="dark:stroke-[#374151]"
-                    strokeWidth="8"
-                  />
-                  <circle
-                    cx="50"
-                    cy="50"
-                    r="45"
-                    fill="transparent"
-                    stroke="#0ea5e9"
-                    strokeWidth="8"
-                    strokeDasharray={`${2.83 * (currentMeditation || 0)} 283`}
-                    strokeDashoffset="0"
-                    transform="rotate(-90 50 50)"
-                    className="transition-all duration-300"
-                  />
-                </svg>
-                <div className="absolute text-lg font-semibold">
-                  <AnimatedValue
-                    key={meditationKey}
-                    value={currentMeditation}
-                    color="#0ea5e9"
-                  />
+              <div className="flex flex-col items-center justify-center">
+                <div className="text-xs text-gray-600 dark:text-gray-400 mb-1">
+                  Meditation
+                </div>
+                <div className="relative w-16 h-16 flex items-center justify-center">
+                  <svg className="w-full h-full" viewBox="0 0 100 100">
+                    <circle
+                      cx="50"
+                      cy="50"
+                      r="45"
+                      fill="transparent"
+                      stroke="#e5e7eb"
+                      className="dark:stroke-[#374151]"
+                      strokeWidth="8"
+                    />
+                    <circle
+                      cx="50"
+                      cy="50"
+                      r="45"
+                      fill="transparent"
+                      stroke="#0ea5e9"
+                      strokeWidth="8"
+                      strokeDasharray={`${2.83 * (currentMeditation || 0)} 283`}
+                      strokeDashoffset="0"
+                      transform="rotate(-90 50 50)"
+                      className="transition-all duration-300"
+                    />
+                  </svg>
+                  <div className="absolute text-lg font-semibold">
+                    <AnimatedValue
+                      key={meditationKey}
+                      value={currentMeditation}
+                      color="#0ea5e9"
+                    />
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
+        )}
 
-        <div className="bg-gray-50 dark:bg-black dark:bg-opacity-30 rounded-lg p-3 flex flex-col h-full border border-gray-200 dark:border-transparent">
+        <div
+          className={`bg-gray-50 dark:bg-black dark:bg-opacity-30 rounded-lg p-3 flex flex-col h-full border border-gray-200 dark:border-transparent ${
+            !hasEverHadValidData ? "md:col-span-2" : ""
+          }`}
+        >
           <div>
             <h4 className="text-lg font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center">
               <i className="mr-1 text-xl text-primary ti ti-wave-sine" />
               <span>Мозъчни вълни</span>
             </h4>
           </div>
-          <div className="flex-grow"></div>{" "}
+          <div className="flex-grow"></div>
           <div className="grid grid-cols-1 sm:grid-cols-4 gap-x-4 gap-y-1">
             {brainWaveConfig.map((wave) => (
               <div key={wave.key} className="flex items-center justify-between">

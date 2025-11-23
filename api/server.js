@@ -2268,7 +2268,7 @@ io.on("connection", (socket) => {
     if (useFileMode) {
       // ----------- FILE MODE: Симулация чрез JSON файл ----------- //
       const sessionId = data.sessionId || 1;
-      if (sessionId < 1 || sessionId > 5) {
+      if (sessionId < 1 || sessionId > 10) {
         console.error("Невалиден sessionId:", sessionId);
         return;
       }

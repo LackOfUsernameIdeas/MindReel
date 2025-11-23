@@ -19,6 +19,8 @@ const AttentionMeditationChart: React.FC<AttentionMeditationChartProps> = ({
   const [attentionValue, setAttentionValue] = useState<number>(0);
   const [meditationValue, setMeditationValue] = useState<number>(0);
   const [valueKey, setValueKey] = useState<number>(0);
+  const [hasEverHadValidData, setHasEverHadValidData] =
+    useState<boolean>(false);
 
   useEffect(() => {
     const handleStorageChange = () => {
@@ -39,16 +41,34 @@ const AttentionMeditationChart: React.FC<AttentionMeditationChartProps> = ({
         attentionMeditation[1].data[attentionMeditation[1].data.length - 1].y
       );
 
+      // Проверка дали има валидни данни (поне едно от двете не е 0)
+      const isValidData = newAttentionValue !== 0 || newMeditationValue !== 0;
+
+      // Ако има валидни данни за първи път, маркираме че са се появили
+      if (isValidData && !hasEverHadValidData) {
+        setHasEverHadValidData(true);
+      }
+
+      // Актуализираме стойностите само ако не са 0
       if (
-        newAttentionValue !== attentionValue ||
-        newMeditationValue !== meditationValue
+        (newAttentionValue !== 0 && newAttentionValue !== attentionValue) ||
+        (newMeditationValue !== 0 && newMeditationValue !== meditationValue)
       ) {
-        setAttentionValue(newAttentionValue);
-        setMeditationValue(newMeditationValue);
+        if (newAttentionValue !== 0) {
+          setAttentionValue(newAttentionValue);
+        }
+        if (newMeditationValue !== 0) {
+          setMeditationValue(newMeditationValue);
+        }
         setValueKey((prev) => prev + 1);
       }
     }
-  }, [attentionMeditation, attentionValue, meditationValue]);
+  }, [
+    attentionMeditation,
+    attentionValue,
+    meditationValue,
+    hasEverHadValidData
+  ]);
 
   const attentionMeditationOptions: ApexCharts.ApexOptions = {
     chart: {
@@ -191,6 +211,11 @@ const AttentionMeditationChart: React.FC<AttentionMeditationChartProps> = ({
       }
     };
   };
+
+  // Не рендерира компонента докато не получи валидни данни поне веднъж
+  if (!hasEverHadValidData) {
+    return null;
+  }
 
   return (
     <div className="bg-white dark:bg-black dark:bg-opacity-30 rounded-lg p-3 h-full flex flex-col border border-gray-200 dark:border-transparent shadow-md dark:shadow-none">
