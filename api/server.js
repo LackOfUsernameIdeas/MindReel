@@ -1370,7 +1370,14 @@ app.post("/get-model-response", async (req, res) => {
 
     const responseData = await response.json();
 
-    console.log(`✨ Успешно генериране от промпта! ✨`);
+    console.log("============================================");
+    console.log("✨ Успешно генериране от промпта! ✨");
+    console.log("============================================");
+    console.log("\n📤 RESPONSE DATA:");
+    console.log(JSON.stringify(responseData, null, 2));
+    console.log("\n💬 GENERATED CONTENT:");
+    console.log(responseData.choices[0].message.content);
+    console.log("============================================\n");
 
     // Return the response
     res.json(responseData);
