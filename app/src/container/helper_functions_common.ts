@@ -1283,9 +1283,7 @@ export const connectSocketIO = async (
         if (
           parsedData &&
           typeof parsedData === "object" &&
-          "time" in parsedData &&
-          "data_type" in parsedData &&
-          parsedData.data_type === "headset_data"
+          "time" in parsedData
         ) {
           setChartData(parsedData as BrainData);
         } else {

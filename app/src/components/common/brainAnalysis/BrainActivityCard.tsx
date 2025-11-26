@@ -46,25 +46,34 @@ const BrainActivityCard: React.FC<BrainActivityCardProps> = ({
   useEffect(() => {
     if (!data) return;
 
-    // Проверка дали attention и meditation са валидни (не са нули)
+    // Проверка дали attention и meditation са валидни (съществуват И не са нули)
     const isValidAttentionMeditation =
-      data.attention !== 0 || data.meditation !== 0;
+      (data.attention !== undefined && data.attention !== 0) ||
+      (data.meditation !== undefined && data.meditation !== 0);
 
     // Ако има валидни данни за първи път, маркираме че са се появили
     if (isValidAttentionMeditation && !hasEverHadValidData) {
       setHasEverHadValidData(true);
     }
 
-    // Актуализиране на стойността за Attention (само ако не е 0)
+    // Актуализиране на стойността за Attention (само ако съществува и не е 0)
     const newAttention = Math.round(Number(data.attention) || 0);
-    if (newAttention !== 0 && newAttention !== currentAttention) {
+    if (
+      data.attention !== undefined &&
+      newAttention !== 0 &&
+      newAttention !== currentAttention
+    ) {
       setCurrentAttention(newAttention);
       setAttentionKey((prev) => prev + 1);
     }
 
-    // Актуализиране на стойността за Meditation (само ако не е 0)
+    // Актуализиране на стойността за Meditation (само ако съществува и не е 0)
     const newMeditation = Math.round(Number(data.meditation) || 0);
-    if (newMeditation !== 0 && newMeditation !== currentMeditation) {
+    if (
+      data.meditation !== undefined &&
+      newMeditation !== 0 &&
+      newMeditation !== currentMeditation
+    ) {
       setCurrentMeditation(newMeditation);
       setMeditationKey((prev) => prev + 1);
     }
