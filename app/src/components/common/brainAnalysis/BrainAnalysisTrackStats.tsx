@@ -1,7 +1,7 @@
 import type React from "react";
 import type { BrainData } from "@/container/types_common";
 import BrainWaveChart from "./charts/BrainWaveChart";
-import AttentionMeditationChart from "./charts/AttentionMediationChart";
+import AttentionMeditationChart from "./charts/AttentionMeditationChart";
 import BrainActivityCard from "./BrainActivityCard";
 import { useEffect, useRef, useState } from "react";
 

@@ -476,7 +476,7 @@ export const BrainAnalysisSteps: FC<{
                       </span>{" "}
                       и{" "}
                       <span className="font-semibold">
-                        Mediation (Измерване на медитативното състояние)
+                        Meditation (Измерване на медитативното състояние)
                       </span>
                       .
                     </p>
@@ -770,16 +770,16 @@ export const BrainAnalysisSteps: FC<{
                           .
                         </AccordionContent>
                       </AccordionItem>
-                      <AccordionItem value="mediation">
+                      <AccordionItem value="meditation">
                         <AccordionTrigger>
                           <div className="flex items-center gap-3 font-semibold">
                             <i className="text-xl text-primary ti ti-chart-histogram" />
-                            Mediation
+                            Meditation
                           </div>
                         </AccordionTrigger>
                         <AccordionContent>
                           <span className="font-semibold">
-                            Mediation (Измерване на медитативното състояние)
+                            Meditation (Измерване на медитативното състояние)
                           </span>{" "}
                           – измерва нивото на спокойствие и релаксация.
                           Стойността му варира от{" "}
