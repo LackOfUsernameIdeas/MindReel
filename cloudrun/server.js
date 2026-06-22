@@ -8,6 +8,9 @@ const path = require("path");
 
 const app = express();
 const ytDlpWrap = new YTDlpWrap("yt-dlp");
+
+process.env.PATH = `${process.env.PATH}:/usr/local/bin:/usr/bin`;
+
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
 
@@ -44,9 +47,7 @@ app.use(cors(corsOptions));
 app.options("*", cors(corsOptions));
 
 // Initialize Google Cloud Storage
-const storage = new Storage({
-  keyFilename: "service-account.json"
-});
+const storage = new Storage();
 const bucketName = "my-public-videos";
 const bucket = storage.bucket(bucketName);
 
@@ -83,16 +84,19 @@ app.get("/download/youtube-video", (req, res) => {
     console.log(`🎬 Starting download for ${url} → ${fullPath}`);
 
     const args = [
-      "-vU",
       url,
       "-f",
-      "bestvideo[ext=mp4]+bestaudio[ext=m4a]/mp4",
+      "bv*[ext=mp4]+ba[ext=m4a]/b[ext=mp4]/best",
       "-o",
       fullPath,
       "--merge-output-format",
       "mp4",
       "--cookies",
-      COOKIES_PATH
+      COOKIES_PATH,
+      "--js-runtimes",
+      "node",
+      "--extractor-args",
+      "youtube:player_client=web"
     ];
 
     const ytDlpEventEmitter = ytDlpWrap.exec(args);
@@ -203,6 +207,24 @@ app.get("/download/youtube-video", (req, res) => {
         error: error.message
       });
     }
+  }
+});
+
+app.get("/debug", (req, res) => {
+  const { execSync } = require("child_process");
+  try {
+    const ytdlpVersion = execSync("yt-dlp --version").toString();
+    const nodeLocation = execSync("which node").toString();
+    const nodePath = execSync("node --version").toString();
+    const ytdlpVerbose = execSync(
+      "yt-dlp --verbose 2>&1 | head -20"
+    ).toString();
+    const nodeTest = execSync(
+      'python3 -c "from yt_dlp.utils._jsruntime import NodeJsRuntime; r = NodeJsRuntime(); print(r.info)"'
+    ).toString();
+    res.json({ ytdlpVersion, nodeLocation, nodePath, ytdlpVerbose, nodeTest });
+  } catch (e) {
+    res.json({ error: e.message, stderr: e.stderr?.toString() });
   }
 });
 
