@@ -26,21 +26,25 @@ MindReel/
 
 | Sub-project | Role                                                                                                          |
 | ----------- | ------------------------------------------------------------------------------------------------------------- |
-| `app/`      | User-facing SPA: EEG session UI, recommendations, VR cinema, statistics, ML metrics dashboard                 |
-| `api/`      | REST + Socket.IO server: EEG data ingestion, AI calls via LangChain, MySQL persistence, JWT auth              |
+| `app/`      | SPA: EEG session UI, recommendations, VR cinema, statistics, ML metrics dashboard                             |
+| `api/`      | REST + Socket.IO server: EEG data processing, AI calls via LangChain, MySQL persistence, JWT auth             |
 | `cloudrun/` | Isolated Docker service: downloads YouTube trailers via yt-dlp and stores them in GCS for A-Frame VR playback |
 
 ---
 
 ## Tech Stack
 
-**Frontend (`app/`)** - React 18, TypeScript, Vite, Tailwind CSS, shadcn/ui, Socket.IO Client, ApexCharts, A-Frame (VR cinema)
+**Frontend (`app/`)**  
+React, TypeScript, Vite, Tailwind CSS, shadcn/ui, Socket.IO Client, ApexCharts, A-Frame (VR cinema)
 
-**Backend (`api/`)** - Node.js, Express, Socket.IO, MySQL, LangChain, OpenAI API, Gemini API, OMDb API, Spotify API, YouTube Data API v3, Google Books API, Google Custom Search JSON API, Goodreads scraper (Python/BeautifulSoup), JWT/HMAC-SHA-256, Jest
+**Backend (`api/`)**  
+Node.js, Express.js, Socket.IO, MySQL, LangChain, OpenAI API, Gemini API, OMDb API, Spotify API, YouTube Data API, Google Books API, Google Custom Search JSON API, Goodreads scraper (Python, BeautifulSoup), JWT, HMAC-SHA-256, Jest, ThinkGear Connector, PyMindWave2
 
-**Cloud Run (`cloudrun/`)** - Docker, yt-dlp, Google Cloud Storage, Google Cloud Run
+**Cloud Run (`cloudrun/`)**  
+Docker, yt-dlp, Google Cloud Storage, Google Cloud Run
 
-**Hardware** - NeuroSky MindWave Mobile 2, ThinkGear Connector, PyMindWave2 (Python, partially rewritten), Meta Quest 2
+**Hardware**  
+NeuroSky MindWave Mobile 2, Meta Quest 2
 
 ---
 
@@ -86,23 +90,17 @@ module.exports = {
 ### `app/.env`
 
 ```env
-XAMPP_PATH=D:/xampp
-API_PATH=D:/dev/MindReel/api
+XAMPP_PATH=/xampp
+API_PATH=/MindReel/api
 BROWSER_PATH=C:/Program Files/Google/Chrome/Application/chrome.exe
 VITE_PORT=5174
-# HOSTING:
 VITE_OPENAI_API_KEY=your_openai_api_key
-# VITE_OPENAI_API_KEY=your_alternate_openai_api_key
 VITE_GEMINI_API_KEY=your_gemini_api_key
 VITE_API_BASE_URL=https://mindreel-api.noit.eu
-# VITE_API_BASE_URL=http://localhost:5000
-# VITE_SOCKET_IO_URL=ws://localhost:5000
 VITE_SOCKET_IO_URL=wss://mindreel-api.noit.eu
 VITE_CLOUDRUN_BASE_URL=https://mindreel-service-dkbjkyxsxq-lm.a.run.app
 VITE_BOOKS_SOURCE=Goodreads # GoogleBooks | Goodreads
-# HOSTING:
 VITE_YOUTUBE_API_KEY=your_youtube_api_key
-# VITE_YOUTUBE_API_KEY=your_alternate_youtube_api_key
 VITE_SPOTIFY_CLIENT_ID=your_spotify_client_id
 VITE_SPOTIFY_CLIENT_SECRET=your_spotify_client_secret
 VITE_DEFAULT_THEME=light # dark | light
@@ -154,10 +152,10 @@ Open the XAMPP Control Panel and start:
 
 ```bash
 cd api
-node index.js
+node server
 ```
 
-The API runs on `http://localhost:3001`.
+The API runs on `http://localhost:5000`.
 
 ### 4. Start the frontend
 
@@ -166,7 +164,7 @@ cd app
 npm run dev
 ```
 
-The app runs on `http://localhost:5173`.
+The app runs on `http://localhost:5174`.
 
 That's it - no further setup is required for local development.
 
@@ -178,16 +176,16 @@ The `cloudrun/` service downloads YouTube trailers via `yt-dlp` and uploads them
 
 ### Test on deployed Cloud Run service
 
-`https://mindreel-service-dkbjkyxsxq-lm.a.run.app`
+`https://<your-cloud-run-service-url>.a.run.app`
 
 Open Docker Desktop, then open a PowerShell terminal:
 
 ```powershell
-cd D:\Projects\MindReel\cloudrun
-docker build -t gcr.io/neural-clarity-468312-d8/mindreel-service .
-docker push gcr.io/neural-clarity-468312-d8/mindreel-service
+cd <path-to>\MindReel\cloudrun
+docker build -t gcr.io/<your-project-id>/mindreel-service .
+docker push gcr.io/<your-project-id>/mindreel-service
 gcloud run deploy mindreel-service `
-  --image=gcr.io/neural-clarity-468312-d8/mindreel-service `
+  --image=gcr.io/<your-project-id>/mindreel-service `
   --platform=managed `
   --region=europe-central2 `
   --allow-unauthenticated `
@@ -197,16 +195,16 @@ gcloud run deploy mindreel-service `
   --concurrency=1 `
   --min-instances=1 `
   --max-instances=10 `
-  --set-env-vars="GCS_BUCKET_NAME=my-public-videos" `
+  --set-env-vars="GCS_BUCKET_NAME=<your-bucket-name>" `
   --set-secrets="YOUTUBE_COOKIES=youtube-cookies:latest" `
-  --service-account="download-videos@neural-clarity-468312-d8.iam.gserviceaccount.com"
+  --service-account="<your-service-account>@<your-project-id>.iam.gserviceaccount.com"
 ```
 
 > `--service-account` is required. `Storage()` in `server.js` uses Workload Identity (no key file). If the service account is ever recreated, re-run:
 >
 > ```bash
-> gcloud projects add-iam-policy-binding neural-clarity-468312-d8 \
->   --member="serviceAccount:download-videos@neural-clarity-468312-d8.iam.gserviceaccount.com" \
+> gcloud projects add-iam-policy-binding <your-project-id> \
+>   --member="serviceAccount:<your-service-account>@<your-project-id>.iam.gserviceaccount.com" \
 >   --role="roles/storage.objectAdmin"
 > ```
 
@@ -215,7 +213,7 @@ gcloud run deploy mindreel-service `
 `http://localhost:8080`
 
 ```powershell
-cd D:\Projects\MindReel\cloudrun
+cd <path-to>\MindReel\cloudrun
 docker build -t mindreel-video-service .
 docker run -p 8080:8080 `
   -v "${PWD}/data:/data" `
@@ -224,15 +222,6 @@ docker run -p 8080:8080 `
   --name video-service `
   mindreel-video-service
 ```
-
-### Useful console links
-
-- **Logs:** [Cloud Run logs](https://console.cloud.google.com/run/detail/europe-central2/mindreel-service/observability/logs?authuser=3&project=neural-clarity-468312-d8)
-- **Secret versions:** [youtube-cookies secret](https://console.cloud.google.com/security/secret-manager/secret/youtube-cookies/versions?authuser=4&project=neural-clarity-468312-d8)
-- **Revisions:** [Cloud Run revisions](https://console.cloud.google.com/run/detail/europe-central2/mindreel-service/revisions?authuser=4&project=neural-clarity-468312-d8)
-- **Edit & deploy revision** (increase max requests/instances): [Deploy revision](https://console.cloud.google.com/run/deploy/europe-central2/mindreel-service?project=neural-clarity-468312-d8&authuser=4)
-- **Billing account:** [Manage billing](https://console.cloud.google.com/billing/01CF5A-990DBA-AF432C/manage?authuser=4&project=neural-clarity-468312-d8)
-- **Update env/secrets without redeploying:** [Gist instructions](https://gist.github.com/gamer191/ddf0b23b0a6df8e2ffe81bd1dda9154c)
 
 ### Exporting YouTube cookies (Chromium-based browsers)
 
@@ -256,9 +245,12 @@ gcloud run services update mindreel-service \
 
 ### NeuroSky MindWave Mobile 2
 
-1. Charge the headset and pair it over Bluetooth.
-2. Install and launch **ThinkGear Connector (TGC)** - opens a TCP socket on `localhost:13854`.
-3. The Python PyMindWave2 bridge reads raw EEG packets from TGC and forwards the processed signal to the API via Socket.IO.
+1. **Download ThinkGear Connector (TGC)** from `mwm2.neurosky.com` — pick the download option matching your OS, unzip it, and run ThinkGear Connector (green icon). A brain-shaped icon should appear in the bottom-right system tray.
+2. **Turn on the headset.** A blue light indicates it's powered on.
+3. **Pair via Bluetooth.** Your computer needs Bluetooth (built-in or via adapter). Open Bluetooth settings, add a new device, and connect to "MindWave Mobile" — wait until the device shows as connected with a headphone icon.
+4. **Configure the COM port.** After pairing, go to _More Bluetooth Options_ → _COM Ports_ tab and find the port the device is connected to. If it isn't listed, add one. The relevant port is the **OUTGOING** one (e.g. `COM4`). Enter that port number into the corresponding field in the ThinkGear Connector app.
+5. **Run the MindReel connection program** (a small `.exe` made separately for the EEG session bridge).
+6. **Connect, in this order:** start ThinkGear Connector → turn on the headset → enable Bluetooth → launch the MindReel connection program. A successful connection shows the ThinkGear tray icon turning blue with a "device connected" status, and the MindReel session window should appear. If the connection message doesn't show in the console and the session window doesn't appear — even though ThinkGear reports a connection — restart and try again.
 
 ### Meta Quest 2 (VR Cinema)
 
