@@ -245,12 +245,12 @@ gcloud run services update mindreel-service \
 
 ### NeuroSky MindWave Mobile 2
 
-1. **Download ThinkGear Connector (TGC)** from `mwm2.neurosky.com` — pick the download option matching your OS, unzip it, and run ThinkGear Connector (green icon). A brain-shaped icon should appear in the bottom-right system tray.
+1. **Download ThinkGear Connector (TGC)** from `mwm2.neurosky.com` - pick the download option matching your OS, unzip it, and run ThinkGear Connector (green icon). A brain-shaped icon should appear in the bottom-right system tray.
 2. **Turn on the headset.** A blue light indicates it's powered on.
-3. **Pair via Bluetooth.** Your computer needs Bluetooth (built-in or via adapter). Open Bluetooth settings, add a new device, and connect to "MindWave Mobile" — wait until the device shows as connected with a headphone icon.
+3. **Pair via Bluetooth.** Your computer needs Bluetooth (built-in or via adapter). Open Bluetooth settings, add a new device, and connect to "MindWave Mobile" - wait until the device shows as connected with a headphone icon.
 4. **Configure the COM port.** After pairing, go to _More Bluetooth Options_ → _COM Ports_ tab and find the port the device is connected to. If it isn't listed, add one. The relevant port is the **OUTGOING** one (e.g. `COM4`). Enter that port number into the corresponding field in the ThinkGear Connector app.
 5. **Run the MindReel connection program** (a small `.exe` made separately for the EEG session bridge).
-6. **Connect, in this order:** start ThinkGear Connector → turn on the headset → enable Bluetooth → launch the MindReel connection program. A successful connection shows the ThinkGear tray icon turning blue with a "device connected" status, and the MindReel session window should appear. If the connection message doesn't show in the console and the session window doesn't appear — even though ThinkGear reports a connection — restart and try again.
+6. **Connect, in this order:** start ThinkGear Connector → turn on the headset → enable Bluetooth → launch the MindReel connection program. A successful connection shows the ThinkGear tray icon turning blue with a "device connected" status, and the MindReel session window should appear. If the connection message doesn't show in the console and the session window doesn't appear - even though ThinkGear reports a connection - restart and try again.
 
 ### Meta Quest 2 (VR Cinema)
 
