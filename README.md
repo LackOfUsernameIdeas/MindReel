@@ -1,6 +1,6 @@
 # MindReel
 
-> **EEG-powered neuro-recommendation platform** - analyzes live brainwave signals from a NeuroSky MindWave Mobile 2 headset to understand psycho-emotional state, stress levels, and cognitive performance, then recommends movies, TV series, books, and songs in real time. Includes a VR cinema experience for watching trailers through a Meta Quest 2 headset.
+> **MindReel** is a comprehensive platform that integrates **live EEG bioelectric brain activity analysis** (via **NeuroSky MindWave Mobile 2** headset) with **AI-suggested content recommendations** tailored to the user's real-time emotional and cognitive state, as well as their personal preferences - where the AI itself is continuously subjected to accuracy and reliability evaluation through industry-standard ML metrics adapted to the specific needs and logic of the platform, measuring **Precision, Recall, F1 Score, Accuracy, Specificity, FPR, and FNR** against a relevance algorithm grounded in the user's own preferences. The project was developed in consultation with **qualified neurologists and specialists in that field** to validate its **science-based approach** to brainwave interpretation.
 
 ---
 
@@ -44,7 +44,7 @@ Node.js, Express.js, Socket.IO, MySQL, LangChain, OpenAI API, Gemini API, OMDb A
 Docker, yt-dlp, Google Cloud Storage, Google Cloud Run
 
 **Hardware**  
-NeuroSky MindWave Mobile 2, Meta Quest 2
+NeuroSky MindWave Mobile 2, Meta Quest 2 (compatible with any other VR headset)
 
 ---
 
