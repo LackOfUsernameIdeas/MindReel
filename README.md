@@ -48,6 +48,8 @@ MindReel/
 
 These files are excluded from version control and must exist locally before running the project. Templates below show the expected structure - fill in real values yourself.
 
+There are two configuration objects in **api/config.js**: one for local development and another for deployment to a hosting environment using MySQL.
+
 ### `api/config.js`
 
 ```js
@@ -84,8 +86,27 @@ module.exports = {
 ### `app/.env`
 
 ```env
-VITE_API_URL=http://localhost:3001
-VITE_SOCKET_URL=http://localhost:3001
+XAMPP_PATH=D:/xampp
+API_PATH=D:/dev/MindReel/api
+BROWSER_PATH=C:/Program Files/Google/Chrome/Application/chrome.exe
+VITE_PORT=5174
+# HOSTING:
+VITE_OPENAI_API_KEY=your_openai_api_key
+# VITE_OPENAI_API_KEY=your_alternate_openai_api_key
+VITE_GEMINI_API_KEY=your_gemini_api_key
+VITE_API_BASE_URL=https://mindreel-api.noit.eu
+# VITE_API_BASE_URL=http://localhost:5000
+# VITE_SOCKET_IO_URL=ws://localhost:5000
+VITE_SOCKET_IO_URL=wss://mindreel-api.noit.eu
+VITE_CLOUDRUN_BASE_URL=https://mindreel-service-dkbjkyxsxq-lm.a.run.app
+VITE_BOOKS_SOURCE=Goodreads # GoogleBooks | Goodreads
+# HOSTING:
+VITE_YOUTUBE_API_KEY=your_youtube_api_key
+# VITE_YOUTUBE_API_KEY=your_alternate_youtube_api_key
+VITE_SPOTIFY_CLIENT_ID=your_spotify_client_id
+VITE_SPOTIFY_CLIENT_SECRET=your_spotify_client_secret
+VITE_DEFAULT_THEME=light # dark | light
+VITE_PUBLIC_DIR=/tmp
 ```
 
 ### `cloudrun/service-account.json`
