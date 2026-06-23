@@ -198,25 +198,24 @@ const RecommendationCard: FC<RecommendationCardProps> = ({
                   <span className="font-bold text-base lg:text-lg">
                     {recommendation.spotifyPopularity}/100
                   </span>
-                  {recommendation.spotifyUrl && (
-                    <Button
-                      asChild
-                      className="bg-secondary/10 dark:bg-secondary/20 text-xs lg:text-sm px-2 py-1 h-auto"
-                    >
-                      <a
-                        href={recommendation.spotifyUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        <ExternalLink className="w-3 h-3 lg:w-4 lg:h-4 mr-1 lg:mr-2" />
-                        <span className="hidden xl:inline">
-                          Слушай в Spotify
-                        </span>
-                        <span className="xl:hidden">Spotify</span>
-                      </a>
-                    </Button>
-                  )}
                 </div>
+              )}
+
+              {recommendation.spotifyUrl && (
+                <Button
+                  asChild
+                  className="bg-secondary/10 dark:bg-secondary/20 hover:text-white text-xs lg:text-sm px-2 py-1 h-auto"
+                >
+                  <a
+                    href={recommendation.spotifyUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <ExternalLink className="w-3 h-3 lg:w-4 lg:h-4 mr-1 lg:mr-2" />
+                    <span className="hidden xl:inline">Слушай в Spotify</span>
+                    <span className="xl:hidden">Spotify</span>
+                  </a>
+                </Button>
               )}
 
               {recommendation.youtubeMusicVideoViews && (
