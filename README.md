@@ -24,11 +24,11 @@ MindReel/
 └── cloudrun/     # Containerized yt-dlp service (Google Cloud Run)
 ```
 
-| Sub-project | Role                                                                                                          |
-| ----------- | ------------------------------------------------------------------------------------------------------------- |
-| `app/`      | SPA: EEG session UI, recommendations, VR cinema, statistics, ML metrics dashboard                             |
-| `api/`      | REST + Socket.IO server: EEG data processing, AI calls via LangChain, MySQL persistence, JWT auth             |
-| `cloudrun/` | Isolated Docker service: downloads YouTube trailers via yt-dlp and stores them in GCS for A-Frame VR playback |
+| Sub-project | Role                                                                                                                  |
+| ----------- | --------------------------------------------------------------------------------------------------------------------- |
+| `app/`      | Frontend application used for EEG sessions, content recommendations, VR cinema, user statistics, ML metrics dashboard |
+| `api/`      | Backend API responsible for EEG data processing, AI calls via LangChain, MySQL operations, JWT auth                   |
+| `cloudrun/` | Isolated Docker service that downloads YouTube trailers via yt-dlp and stores them in GCS for A-Frame VR playback     |
 
 ---
 
