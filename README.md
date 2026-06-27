@@ -200,7 +200,7 @@ gcloud run deploy mindreel-service `
   --service-account="<your-service-account>@<your-project-id>.iam.gserviceaccount.com"
 ```
 
-> `--service-account` is required. `Storage()` in `server.js` uses Workload Identity (no key file). If the service account is ever recreated, re-run:
+> `--service-account` is required. If the service account is ever recreated, re-run:
 >
 > ```bash
 > gcloud projects add-iam-policy-binding <your-project-id> \
